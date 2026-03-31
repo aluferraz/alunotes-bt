@@ -1,0 +1,4 @@
+bin/
+recordings/
+config.yaml
+*.wav

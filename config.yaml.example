@@ -1,0 +1,31 @@
+bluetooth:
+  # HCI adapter name (usually hci0).
+  adapter_name: hci0
+  # Name advertised to Bluetooth source devices (phones, laptops).
+  sink_name: "AluNotes Bridge"
+  # MAC address of the real headphone to forward audio to.
+  # Leave empty to run in record-only mode (no forwarding).
+  target_headphone: ""
+  # Automatically connect to the target headphone on startup.
+  auto_connect: true
+
+audio:
+  sample_rate: 44100
+  channels: 2
+  bit_depth: 16
+  # PCM frames per pipeline buffer.
+  buffer_size: 1024
+  # Go channel buffer capacity between pipeline stages.
+  channel_buffer: 64
+
+session:
+  # End a session after this duration of silence.
+  idle_timeout: 30s
+  # PCM amplitude below this is considered silence (0-32768).
+  silence_threshold: 100
+
+storage:
+  # Root directory for recordings.
+  # Structure: base_dir/YYYY-MM-DD/HH-MM-SS/recording.wav
+  base_dir: ./recordings
+  format: wav
