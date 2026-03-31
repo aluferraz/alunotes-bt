@@ -19,14 +19,27 @@ type Config struct {
 
 // BluetoothConfig holds Bluetooth-related settings.
 type BluetoothConfig struct {
-	// AdapterName is the HCI adapter to use (e.g. "hci0").
-	AdapterName string `yaml:"adapter_name"`
+	// SinkAdapter is the HCI adapter used to receive audio (A2DP sink).
+	// Typically the onboard adapter (e.g. "hci0").
+	SinkAdapter string `yaml:"sink_adapter"`
+	// SourceAdapter is the HCI adapter used to send audio to headphones (A2DP source).
+	// Typically a USB dongle (e.g. "hci1"). Leave empty to use sink_adapter for both.
+	SourceAdapter string `yaml:"source_adapter"`
 	// SinkName is the name advertised to source devices (e.g. phones).
 	SinkName string `yaml:"sink_name"`
 	// TargetHeadphone is the MAC address of the real headphone to forward audio to.
 	TargetHeadphone string `yaml:"target_headphone"`
 	// AutoConnect attempts to reconnect to the target headphone on startup.
 	AutoConnect bool `yaml:"auto_connect"`
+}
+
+// EffectiveSourceAdapter returns the adapter to use for outbound connections.
+// Falls back to SinkAdapter if SourceAdapter is not set.
+func (b *BluetoothConfig) EffectiveSourceAdapter() string {
+	if b.SourceAdapter != "" {
+		return b.SourceAdapter
+	}
+	return b.SinkAdapter
 }
 
 // AudioConfig holds audio pipeline settings.
@@ -63,9 +76,10 @@ type StorageConfig struct {
 func Default() Config {
 	return Config{
 		Bluetooth: BluetoothConfig{
-			AdapterName: "hci0",
-			SinkName:    "AluNotes Bridge",
-			AutoConnect: true,
+			SinkAdapter:   "hci0",
+			SourceAdapter: "hci1",
+			SinkName:      "AluNotes Bridge",
+			AutoConnect:   true,
 		},
 		Audio: AudioConfig{
 			SampleRate:    44100,

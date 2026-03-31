@@ -45,20 +45,27 @@ Key settings:
 
 | Setting | Default | Description |
 |---|---|---|
-| `bluetooth.adapter_name` | `hci0` | HCI adapter to use |
+| `bluetooth.sink_adapter` | `hci0` | HCI adapter for receiving audio (onboard) |
+| `bluetooth.source_adapter` | `hci1` | HCI adapter for sending to headphones (USB dongle) |
 | `bluetooth.sink_name` | `AluNotes Bridge` | Name visible to phones |
 | `bluetooth.target_headphone` | _(empty)_ | MAC of real headphone (e.g. `AA:BB:CC:DD:EE:FF`) |
 | `session.idle_timeout` | `30s` | Silence duration before ending a session |
 | `storage.base_dir` | `./recordings` | Where recordings are saved |
 
+> **Note:** The Pi 5's onboard Bluetooth cannot handle A2DP sink + source simultaneously.
+> You need a USB Bluetooth dongle (e.g. ASUS USB-BT500) as the second adapter.
+> The onboard adapter (`hci0`) receives audio; the USB dongle (`hci1`) forwards to headphones.
+
 ## Pairing Devices
 
 ### 1. Pair your real headphones (outbound)
 
-Put your headphones in pairing mode, then:
+Put your headphones in pairing mode, then pair them via the **USB dongle** (source adapter):
 
 ```bash
+# Use the USB dongle (hci1) for pairing headphones
 bluetoothctl
+> select /org/bluez/hci1
 > scan on
 # Wait for your headphones to appear
 > pair AA:BB:CC:DD:EE:FF

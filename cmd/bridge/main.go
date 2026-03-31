@@ -36,7 +36,8 @@ func main() {
 		os.Exit(1)
 	}
 	log.Info("configuration loaded",
-		"adapter", cfg.Bluetooth.AdapterName,
+		"sink_adapter", cfg.Bluetooth.SinkAdapter,
+		"source_adapter", cfg.Bluetooth.EffectiveSourceAdapter(),
 		"sink_name", cfg.Bluetooth.SinkName,
 		"target_headphone", cfg.Bluetooth.TargetHeadphone,
 		"idle_timeout", cfg.Session.IdleTimeout,

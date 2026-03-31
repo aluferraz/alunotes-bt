@@ -1,8 +1,9 @@
 // Package bt manages Bluetooth connectivity via BlueZ over D-Bus.
 //
-// It handles adapter configuration, A2DP sink registration (to receive audio
-// from phones/laptops), A2DP source connection (to forward audio to real
-// headphones), and transport lifecycle management.
+// It supports dual-adapter operation: one HCI adapter acts as the A2DP sink
+// (receiving audio from phones) and a separate adapter acts as the A2DP source
+// (forwarding audio to real headphones). This is required because a single
+// Bluetooth radio cannot reliably serve both roles simultaneously.
 package bt
 
 import (
@@ -18,79 +19,118 @@ import (
 )
 
 const (
-	bluezBus         = "org.bluez"
-	bluezAdapter     = "org.bluez.Adapter1"
-	bluezDevice      = "org.bluez.Device1"
-	bluezMediaTrans  = "org.bluez.MediaTransport1"
-	dbusProperties   = "org.freedesktop.DBus.Properties"
+	bluezBus          = "org.bluez"
+	bluezAdapter      = "org.bluez.Adapter1"
+	bluezDevice       = "org.bluez.Device1"
+	bluezMediaTrans   = "org.bluez.MediaTransport1"
+	dbusProperties    = "org.freedesktop.DBus.Properties"
 	dbusObjectManager = "org.freedesktop.DBus.ObjectManager"
 )
 
-// Adapter manages a BlueZ HCI adapter and connected devices.
+// Adapter manages BlueZ HCI adapters and connected devices.
+// It supports separate adapters for sink (inbound) and source (outbound) roles.
 type Adapter struct {
-	cfg      config.BluetoothConfig
-	conn     *dbus.Conn
-	path     dbus.ObjectPath
-	log      *slog.Logger
+	cfg        config.BluetoothConfig
+	conn       *dbus.Conn
+	sinkPath   dbus.ObjectPath // adapter receiving audio (e.g. /org/bluez/hci0)
+	sourcePath dbus.ObjectPath // adapter sending to headphone (e.g. /org/bluez/hci1)
+	dualMode   bool            // true when using two separate adapters
+	log        *slog.Logger
 
-	mu          sync.Mutex
-	sinkDevice  dbus.ObjectPath // inbound device (phone) connected to us
+	mu           sync.Mutex
+	sinkDevice   dbus.ObjectPath // inbound device (phone) connected to us
 	sourceDevice dbus.ObjectPath // outbound device (real headphone)
 }
 
-// NewAdapter creates a new Adapter for the given HCI device.
+// NewAdapter creates a new Adapter. When SourceAdapter differs from SinkAdapter,
+// dual-adapter mode is enabled with each radio handling one role.
 func NewAdapter(cfg config.BluetoothConfig, logger *slog.Logger) (*Adapter, error) {
 	conn, err := dbus.SystemBus()
 	if err != nil {
 		return nil, fmt.Errorf("connecting to system D-Bus: %w", err)
 	}
 
-	path := dbus.ObjectPath("/org/bluez/" + cfg.AdapterName)
+	sinkPath := dbus.ObjectPath("/org/bluez/" + cfg.SinkAdapter)
+	sourceAdapter := cfg.EffectiveSourceAdapter()
+	sourcePath := dbus.ObjectPath("/org/bluez/" + sourceAdapter)
+	dualMode := cfg.SinkAdapter != sourceAdapter
+
+	log := logger.With("component", "bt.adapter")
+
+	if dualMode {
+		log.Info("dual-adapter mode",
+			"sink_adapter", cfg.SinkAdapter,
+			"source_adapter", sourceAdapter,
+		)
+	} else {
+		log.Info("single-adapter mode", "adapter", cfg.SinkAdapter)
+	}
 
 	return &Adapter{
-		cfg:  cfg,
-		conn: conn,
-		path: path,
-		log:  logger.With("component", "bt.adapter"),
+		cfg:        cfg,
+		conn:       conn,
+		sinkPath:   sinkPath,
+		sourcePath: sourcePath,
+		dualMode:   dualMode,
+		log:        log,
 	}, nil
 }
 
-// Setup configures the adapter for A2DP sink + source operation.
+// Setup configures the adapter(s) for A2DP operation.
+// The sink adapter is made discoverable; the source adapter is powered on
+// but kept non-discoverable (it only initiates outbound connections).
 func (a *Adapter) Setup(ctx context.Context) error {
-	a.log.Info("configuring adapter", "adapter", a.cfg.AdapterName)
+	// Configure sink adapter (receives audio from phones).
+	a.log.Info("configuring sink adapter", "adapter", a.cfg.SinkAdapter)
 
-	adapter := a.conn.Object(bluezBus, a.path)
+	sinkObj := a.conn.Object(bluezBus, a.sinkPath)
 
-	// Power on the adapter.
-	if err := a.setProperty(adapter, bluezAdapter, "Powered", true); err != nil {
-		return fmt.Errorf("powering on adapter: %w", err)
+	if err := a.setProperty(sinkObj, bluezAdapter, "Powered", true); err != nil {
+		return fmt.Errorf("powering on sink adapter: %w", err)
+	}
+	if err := a.setProperty(sinkObj, bluezAdapter, "Discoverable", true); err != nil {
+		return fmt.Errorf("setting sink discoverable: %w", err)
+	}
+	if err := a.setProperty(sinkObj, bluezAdapter, "Alias", a.cfg.SinkName); err != nil {
+		return fmt.Errorf("setting sink alias: %w", err)
 	}
 
-	// Make discoverable so phones can find us.
-	if err := a.setProperty(adapter, bluezAdapter, "Discoverable", true); err != nil {
-		return fmt.Errorf("setting discoverable: %w", err)
+	a.log.Info("sink adapter configured", "name", a.cfg.SinkName, "discoverable", true)
+
+	// Configure source adapter if using dual-adapter mode.
+	if a.dualMode {
+		a.log.Info("configuring source adapter", "adapter", a.cfg.EffectiveSourceAdapter())
+
+		sourceObj := a.conn.Object(bluezBus, a.sourcePath)
+
+		if err := a.setProperty(sourceObj, bluezAdapter, "Powered", true); err != nil {
+			return fmt.Errorf("powering on source adapter: %w", err)
+		}
+		// Source adapter should not be discoverable — it only makes outbound connections.
+		if err := a.setProperty(sourceObj, bluezAdapter, "Discoverable", false); err != nil {
+			return fmt.Errorf("setting source non-discoverable: %w", err)
+		}
+
+		a.log.Info("source adapter configured", "discoverable", false)
 	}
 
-	// Set the friendly name.
-	if err := a.setProperty(adapter, bluezAdapter, "Alias", a.cfg.SinkName); err != nil {
-		return fmt.Errorf("setting adapter alias: %w", err)
-	}
-
-	a.log.Info("adapter configured", "name", a.cfg.SinkName, "discoverable", true)
 	return nil
 }
 
-// ConnectHeadphone attempts to connect to the target headphone (A2DP source role).
+// ConnectHeadphone attempts to connect to the target headphone via the source adapter.
 func (a *Adapter) ConnectHeadphone(ctx context.Context) error {
 	if a.cfg.TargetHeadphone == "" {
 		a.log.Warn("no target headphone configured, skipping outbound connection")
 		return nil
 	}
 
-	devicePath := a.macToDevicePath(a.cfg.TargetHeadphone)
+	devicePath := a.macToDevicePath(a.sourcePath, a.cfg.TargetHeadphone)
 	device := a.conn.Object(bluezBus, devicePath)
 
-	a.log.Info("connecting to headphone", "mac", a.cfg.TargetHeadphone)
+	a.log.Info("connecting to headphone",
+		"mac", a.cfg.TargetHeadphone,
+		"via_adapter", a.cfg.EffectiveSourceAdapter(),
+	)
 
 	call := device.CallWithContext(ctx, bluezDevice+".Connect", 0)
 	if call.Err != nil {
@@ -178,9 +218,9 @@ func (a *Adapter) setProperty(obj dbus.BusObject, iface, prop string, value inte
 	return call.Err
 }
 
-func (a *Adapter) macToDevicePath(mac string) dbus.ObjectPath {
+func (a *Adapter) macToDevicePath(adapterPath dbus.ObjectPath, mac string) dbus.ObjectPath {
 	escaped := strings.ReplaceAll(mac, ":", "_")
-	return dbus.ObjectPath(fmt.Sprintf("%s/dev_%s", a.path, escaped))
+	return dbus.ObjectPath(fmt.Sprintf("%s/dev_%s", adapterPath, escaped))
 }
 
 func (a *Adapter) handleSignal(sig *dbus.Signal, onAcquire func(TransportInfo), onRelease func()) {

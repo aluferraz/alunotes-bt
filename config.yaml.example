@@ -1,6 +1,11 @@
 bluetooth:
-  # HCI adapter name (usually hci0).
-  adapter_name: hci0
+  # HCI adapter for A2DP sink role (receives audio from phones).
+  # Usually the onboard Raspberry Pi adapter.
+  sink_adapter: hci0
+  # HCI adapter for A2DP source role (sends audio to headphones).
+  # Use a USB Bluetooth dongle (e.g. ASUS USB-BT500).
+  # Leave empty to use sink_adapter for both (single-adapter mode).
+  source_adapter: hci1
   # Name advertised to Bluetooth source devices (phones, laptops).
   sink_name: "AluNotes Bridge"
   # MAC address of the real headphone to forward audio to.
