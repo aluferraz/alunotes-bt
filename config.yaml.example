@@ -7,7 +7,10 @@ bluetooth:
   # Leave empty to use sink_adapter for both (single-adapter mode).
   source_adapter: hci1
   # Name advertised to Bluetooth source devices (phones, laptops).
-  sink_name: "AluNotes Bridge"
+  # Leave empty to auto-generate a unique name: "Alunotes-{id}".
+  sink_name: ""
+  # Path to persist the auto-generated device ID. Default: /var/lib/alunotes-bridge/device_id
+  # device_id_file: /var/lib/alunotes-bridge/device_id
   # MAC address of the real headphone to forward audio to.
   # Leave empty to run in record-only mode (no forwarding).
   target_headphone: ""
@@ -32,5 +35,9 @@ session:
 storage:
   # Root directory for recordings.
   # Structure: base_dir/YYYY-MM-DD/HH-MM-SS/recording.wav
-  base_dir: ./recordings
+  # Default stores inside the web app's public dir so Next.js can serve them.
+  base_dir: ./alunotes-bt-web/public/recordings
   format: wav
+
+# HTTP API server address for the web control plane.
+api_addr: ":8090"

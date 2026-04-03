@@ -213,6 +213,136 @@ func (a *Adapter) Close() error {
 	return a.conn.Close()
 }
 
+// AdapterStatus holds the current state of the Bluetooth adapter for the API.
+type AdapterStatus struct {
+	ConnectedSource   *DeviceInfo `json:"connectedSource"`
+	ConnectedHeadphone *DeviceInfo `json:"connectedHeadphone"`
+	PipelineActive    bool        `json:"pipelineActive"`
+}
+
+// DeviceInfo holds information about a connected Bluetooth device.
+type DeviceInfo struct {
+	Name      string `json:"name"`
+	MAC       string `json:"mac"`
+	Connected bool   `json:"connected"`
+}
+
+// Status returns the current status of the adapter and connected devices.
+func (a *Adapter) Status() AdapterStatus {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	status := AdapterStatus{}
+
+	if a.sinkDevice != "" {
+		info := a.getDeviceInfo(a.sinkDevice)
+		status.ConnectedSource = info
+	}
+	if a.sourceDevice != "" {
+		info := a.getDeviceInfo(a.sourceDevice)
+		status.ConnectedHeadphone = info
+		status.PipelineActive = true
+	}
+
+	return status
+}
+
+// ConnectedDevices returns a list of connected Bluetooth devices.
+func (a *Adapter) ConnectedDevices() []DeviceInfo {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	var devices []DeviceInfo
+	if a.sinkDevice != "" {
+		if info := a.getDeviceInfo(a.sinkDevice); info != nil {
+			devices = append(devices, *info)
+		}
+	}
+	if a.sourceDevice != "" {
+		if info := a.getDeviceInfo(a.sourceDevice); info != nil {
+			devices = append(devices, *info)
+		}
+	}
+	return devices
+}
+
+// ConnectDevice connects to a Bluetooth device by MAC address via the source adapter.
+func (a *Adapter) ConnectDevice(ctx context.Context, mac string) error {
+	devicePath := a.macToDevicePath(a.sourcePath, mac)
+	device := a.conn.Object(bluezBus, devicePath)
+
+	a.log.Info("connecting to device", "mac", mac)
+	call := device.CallWithContext(ctx, bluezDevice+".Connect", 0)
+	if call.Err != nil {
+		return fmt.Errorf("connecting to %s: %w", mac, call.Err)
+	}
+
+	a.mu.Lock()
+	a.sourceDevice = devicePath
+	a.mu.Unlock()
+
+	a.log.Info("device connected", "mac", mac)
+	return nil
+}
+
+// DisconnectDevice disconnects a Bluetooth device by MAC address.
+func (a *Adapter) DisconnectDevice(mac string) error {
+	devicePath := a.macToDevicePath(a.sourcePath, mac)
+	device := a.conn.Object(bluezBus, devicePath)
+
+	a.log.Info("disconnecting device", "mac", mac)
+	call := device.Call(bluezDevice+".Disconnect", 0)
+	if call.Err != nil {
+		return fmt.Errorf("disconnecting %s: %w", mac, call.Err)
+	}
+
+	a.mu.Lock()
+	if a.sourceDevice == devicePath {
+		a.sourceDevice = ""
+	}
+	if a.sinkDevice == devicePath {
+		a.sinkDevice = ""
+	}
+	a.mu.Unlock()
+
+	a.log.Info("device disconnected", "mac", mac)
+	return nil
+}
+
+// getDeviceInfo retrieves name and MAC for a device path from BlueZ.
+func (a *Adapter) getDeviceInfo(path dbus.ObjectPath) *DeviceInfo {
+	device := a.conn.Object(bluezBus, path)
+
+	nameVariant, err := device.GetProperty(bluezDevice + ".Name")
+	name := "Unknown"
+	if err == nil {
+		if n, ok := nameVariant.Value().(string); ok {
+			name = n
+		}
+	}
+
+	// Extract MAC from path: /org/bluez/hciX/dev_AA_BB_CC_DD_EE_FF
+	pathStr := string(path)
+	mac := ""
+	if idx := strings.LastIndex(pathStr, "dev_"); idx >= 0 {
+		mac = strings.ReplaceAll(pathStr[idx+4:], "_", ":")
+	}
+
+	connVariant, err := device.GetProperty(bluezDevice + ".Connected")
+	connected := false
+	if err == nil {
+		if c, ok := connVariant.Value().(bool); ok {
+			connected = c
+		}
+	}
+
+	return &DeviceInfo{
+		Name:      name,
+		MAC:       mac,
+		Connected: connected,
+	}
+}
+
 func (a *Adapter) setProperty(obj dbus.BusObject, iface, prop string, value interface{}) error {
 	call := obj.Call(dbusProperties+".Set", 0, iface, prop, dbus.MakeVariant(value))
 	return call.Err

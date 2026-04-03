@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/aluferraz/alunotes-bt/internal/deviceid"
 	"gopkg.in/yaml.v3"
 )
 
@@ -31,6 +32,9 @@ type BluetoothConfig struct {
 	TargetHeadphone string `yaml:"target_headphone"`
 	// AutoConnect attempts to reconnect to the target headphone on startup.
 	AutoConnect bool `yaml:"auto_connect"`
+	// DeviceIDFile is the path where the persistent device ID is stored.
+	// Defaults to /var/lib/alunotes-bridge/device_id.
+	DeviceIDFile string `yaml:"device_id_file"`
 }
 
 // EffectiveSourceAdapter returns the adapter to use for outbound connections.
@@ -78,7 +82,7 @@ func Default() Config {
 		Bluetooth: BluetoothConfig{
 			SinkAdapter:   "hci0",
 			SourceAdapter: "hci1",
-			SinkName:      "AluNotes Bridge",
+			SinkName:      "", // resolved to "Alunotes-{id}" by Load
 			AutoConnect:   true,
 		},
 		Audio: AudioConfig{
@@ -93,7 +97,7 @@ func Default() Config {
 			SilenceThreshold: 100,
 		},
 		Storage: StorageConfig{
-			BaseDir: "./recordings",
+			BaseDir: "./alunotes-bt-web/public/recordings",
 			Format:  "wav",
 		},
 	}
@@ -107,6 +111,9 @@ func Load(path string) (Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
+			if resolveErr := cfg.resolveSinkName(); resolveErr != nil {
+				return cfg, resolveErr
+			}
 			return cfg, nil
 		}
 		return cfg, fmt.Errorf("reading config file: %w", err)
@@ -116,7 +123,24 @@ func Load(path string) (Config, error) {
 		return cfg, fmt.Errorf("parsing config file: %w", err)
 	}
 
+	if err := cfg.resolveSinkName(); err != nil {
+		return cfg, err
+	}
+
 	return cfg, nil
+}
+
+// resolveSinkName generates a unique sink name if one is not explicitly configured.
+func (c *Config) resolveSinkName() error {
+	if c.Bluetooth.SinkName != "" {
+		return nil
+	}
+	id, err := deviceid.Resolve(c.Bluetooth.DeviceIDFile)
+	if err != nil {
+		return fmt.Errorf("resolving device id for sink name: %w", err)
+	}
+	c.Bluetooth.SinkName = "Alunotes-" + id
+	return nil
 }
 
 // BytesPerFrame returns the number of bytes in a single PCM frame.

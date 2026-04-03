@@ -12,7 +12,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
+	"net/http"
+
+	"github.com/aluferraz/alunotes-bt/internal/api"
 	"github.com/aluferraz/alunotes-bt/internal/audio"
 	"github.com/aluferraz/alunotes-bt/internal/bt"
 	"github.com/aluferraz/alunotes-bt/internal/config"
@@ -21,6 +25,7 @@ import (
 
 func main() {
 	configPath := flag.String("config", "config.yaml", "path to configuration file")
+	apiAddr := flag.String("api-addr", ":8090", "HTTP API listen address")
 	flag.Parse()
 
 	// Structured logger.
@@ -128,11 +133,26 @@ func main() {
 		}
 	}()
 
+	// Start API server for the web control plane.
+	apiServer := api.NewServer(cfg, adapter, sessMgr, log)
+	go func() {
+		if err := apiServer.Start(*apiAddr); err != nil && err != http.ErrServerClosed {
+			log.Error("API server failed", "error", err)
+		}
+	}()
+
 	log.Info("AluNotes bridge running — waiting for Bluetooth connections")
 
 	// Wait for shutdown signal.
 	<-ctx.Done()
 	log.Info("shutting down...")
 	close(done)
+
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer shutdownCancel()
+	if err := apiServer.Shutdown(shutdownCtx); err != nil {
+		log.Error("API server shutdown error", "error", err)
+	}
+
 	log.Info("goodbye")
 }
