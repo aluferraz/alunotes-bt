@@ -2,231 +2,425 @@ package bt
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"strings"
 	"time"
 
 	"github.com/godbus/dbus/v5"
+	"github.com/godbus/dbus/v5/introspect"
 )
 
 const (
 	bluezMediaPlayer = "org.bluez.MediaPlayer1"
+
+	// MPRIS D-Bus names and interfaces.
+	mprisBusName     = "org.mpris.MediaPlayer2.alunotes_bridge"
+	mprisObjPath     = "/org/mpris/MediaPlayer2"
+	mprisRoot        = "org.mpris.MediaPlayer2"
+	mprisPlayerIface = "org.mpris.MediaPlayer2.Player"
 )
 
-// AVRCPSync forwards AVRCP media commands from the headphone to the phone's
-// media player via BlueZ D-Bus. It also monitors volume changes on BlueZ
-// MediaTransport1 and keeps them in sync between both devices.
+// AVRCPSync keeps volume and media controls in sync between a phone and
+// headphone connected through the Pi.
 type AVRCPSync struct {
-	conn         *dbus.Conn
+	sysConn      *dbus.Conn // system bus (BlueZ)
+	phoneMAC     string
+	headphoneMAC string
+	phonePath    string // e.g. /org/bluez/hci0
+	hpPath       string // e.g. /org/bluez/hci1
 	phoneDevice  dbus.ObjectPath
-	phonePath    string // adapter prefix for phone (e.g. /org/bluez/hci0)
-	hpPath       string // adapter prefix for headphone (e.g. /org/bluez/hci1)
 	log          *slog.Logger
 }
 
-// NewAVRCPSync creates a new AVRCP synchronization service.
-func NewAVRCPSync(conn *dbus.Conn, phoneMAC, headphoneMAC string, sinkAdapterPath, sourceAdapterPath dbus.ObjectPath, log *slog.Logger) *AVRCPSync {
-	phoneEscaped := strings.ReplaceAll(phoneMAC, ":", "_")
-	phoneDev := dbus.ObjectPath(string(sinkAdapterPath) + "/dev_" + phoneEscaped)
+// mprisPlayer receives MPRIS method calls (Play, Pause, etc.) from the
+// session bus and forwards them to the phone's BlueZ MediaPlayer1.
+type mprisPlayer struct {
+	sync *AVRCPSync
+	log  *slog.Logger
+}
 
+// mprisRoot implements the org.mpris.MediaPlayer2 base interface.
+type mprisRootObj struct{}
+
+func NewAVRCPSync(conn *dbus.Conn, phoneMAC, headphoneMAC string, sinkPath, sourcePath dbus.ObjectPath, log *slog.Logger) *AVRCPSync {
+	phoneEscaped := strings.ReplaceAll(phoneMAC, ":", "_")
 	return &AVRCPSync{
-		conn:        conn,
-		phoneDevice: phoneDev,
-		phonePath:   string(sinkAdapterPath),
-		hpPath:      string(sourceAdapterPath),
-		log:         log.With("component", "bt.avrcp"),
+		sysConn:      conn,
+		phoneMAC:     phoneMAC,
+		headphoneMAC: headphoneMAC,
+		phonePath:    string(sinkPath),
+		hpPath:       string(sourcePath),
+		phoneDevice:  dbus.ObjectPath(string(sinkPath) + "/dev_" + phoneEscaped),
+		log:          log.With("component", "bt.avrcp"),
 	}
 }
 
-// Run watches for AVRCP events from the headphone and forwards them to the
-// phone. Also syncs BlueZ transport volumes. Blocks until ctx is cancelled.
 func (s *AVRCPSync) Run(ctx context.Context) {
-	s.log.Info("starting AVRCP sync", "phoneDevice", s.phoneDevice)
+	s.log.Info("starting AVRCP sync",
+		"phoneDevice", s.phoneDevice,
+		"phonePath", s.phonePath,
+		"hpPath", s.hpPath,
+	)
 
-	// Subscribe to BlueZ signals for media events.
+	// Register MPRIS player on the session bus so PipeWire/mpris-proxy
+	// routes headphone AVRCP commands to us.
+	if err := s.registerMPRIS(); err != nil {
+		s.log.Error("failed to register MPRIS player", "error", err)
+	} else {
+		s.log.Info("MPRIS player registered on session bus", "name", mprisBusName)
+	}
+
+	// Watch BlueZ system bus for volume changes.
 	matchRule := "type='signal',sender='org.bluez',interface='org.freedesktop.DBus.Properties',member='PropertiesChanged'"
-	s.conn.BusObject().Call("org.freedesktop.DBus.AddMatch", 0, matchRule)
+	s.sysConn.BusObject().Call("org.freedesktop.DBus.AddMatch", 0, matchRule)
 
-	sigCh := make(chan *dbus.Signal, 32)
-	s.conn.Signal(sigCh)
-	defer s.conn.RemoveSignal(sigCh)
+	sigCh := make(chan *dbus.Signal, 64)
+	s.sysConn.Signal(sigCh)
+	defer s.sysConn.RemoveSignal(sigCh)
 
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case sig := <-sigCh:
-			s.handleSignal(sig)
+			s.handleVolumeSignal(sig)
 		}
 	}
 }
 
-func (s *AVRCPSync) handleSignal(sig *dbus.Signal) {
+// registerMPRIS creates an MPRIS MediaPlayer2 on the session D-Bus.
+// When the headphone sends AVRCP play/pause/next, PipeWire routes the
+// command to the active MPRIS player — which is us.
+func (s *AVRCPSync) registerMPRIS() error {
+	sessionConn, err := dbus.SessionBus()
+	if err != nil {
+		return err
+	}
+
+	player := &mprisPlayer{sync: s, log: s.log}
+	root := &mprisRootObj{}
+
+	// Export the Player interface.
+	if err := sessionConn.Export(player, mprisObjPath, mprisPlayerIface); err != nil {
+		return err
+	}
+
+	// Export the root MediaPlayer2 interface.
+	if err := sessionConn.Export(root, mprisObjPath, mprisRoot); err != nil {
+		return err
+	}
+
+	// Export properties.
+	props := &mprisProps{
+		rootProps: map[string]dbus.Variant{
+			"CanQuit":             dbus.MakeVariant(false),
+			"CanRaise":           dbus.MakeVariant(false),
+			"HasTrackList":       dbus.MakeVariant(false),
+			"Identity":           dbus.MakeVariant("AluNotes Bridge"),
+			"SupportedUriSchemes": dbus.MakeVariant([]string{}),
+			"SupportedMimeTypes":  dbus.MakeVariant([]string{}),
+		},
+		playerProps: map[string]dbus.Variant{
+			"PlaybackStatus": dbus.MakeVariant("Paused"),
+			"LoopStatus":     dbus.MakeVariant("None"),
+			"Rate":           dbus.MakeVariant(1.0),
+			"Shuffle":        dbus.MakeVariant(false),
+			"Volume":         dbus.MakeVariant(1.0),
+			"Position":       dbus.MakeVariant(int64(0)),
+			"MinimumRate":    dbus.MakeVariant(1.0),
+			"MaximumRate":    dbus.MakeVariant(1.0),
+			"CanGoNext":      dbus.MakeVariant(true),
+			"CanGoPrevious":  dbus.MakeVariant(true),
+			"CanPlay":        dbus.MakeVariant(true),
+			"CanPause":       dbus.MakeVariant(true),
+			"CanSeek":        dbus.MakeVariant(false),
+			"CanControl":     dbus.MakeVariant(true),
+			"Metadata": dbus.MakeVariant(map[string]dbus.Variant{
+				"mpris:trackid": dbus.MakeVariant(dbus.ObjectPath("/org/mpris/MediaPlayer2/Track/0")),
+			}),
+		},
+	}
+	if err := sessionConn.Export(props, mprisObjPath, "org.freedesktop.DBus.Properties"); err != nil {
+		return err
+	}
+
+	// Export introspection.
+	node := &introspect.Node{
+		Name: mprisObjPath,
+		Interfaces: []introspect.Interface{
+			introspect.IntrospectData,
+			{
+				Name: mprisRoot,
+				Methods: []introspect.Method{
+					{Name: "Raise"},
+					{Name: "Quit"},
+				},
+			},
+			{
+				Name: mprisPlayerIface,
+				Methods: []introspect.Method{
+					{Name: "Next"},
+					{Name: "Previous"},
+					{Name: "Pause"},
+					{Name: "PlayPause"},
+					{Name: "Stop"},
+					{Name: "Play"},
+					{Name: "Seek", Args: []introspect.Arg{{Name: "Offset", Type: "x", Direction: "in"}}},
+					{Name: "SetPosition", Args: []introspect.Arg{
+						{Name: "TrackId", Type: "o", Direction: "in"},
+						{Name: "Position", Type: "x", Direction: "in"},
+					}},
+					{Name: "OpenUri", Args: []introspect.Arg{{Name: "Uri", Type: "s", Direction: "in"}}},
+				},
+			},
+		},
+	}
+	if err := sessionConn.Export(introspect.NewIntrospectable(node), mprisObjPath, "org.freedesktop.DBus.Introspectable"); err != nil {
+		return err
+	}
+
+	// Claim the MPRIS bus name.
+	reply, err := sessionConn.RequestName(mprisBusName, dbus.NameFlagDoNotQueue)
+	if err != nil {
+		return err
+	}
+	if reply != dbus.RequestNameReplyPrimaryOwner {
+		return dbus.ErrMsgNoObject
+	}
+
+	return nil
+}
+
+// forwardToPhone calls a method on the phone's BlueZ MediaPlayer1.
+func (s *AVRCPSync) forwardToPhone(method string) {
+	playerPath := s.findPhonePlayer()
+	if playerPath == "" {
+		s.log.Warn("no phone player found", "method", method)
+		return
+	}
+
+	player := s.sysConn.Object(bluezBus, dbus.ObjectPath(playerPath))
+	call := player.Call(bluezMediaPlayer+"."+method, 0)
+	if call.Err != nil {
+		s.log.Error("failed to forward to phone", "method", method, "error", call.Err)
+	} else {
+		s.log.Info("forwarded to phone", "method", method)
+	}
+}
+
+func (s *AVRCPSync) findPhonePlayer() string {
+	objManager := s.sysConn.Object(bluezBus, "/")
+	var managed map[dbus.ObjectPath]map[string]map[string]dbus.Variant
+	if err := objManager.Call(dbusObjectManager+".GetManagedObjects", 0).Store(&managed); err != nil {
+		return ""
+	}
+	prefix := string(s.phoneDevice) + "/"
+	for path, ifaces := range managed {
+		if strings.HasPrefix(string(path), prefix) {
+			if _, ok := ifaces[bluezMediaPlayer]; ok {
+				return string(path)
+			}
+		}
+	}
+	return ""
+}
+
+// MPRIS Player method implementations — called from session bus.
+
+func (p *mprisPlayer) Play() *dbus.Error {
+	// AirPods sends Play for both play and pause actions.
+	// Toggle based on the phone's actual state.
+	p.log.Info("MPRIS Play received from headphone")
+	p.toggle()
+	return nil
+}
+
+func (p *mprisPlayer) Pause() *dbus.Error {
+	p.log.Info("MPRIS Pause received from headphone")
+	p.sync.forwardToPhone("Pause")
+	return nil
+}
+
+func (p *mprisPlayer) PlayPause() *dbus.Error {
+	p.log.Info("MPRIS PlayPause received from headphone")
+	p.toggle()
+	return nil
+}
+
+func (p *mprisPlayer) toggle() {
+	playerPath := p.sync.findPhonePlayer()
+	if playerPath != "" {
+		player := p.sync.sysConn.Object(bluezBus, dbus.ObjectPath(playerPath))
+		statusVar, err := player.GetProperty(bluezMediaPlayer + ".Status")
+		if err == nil {
+			if status, ok := statusVar.Value().(string); ok {
+				if status == "playing" {
+					p.sync.forwardToPhone("Pause")
+				} else {
+					p.sync.forwardToPhone("Play")
+				}
+				return
+			}
+		}
+	}
+	p.sync.forwardToPhone("Play")
+}
+
+func (p *mprisPlayer) Next() *dbus.Error {
+	p.log.Info("MPRIS Next received from headphone")
+	p.sync.forwardToPhone("Next")
+	return nil
+}
+
+func (p *mprisPlayer) Previous() *dbus.Error {
+	p.log.Info("MPRIS Previous received from headphone")
+	p.sync.forwardToPhone("Previous")
+	return nil
+}
+
+func (p *mprisPlayer) Stop() *dbus.Error {
+	p.log.Info("MPRIS Stop received from headphone")
+	p.sync.forwardToPhone("Stop")
+	return nil
+}
+
+func (p *mprisPlayer) Seek(offset int64) *dbus.Error {
+	return nil
+}
+
+func (p *mprisPlayer) SetPosition(trackId dbus.ObjectPath, position int64) *dbus.Error {
+	return nil
+}
+
+func (p *mprisPlayer) OpenUri(uri string) *dbus.Error {
+	return nil
+}
+
+// MPRIS root methods.
+func (r *mprisRootObj) Raise() *dbus.Error { return nil }
+func (r *mprisRootObj) Quit() *dbus.Error  { return nil }
+
+// Volume sync via BlueZ transports.
+
+func (s *AVRCPSync) handleVolumeSignal(sig *dbus.Signal) {
 	if sig == nil || sig.Name != "org.freedesktop.DBus.Properties.PropertiesChanged" {
 		return
 	}
 	if len(sig.Body) < 2 {
 		return
 	}
-
 	iface, _ := sig.Body[0].(string)
+	if iface != bluezMediaTrans {
+		return
+	}
 	changed, _ := sig.Body[1].(map[string]dbus.Variant)
-	path := string(sig.Path)
-
-	switch iface {
-	case bluezMediaTrans:
-		// Volume change on a transport.
-		if volVar, ok := changed["Volume"]; ok {
-			vol, ok := volVar.Value().(uint16)
-			if !ok {
-				return
-			}
-			s.handleVolumeChange(path, vol)
-		}
-
-	case bluezMediaPlayer:
-		// Media player status change (from phone).
-		if statusVar, ok := changed["Status"]; ok {
-			status, _ := statusVar.Value().(string)
-			s.log.Debug("phone player status changed", "status", status)
+	if volVar, ok := changed["Volume"]; ok {
+		if vol, ok := volVar.Value().(uint16); ok {
+			s.handleVolumeChange(string(sig.Path), vol)
 		}
 	}
 }
 
-// handleVolumeChange syncs volume between phone and headphone transports.
-// BlueZ A2DP volume is 0-127.
-func (s *AVRCPSync) handleVolumeChange(transportPath string, volume uint16) {
-	isPhone := strings.HasPrefix(transportPath, s.phonePath)
-	isHP := strings.HasPrefix(transportPath, s.hpPath)
-
+func (s *AVRCPSync) handleVolumeChange(path string, volume uint16) {
+	isPhone := strings.HasPrefix(path, s.phonePath)
+	isHP := strings.HasPrefix(path, s.hpPath)
 	if !isPhone && !isHP {
 		return
 	}
 
-	direction := "phone→headphone"
 	targetPrefix := s.hpPath
 	if isHP {
-		direction = "headphone→phone"
 		targetPrefix = s.phonePath
 	}
 
-	s.log.Info("volume change detected",
-		"direction", direction,
-		"volume", volume,
-		"path", transportPath,
-	)
-
-	// Find all transports under the target adapter and set their volume.
 	s.setTransportVolumes(targetPrefix, volume)
 }
 
-// setTransportVolumes sets the Volume property on all MediaTransport1 objects
-// under the given adapter path prefix.
 func (s *AVRCPSync) setTransportVolumes(adapterPrefix string, volume uint16) {
-	objManager := s.conn.Object(bluezBus, "/")
-	var managedObjects map[dbus.ObjectPath]map[string]map[string]dbus.Variant
-
-	if err := objManager.Call(dbusObjectManager+".GetManagedObjects", 0).Store(&managedObjects); err != nil {
+	objManager := s.sysConn.Object(bluezBus, "/")
+	var managed map[dbus.ObjectPath]map[string]map[string]dbus.Variant
+	if err := objManager.Call(dbusObjectManager+".GetManagedObjects", 0).Store(&managed); err != nil {
 		return
 	}
-
-	for path, ifaces := range managedObjects {
-		pathStr := string(path)
-		if !strings.HasPrefix(pathStr, adapterPrefix) {
+	for path, ifaces := range managed {
+		if !strings.HasPrefix(string(path), adapterPrefix) {
 			continue
 		}
 		if _, ok := ifaces[bluezMediaTrans]; !ok {
 			continue
 		}
-
-		transport := s.conn.Object(bluezBus, path)
-		call := transport.Call(dbusProperties+".Set", 0,
+		transport := s.sysConn.Object(bluezBus, path)
+		transport.Call(dbusProperties+".Set", 0,
 			bluezMediaTrans, "Volume", dbus.MakeVariant(volume))
-		if call.Err != nil {
-			s.log.Debug("failed to set transport volume", "path", path, "error", call.Err)
-		} else {
-			s.log.Debug("set transport volume", "path", path, "volume", volume)
-		}
 	}
 }
 
-// ForwardCommand sends an AVRCP command to the phone's media player.
-// command is one of: "Play", "Pause", "Next", "Previous", "Stop".
-func (s *AVRCPSync) ForwardCommand(command string) error {
-	// Find the phone's MediaPlayer1 object (usually at .../player0).
-	playerPath := s.findPhonePlayer()
-	if playerPath == "" {
-		return fmt.Errorf("no media player found on phone device")
-	}
-
-	player := s.conn.Object(bluezBus, dbus.ObjectPath(playerPath))
-	call := player.Call(bluezMediaPlayer+"."+command, 0)
-	if call.Err != nil {
-		return call.Err
-	}
-
-	s.log.Info("forwarded AVRCP command", "command", command, "player", playerPath)
-	return nil
-}
-
-// findPhonePlayer looks for a MediaPlayer1 object under the phone's device.
-func (s *AVRCPSync) findPhonePlayer() string {
-	objManager := s.conn.Object(bluezBus, "/")
-	var managedObjects map[dbus.ObjectPath]map[string]map[string]dbus.Variant
-
-	if err := objManager.Call(dbusObjectManager+".GetManagedObjects", 0).Store(&managedObjects); err != nil {
-		return ""
-	}
-
-	phonePrefix := string(s.phoneDevice) + "/"
-	for path, ifaces := range managedObjects {
-		pathStr := string(path)
-		if strings.HasPrefix(pathStr, phonePrefix) {
-			if _, ok := ifaces[bluezMediaPlayer]; ok {
-				return pathStr
-			}
-		}
-	}
-
-	return ""
-}
-
-// InitialVolumeSync reads the phone's transport volume and applies it to
-// the headphone. Call this once both devices are connected.
 func (s *AVRCPSync) InitialVolumeSync() {
-	// Small delay to let transports settle.
 	time.Sleep(2 * time.Second)
-
 	phoneVol := s.getTransportVolume(s.phonePath)
-	if phoneVol >= 0 {
+	if phoneVol > 0 {
 		s.log.Info("initial volume sync", "phoneVolume", phoneVol)
 		s.setTransportVolumes(s.hpPath, phoneVol)
 	}
 }
 
-// getTransportVolume reads the Volume from the first MediaTransport1 under an adapter.
-func (s *AVRCPSync) getTransportVolume(adapterPrefix string) uint16 {
-	objManager := s.conn.Object(bluezBus, "/")
-	var managedObjects map[dbus.ObjectPath]map[string]map[string]dbus.Variant
-
-	if err := objManager.Call(dbusObjectManager+".GetManagedObjects", 0).Store(&managedObjects); err != nil {
+func (s *AVRCPSync) getTransportVolume(prefix string) uint16 {
+	objManager := s.sysConn.Object(bluezBus, "/")
+	var managed map[dbus.ObjectPath]map[string]map[string]dbus.Variant
+	if err := objManager.Call(dbusObjectManager+".GetManagedObjects", 0).Store(&managed); err != nil {
 		return 0
 	}
-
-	for path, ifaces := range managedObjects {
-		pathStr := string(path)
-		if !strings.HasPrefix(pathStr, adapterPrefix) {
+	for path, ifaces := range managed {
+		if !strings.HasPrefix(string(path), prefix) {
 			continue
 		}
-		if transProps, ok := ifaces[bluezMediaTrans]; ok {
-			if volVar, ok := transProps["Volume"]; ok {
-				if vol, ok := volVar.Value().(uint16); ok {
+		if props, ok := ifaces[bluezMediaTrans]; ok {
+			if v, ok := props["Volume"]; ok {
+				if vol, ok := v.Value().(uint16); ok {
 					return vol
 				}
 			}
 		}
 	}
-
 	return 0
+}
+
+// mprisProps implements org.freedesktop.DBus.Properties for the MPRIS player.
+type mprisProps struct {
+	rootProps   map[string]dbus.Variant
+	playerProps map[string]dbus.Variant
+}
+
+func (p *mprisProps) Get(iface, prop string) (dbus.Variant, *dbus.Error) {
+	switch iface {
+	case mprisRoot:
+		if v, ok := p.rootProps[prop]; ok {
+			return v, nil
+		}
+	case mprisPlayerIface:
+		if v, ok := p.playerProps[prop]; ok {
+			return v, nil
+		}
+	}
+	return dbus.Variant{}, nil
+}
+
+func (p *mprisProps) GetAll(iface string) (map[string]dbus.Variant, *dbus.Error) {
+	switch iface {
+	case mprisRoot:
+		return p.rootProps, nil
+	case mprisPlayerIface:
+		return p.playerProps, nil
+	}
+	return map[string]dbus.Variant{}, nil
+}
+
+func (p *mprisProps) Set(iface, prop string, value dbus.Variant) *dbus.Error {
+	switch iface {
+	case mprisRoot:
+		p.rootProps[prop] = value
+	case mprisPlayerIface:
+		p.playerProps[prop] = value
+	}
+	return nil
 }
