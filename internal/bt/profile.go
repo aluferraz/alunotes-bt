@@ -9,20 +9,26 @@ import (
 )
 
 const (
+	// A2DP UUIDs used by both profile.go and endpoint.go.
 	a2dpSinkUUID   = "0000110b-0000-1000-8000-00805f9b34fb"
 	a2dpSourceUUID = "0000110a-0000-1000-8000-00805f9b34fb"
 	profileManager = "org.bluez.ProfileManager1"
 	profilePath    = "/org/bluez/alunotes"
 )
 
-// A2DPProfile implements the BlueZ Profile1 interface for A2DP sink registration.
+// A2DPProfile implements the BlueZ Profile1 interface.
+// Note: A2DP codec negotiation is handled by MediaEndpoint1 (see endpoint.go).
+// This Profile1 registration is kept only as a connection lifecycle handler —
+// it does NOT register with the A2DP sink UUID, which would conflict with
+// the MediaEndpoint1 registration.
 type A2DPProfile struct {
 	log *slog.Logger
 }
 
-// RegisterA2DPSink registers our application as an A2DP sink profile with BlueZ.
-// This allows source devices (phones) to discover and connect to us for audio streaming.
-func RegisterA2DPSink(conn *dbus.Conn, logger *slog.Logger) error {
+// RegisterProfile registers our application profile with BlueZ.
+// This registers as a generic audio handler — actual A2DP media negotiation
+// is handled by the MediaEndpoint1 objects registered in endpoint.go.
+func RegisterProfile(conn *dbus.Conn, logger *slog.Logger) error {
 	profile := &A2DPProfile{log: logger.With("component", "bt.profile")}
 
 	// Export our profile object on D-Bus.
@@ -55,20 +61,7 @@ func RegisterA2DPSink(conn *dbus.Conn, logger *slog.Logger) error {
 		return fmt.Errorf("exporting introspectable: %w", err)
 	}
 
-	// Register the profile with BlueZ's ProfileManager.
-	manager := conn.Object(bluezBus, "/org/bluez")
-	options := map[string]dbus.Variant{
-		"Name":    dbus.MakeVariant("AluNotes A2DP Sink"),
-		"Role":    dbus.MakeVariant("server"),
-		"Channel": dbus.MakeVariant(uint16(0)),
-	}
-
-	call := manager.Call(profileManager+".RegisterProfile", 0, dbus.ObjectPath(profilePath), a2dpSinkUUID, options)
-	if call.Err != nil {
-		return fmt.Errorf("registering A2DP sink profile: %w", call.Err)
-	}
-
-	profile.log.Info("A2DP sink profile registered")
+	profile.log.Info("profile object exported (A2DP handled by MediaEndpoint1)")
 	return nil
 }
 

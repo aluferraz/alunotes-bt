@@ -39,7 +39,9 @@ func NewServer(cfg config.Config, adapter *bt.Adapter, sessMgr *session.Manager,
 	mux.HandleFunc("GET /api/v1/bluetooth/devices", s.handleDevices)
 	mux.HandleFunc("POST /api/v1/bluetooth/connect", s.handleConnect)
 	mux.HandleFunc("POST /api/v1/bluetooth/disconnect", s.handleDisconnect)
+	mux.HandleFunc("GET /api/v1/bluetooth/scan", s.handleScan)
 	mux.HandleFunc("GET /api/v1/config", s.handleGetConfig)
+	mux.HandleFunc("GET /health", s.handleHealth)
 
 	s.mux = mux
 	return s
@@ -95,15 +97,16 @@ func (s *Server) handleStatus(w http.ResponseWriter, _ *http.Request) {
 	currentSession := s.sessMgr.Current()
 
 	resp := map[string]interface{}{
-		"bridgeRunning":     true,
-		"sinkAdapter":       s.cfg.Bluetooth.SinkAdapter,
-		"sourceAdapter":     s.cfg.Bluetooth.EffectiveSourceAdapter(),
-		"dualMode":          s.cfg.Bluetooth.SinkAdapter != s.cfg.Bluetooth.EffectiveSourceAdapter(),
-		"sinkName":          s.cfg.Bluetooth.SinkName,
-		"connectedSource":   status.ConnectedSource,
+		"bridgeRunning":      true,
+		"discoverable":       s.adapter.Discoverable(),
+		"sinkAdapter":        s.cfg.Bluetooth.SinkAdapter,
+		"sourceAdapter":      s.cfg.Bluetooth.EffectiveSourceAdapter(),
+		"dualMode":           s.cfg.Bluetooth.SinkAdapter != s.cfg.Bluetooth.EffectiveSourceAdapter(),
+		"sinkName":           s.cfg.Bluetooth.SinkName,
+		"connectedSource":    status.ConnectedSource,
 		"connectedHeadphone": status.ConnectedHeadphone,
-		"pipelineActive":    status.PipelineActive,
-		"activeSession":     nil,
+		"pipelineActive":     status.PipelineActive,
+		"activeSession":      nil,
 	}
 
 	if currentSession != nil {
@@ -179,7 +182,24 @@ func (s *Server) handleDisconnect(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// GET /api/v1/bluetooth/scan
+func (s *Server) handleScan(w http.ResponseWriter, r *http.Request) {
+	devices, err := s.adapter.ScanDevices(r.Context())
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, fmt.Sprintf("scan failed: %v", err))
+		return
+	}
+	writeJSON(w, http.StatusOK, devices)
+}
+
 // GET /api/v1/config
 func (s *Server) handleGetConfig(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, s.cfg)
+}
+
+// GET /health
+func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("ok"))
 }

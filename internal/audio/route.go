@@ -28,11 +28,12 @@ func Route(in <-chan Buffer, forward, writeDisk chan<- Buffer, done <-chan struc
 			}
 			copy(diskBuf.Data, buf.Data[:buf.Len])
 
-			// Send to forwarder first (latency-critical path).
+			// Send to forwarder (best-effort; drop if forwarder falls behind
+			// to avoid blocking the entire pipeline including the disk path).
 			select {
 			case forward <- buf:
-			case <-done:
-				return
+			default:
+				log.Warn("forward path falling behind, dropping buffer")
 			}
 
 			// Send to disk writer (best-effort; drop if writer falls behind).

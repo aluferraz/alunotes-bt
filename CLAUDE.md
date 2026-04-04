@@ -9,15 +9,21 @@ AluNotes Bridge — a Bluetooth A2DP audio proxy for Raspberry Pi 5. It appears 
 ## Build & Dev Commands
 
 ```bash
-make build          # Build for host platform (runs go mod tidy first)
-make build-pi       # Cross-compile for RPi 5 (GOOS=linux GOARCH=arm64)
-make run            # Build and run with sudo (requires root for BlueZ)
-make test           # go test ./...
-make lint           # golangci-lint run ./...
-make clean          # Remove bin/
+make setup-permissions  # One-time: install D-Bus policy for non-root BlueZ access
+make build              # Build for host platform (sets BT capabilities via setcap)
+make build-pi           # Cross-compile for RPi 5 (GOOS=linux GOARCH=arm64)
+make run                # Build and run
+make run-all            # Build and run bridge (watch mode) + web app together
+make test               # go test ./...
+make lint               # golangci-lint run ./...
+make clean              # Remove bin/
 ```
 
 Binary: `bin/alunotes-bridge -config config.yaml`
+
+### First-time setup
+
+Run `make setup-permissions` once to install the D-Bus policy (`deploy/dbus-alunotes.conf`) that allows non-root access to BlueZ. The build step uses `sudo setcap` to grant `cap_net_raw,cap_net_admin` to the binary — `sudo` is only needed for that, the bridge itself runs unprivileged.
 
 ## Dependencies
 
@@ -45,7 +51,7 @@ Pipeline is started dynamically when a BlueZ transport is acquired (D-Bus signal
 - Dual-adapter mode is the primary use case; single-adapter is a fallback (record-only, no forwarding)
 - Forward channel uses blocking sends (latency-critical); disk channel drops buffers if writer falls behind
 - Config uses `EffectiveSourceAdapter()` to resolve single vs dual adapter mode
-- Requires root/BT capabilities — `make run` uses sudo
+- Runs unprivileged with Linux capabilities (`cap_net_raw,cap_net_admin`) + D-Bus policy — no root required
 - HTTP API server on `:8090` (configurable via `-api-addr` flag) serves bridge status, device connect/disconnect, and config endpoints for the web control plane
 
 ## Web App (`alunotes-bt-web/`)

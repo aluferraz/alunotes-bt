@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { Card as GlassCard } from "~/components/ui/glass/card";
 import { Badge as GlassBadge } from "~/components/ui/glass/badge";
+import { Button } from "~/components/ui/glass/button";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Bluetooth, Headphones, Smartphone } from "lucide-react";
+import { Bluetooth, Headphones, Plus, Smartphone } from "lucide-react";
 
 interface DeviceStatus {
   name: string;
@@ -82,9 +84,16 @@ function DeviceRow({
           </div>
         )}
       </div>
-      <GlassBadge variant={device?.connected ? "default" : "secondary"}>
-        {device?.connected ? "Connected" : "Disconnected"}
-      </GlassBadge>
+      {device ? (
+        <GlassBadge variant={device.connected ? "default" : "secondary"}>
+          {device.connected ? "Connected" : "Disconnected"}
+        </GlassBadge>
+      ) : (
+        <Button variant="outline" size="sm" render={<Link href="/devices" />}>
+          <Plus className="mr-1 h-3.5 w-3.5" />
+          Add
+        </Button>
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { protectedProcedure } from "~/server/api/orpc";
+import { publicProcedure } from "~/server/api/orpc";
 import { env } from "~/env";
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -71,12 +71,12 @@ function writeConfig(config: BridgeConfig): void {
 
 export const settingsRouter = {
   // Read current bridge configuration from YAML
-  get: protectedProcedure.handler(async () => {
+  get: publicProcedure.handler(async () => {
     return readConfig();
   }),
 
   // Update bridge configuration (writes to YAML file)
-  update: protectedProcedure
+  update: publicProcedure
     .input(
       z.object({
         bluetooth: z

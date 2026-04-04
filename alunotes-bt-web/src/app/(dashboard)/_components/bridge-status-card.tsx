@@ -8,6 +8,7 @@ import { Radio, Wifi } from "lucide-react";
 
 interface BridgeStatus {
   bridgeRunning: boolean;
+  discoverable: boolean;
   sinkAdapter: string;
   sourceAdapter: string;
   dualMode: boolean;
@@ -54,8 +55,12 @@ export function BridgeStatusCard({
         {status?.sinkName && (
           <div className="flex items-center gap-2 text-sm">
             <Wifi className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-muted-foreground">Advertising as</span>
-            <span className="font-mono text-xs">{status.sinkName}</span>
+            <span className="text-muted-foreground">
+              {status.discoverable ? "Advertising as" : "Not advertising"}
+            </span>
+            {status.discoverable && (
+              <span className="font-mono text-xs">{status.sinkName}</span>
+            )}
           </div>
         )}
         {status?.sinkAdapter && (

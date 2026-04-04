@@ -11,25 +11,27 @@ import { Label } from "~/components/ui/label";
 import { AudioLines } from "lucide-react";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleEmailSignIn = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      const result = await authClient.signIn.email({
+      const result = await authClient.signUp.email({
+        name,
         email,
         password,
       });
       if (result.error) {
-        setError(result.error.message ?? "Sign in failed");
+        setError(result.error.message ?? "Sign up failed");
       } else {
         router.push("/");
       }
@@ -62,9 +64,9 @@ export default function SignInPage() {
 
         <GlassCard>
           <CardHeader>
-            <CardTitle>Sign In</CardTitle>
+            <CardTitle>Create Account</CardTitle>
             <CardDescription>
-              Sign in to access the bridge control plane
+              Create an account to access the bridge control plane
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -105,7 +107,18 @@ export default function SignInPage() {
               </div>
             </div>
 
-            <form onSubmit={handleEmailSignIn} className="space-y-4">
+            <form onSubmit={handleSignUp} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -125,20 +138,21 @@ export default function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  minLength={8}
                 />
               </div>
               {error && (
                 <p className="text-sm text-destructive">{error}</p>
               )}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link href="/auth/signup" className="text-primary hover:underline">
-                Create one
+              Already have an account?{" "}
+              <Link href="/auth/signin" className="text-primary hover:underline">
+                Sign in
               </Link>
             </p>
           </CardContent>

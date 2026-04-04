@@ -28,6 +28,14 @@ export function AppHeader() {
     <header className="flex h-14 items-center gap-4 border-b border-border/40 px-4">
       <SidebarTrigger />
       <div className="flex-1" />
+      {!session?.user && (
+        <Link
+          href="/auth/signin"
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          Sign in
+        </Link>
+      )}
       {session?.user && (
         <DropdownMenu>
           <DropdownMenuTrigger

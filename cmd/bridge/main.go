@@ -1,8 +1,8 @@
 // Command bridge is the main entrypoint for the AluNotes Bluetooth audio bridge.
 //
 // It sets up the Bluetooth adapter as an A2DP sink, optionally connects to a
-// real headphone as an A2DP source, and runs a concurrent audio pipeline that
-// proxies audio through while saving it to disk.
+// real headphone as an A2DP source, and records audio via PipeWire.
+// PipeWire handles all A2DP codec negotiation/decode and audio routing.
 package main
 
 import (
@@ -11,6 +11,8 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -20,6 +22,8 @@ import (
 	"github.com/aluferraz/alunotes-bt/internal/audio"
 	"github.com/aluferraz/alunotes-bt/internal/bt"
 	"github.com/aluferraz/alunotes-bt/internal/config"
+	"github.com/aluferraz/alunotes-bt/internal/logging"
+	"github.com/aluferraz/alunotes-bt/internal/pw"
 	"github.com/aluferraz/alunotes-bt/internal/session"
 )
 
@@ -28,10 +32,16 @@ func main() {
 	apiAddr := flag.String("api-addr", ":8090", "HTTP API listen address")
 	flag.Parse()
 
-	// Structured logger.
-	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
+	// Structured logger with pretty console output and rotated JSON file.
+	logLevel := slog.LevelInfo
+	if os.Getenv("DEBUG") != "" {
+		logLevel = slog.LevelDebug
+	}
+	log := logging.Setup(logging.Options{
+		Level:   logLevel,
+		LogDir:  "logs",
+		LogFile: "bridge.log",
+	})
 	slog.SetDefault(log)
 
 	// Load configuration.
@@ -66,6 +76,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Register pairing agent so phones can pair without PIN prompts.
+	if err := bt.RegisterAgent(adapter.Conn(), log); err != nil {
+		log.Error("failed to register pairing agent", "error", err)
+		os.Exit(1)
+	}
+
 	// Connect to target headphone if configured.
 	if cfg.Bluetooth.AutoConnect && cfg.Bluetooth.TargetHeadphone != "" {
 		if err := adapter.ConnectHeadphone(ctx); err != nil {
@@ -76,13 +92,10 @@ func main() {
 	// Session manager.
 	sessMgr := session.NewManager(cfg.Session, cfg.Storage, log)
 
-	// Audio writer.
-	writer := audio.NewWriter(cfg.Audio, sessMgr, log)
-
-	// Done channel for goroutine lifecycle.
+	// Done channel for goroutine lifecycle (idle watcher, etc.)
 	done := make(chan struct{})
 
-	// Session end callback: log and prepare for next session.
+	// Session end callback.
 	sessMgr.OnSessionEnd(func(s *session.Session) {
 		log.Info("recording session completed", "id", s.ID, "dir", s.Dir)
 	})
@@ -90,43 +103,111 @@ func main() {
 	// Start idle watcher.
 	go sessMgr.RunIdleWatcher(done)
 
-	// Pipeline stages will be started when a transport is acquired.
-	var outboundFD int
+	// PipeWire-based audio pipeline.
+	// Instead of reading raw encoded data from BlueZ transport FDs,
+	// we let PipeWire handle A2DP codec negotiation/decode and read
+	// clean PCM from PipeWire. PipeWire also handles audio routing
+	// from the phone to the headphone.
+	var pipelineDone chan struct{}
+	var pipelineCancel context.CancelFunc
+	var pipelineMu sync.Mutex
 
+	pwCapture := audio.NewPipeWireCapture(sessMgr, log)
+
+	stopPipeline := func() {
+		pipelineMu.Lock()
+		defer pipelineMu.Unlock()
+		if pipelineCancel != nil {
+			pipelineCancel()
+			pipelineCancel = nil
+		}
+		if pipelineDone != nil {
+			close(pipelineDone)
+			pipelineDone = nil
+			log.Info("pipeline stopped")
+		}
+	}
+
+	// Extract MAC from a BlueZ device path like /org/bluez/hci0/dev_AA_BB_CC_DD_EE_FF
+	extractMAC := func(path string) string {
+		idx := strings.LastIndex(path, "dev_")
+		if idx < 0 {
+			return ""
+		}
+		mac := path[idx+4:]
+		// Remove any trailing path components (e.g. /fd0)
+		if slashIdx := strings.Index(mac, "/"); slashIdx > 0 {
+			mac = mac[:slashIdx]
+		}
+		return strings.ReplaceAll(mac, "_", ":")
+	}
+
+	// Track the current pipeline's source MAC to avoid restarting for the same device.
+	var currentSourceMAC string
+
+	// When a sink device connects (phone → Pi), start PipeWire capture for recording
+	// and link audio to the headphone if connected.
 	onTransportAcquire := func(info bt.TransportInfo) {
-		fd, readMTU, _, acquireErr := adapter.AcquireTransport(info.Path)
-		if acquireErr != nil {
-			log.Error("failed to acquire transport", "error", acquireErr)
+		if info.Role == "source" {
+			log.Info("source transport appeared", "path", info.Path)
 			return
 		}
 
-		log.Info("starting audio pipeline", "fd", fd, "mtu", readMTU)
-
-		bufSize := int(readMTU)
-		if bufSize == 0 {
-			bufSize = cfg.Audio.BytesPerBuffer()
+		// Sink transport = phone connected and streaming.
+		// DON'T acquire the transport — let PipeWire handle it.
+		sourceMAC := extractMAC(string(info.Path))
+		if sourceMAC == "" {
+			log.Error("could not extract MAC from transport path", "path", info.Path)
+			return
 		}
 
-		capturedCh := make(chan audio.Buffer, cfg.Audio.ChannelBuffer)
-		forwardCh := make(chan audio.Buffer, cfg.Audio.ChannelBuffer)
-		diskCh := make(chan audio.Buffer, cfg.Audio.ChannelBuffer)
+		// Debounce: skip if we already have a pipeline for this device.
+		pipelineMu.Lock()
+		if currentSourceMAC == sourceMAC && pipelineDone != nil {
+			pipelineMu.Unlock()
+			log.Debug("pipeline already running for this device, skipping", "mac", sourceMAC)
+			return
+		}
+		pipelineMu.Unlock()
 
-		go audio.Capture(fd, bufSize, capturedCh, done, log)
-		go audio.Route(capturedCh, forwardCh, diskCh, done, log)
-		go audio.Forward(outboundFD, forwardCh, done, log)
-		go writer.Run(diskCh, done)
+		// Stop any existing pipeline for a different device.
+		stopPipeline()
+
+		log.Info("phone connected, starting PipeWire pipeline", "mac", sourceMAC)
+
+		pipelineMu.Lock()
+		currentSourceMAC = sourceMAC
+		pipelineDone = make(chan struct{})
+		pipeDone := pipelineDone
+		var pipeCtx context.Context
+		pipeCtx, pipelineCancel = context.WithCancel(ctx)
+		pipelineMu.Unlock()
+
+		// Start PipeWire audio routing (phone → headphone) if headphone is connected.
+		if cfg.Bluetooth.TargetHeadphone != "" {
+			go func() {
+				if err := pw.LinkBluetooth(pipeCtx, sourceMAC, cfg.Bluetooth.TargetHeadphone, log); err != nil {
+					log.Warn("PipeWire link failed (headphone may not be connected yet)", "error", err)
+				}
+			}()
+		}
+
+		// Start PipeWire capture — pw-cat records directly to WAV.
+		go pwCapture.Run(pipeCtx, sourceMAC,
+			cfg.Audio.SampleRate, cfg.Audio.Channels, cfg.Audio.BitDepth,
+			pipeDone,
+		)
 	}
 
 	onTransportRelease := func() {
-		log.Info("transport released, pipeline will drain")
+		log.Info("transport released, stopping pipeline")
+		pipelineMu.Lock()
+		currentSourceMAC = ""
+		pipelineMu.Unlock()
+		stopPipeline()
 	}
 
-	// Attempt to store outbound FD if headphone is connected.
-	if cfg.Bluetooth.TargetHeadphone != "" {
-		_ = outboundFD // will be set when outbound transport is acquired
-	}
-
-	// Watch for transport events (blocking).
+	// Watch for transport events via D-Bus (still needed to detect connections).
 	go func() {
 		if watchErr := adapter.WatchTransports(ctx, onTransportAcquire, onTransportRelease); watchErr != nil {
 			log.Info("transport watcher stopped", "reason", watchErr)
@@ -146,12 +227,18 @@ func main() {
 	// Wait for shutdown signal.
 	<-ctx.Done()
 	log.Info("shutting down...")
+	stopPipeline()
 	close(done)
 
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdownCancel()
 	if err := apiServer.Shutdown(shutdownCtx); err != nil {
 		log.Error("API server shutdown error", "error", err)
+	}
+
+	// Make adapter non-discoverable so phones can't connect after shutdown.
+	if err := adapter.Teardown(); err != nil {
+		log.Error("adapter teardown error", "error", err)
 	}
 
 	log.Info("goodbye")

@@ -8,7 +8,10 @@ import { ActiveSessionCard } from "./_components/active-session-card";
 import { RecentRecordingsCard } from "./_components/recent-recordings-card";
 
 export default function DashboardPage() {
-  const statusQuery = useQuery(orpc.bluetooth.status.queryOptions());
+  const statusQuery = useQuery({
+    ...orpc.bluetooth.status.queryOptions(),
+    refetchInterval: 3000,
+  });
   const recordingsQuery = useQuery(
     orpc.recordings.list.queryOptions({ input: { limit: 5 } }),
   );

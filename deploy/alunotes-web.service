@@ -1,0 +1,19 @@
+[Unit]
+Description=AluNotes Bridge Web Control Plane
+After=network.target alunotes-bridge.service
+Wants=alunotes-bridge.service
+
+[Service]
+Type=simple
+User=alu
+WorkingDirectory=/home/alu/Documents/dev/alunotes-bt/alunotes-bt-web
+Environment=NODE_ENV=production
+Environment=PATH=/home/alu/.nvm/versions/node/v24.13.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/alu/.nvm/versions/node/v24.13.0/bin/pnpm start
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

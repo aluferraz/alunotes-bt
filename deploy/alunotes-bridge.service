@@ -1,0 +1,25 @@
+[Unit]
+Description=AluNotes Bluetooth A2DP Audio Bridge
+After=bluetooth.service alunotes-bt-rfkill.service
+Requires=bluetooth.service
+Wants=alunotes-bt-rfkill.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/alu/Documents/dev/alunotes-bt
+ExecStart=/home/alu/Documents/dev/alunotes-bt/bin/alunotes-bridge -config config.yaml -api-addr :8090
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Give BlueZ time to initialize adapters
+ExecStartPre=/bin/sleep 2
+
+# Safety net: power off all BT adapters even after SIGKILL/crash.
+# The Go binary handles this on graceful shutdown, but this covers ungraceful exits.
+ExecStopPost=-/home/alu/Documents/dev/alunotes-bt/deploy/bt-poweroff.sh
+
+[Install]
+WantedBy=multi-user.target

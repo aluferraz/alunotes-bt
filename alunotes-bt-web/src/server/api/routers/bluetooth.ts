@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { publicProcedure, protectedProcedure } from "~/server/api/orpc";
+import { publicProcedure } from "~/server/api/orpc";
 import { env } from "~/env";
 
 // Types matching the Go daemon's internal state
@@ -11,6 +11,7 @@ interface DeviceStatus {
 
 interface BridgeStatus {
   bridgeRunning: boolean;
+  discoverable: boolean;
   sinkAdapter: string;
   sourceAdapter: string;
   dualMode: boolean;
@@ -65,6 +66,7 @@ export const bluetoothRouter = {
     if (!result.reachable) {
       return {
         bridgeRunning: false,
+        discoverable: false,
         sinkAdapter: "",
         sourceAdapter: "",
         dualMode: false,
@@ -80,7 +82,7 @@ export const bluetoothRouter = {
   }),
 
   // List saved devices from Prisma
-  devices: protectedProcedure.handler(async ({ context }) => {
+  devices: publicProcedure.handler(async ({ context }) => {
     const devices = await context.db.device.findMany({
       orderBy: { lastSeen: "desc" },
     });
@@ -103,8 +105,27 @@ export const bluetoothRouter = {
     return devices.map((d) => ({ ...d, connected: false }));
   }),
 
+  // Scan for nearby Bluetooth devices via Go daemon
+  scan: publicProcedure.handler(async () => {
+    const result = await bridgeApiCallSafe<
+      Array<{
+        name: string;
+        mac: string;
+        rssi: number;
+        connected: boolean;
+        paired: boolean;
+      }>
+    >("/api/v1/bluetooth/scan");
+
+    if (!result.reachable || !result.data) {
+      return [];
+    }
+
+    return result.data;
+  }),
+
   // Trigger headphone connection via Go daemon
-  connect: protectedProcedure
+  connect: publicProcedure
     .input(z.object({ macAddress: z.string() }))
     .handler(async ({ input }) => {
       const result = await bridgeApiCall<{ success: boolean; message: string }>(
@@ -118,7 +139,7 @@ export const bluetoothRouter = {
     }),
 
   // Trigger headphone disconnection via Go daemon
-  disconnect: protectedProcedure
+  disconnect: publicProcedure
     .input(z.object({ macAddress: z.string() }))
     .handler(async ({ input }) => {
       const result = await bridgeApiCall<{ success: boolean; message: string }>(
@@ -132,7 +153,7 @@ export const bluetoothRouter = {
     }),
 
   // Save a device to the local DB
-  saveDevice: protectedProcedure
+  saveDevice: publicProcedure
     .input(
       z.object({
         macAddress: z.string(),
@@ -163,7 +184,7 @@ export const bluetoothRouter = {
     }),
 
   // Remove a device from local DB
-  removeDevice: protectedProcedure
+  removeDevice: publicProcedure
     .input(z.object({ id: z.string() }))
     .handler(async ({ input, context }) => {
       await context.db.device.delete({ where: { id: input.id } });

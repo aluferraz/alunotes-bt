@@ -8,7 +8,10 @@ import { AddDeviceDialog } from "./_components/add-device-dialog";
 
 export default function DevicesPage() {
   const queryClient = useQueryClient();
-  const devicesQuery = useQuery(orpc.bluetooth.devices.queryOptions());
+  const devicesQuery = useQuery({
+    ...orpc.bluetooth.devices.queryOptions(),
+    refetchInterval: 3000,
+  });
 
   const connectMutation = useMutation({
     mutationFn: (macAddress: string) =>

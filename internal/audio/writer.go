@@ -1,6 +1,7 @@
 package audio
 
 import (
+	"crypto/rand"
 	"encoding/binary"
 	"fmt"
 	"io"
@@ -91,8 +92,20 @@ func (w *Writer) Run(in <-chan Buffer, done <-chan struct{}) {
 	}
 }
 
+func nanoid() string {
+	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	b := make([]byte, 12)
+	if _, err := rand.Read(b); err != nil {
+		panic(err)
+	}
+	for i := range b {
+		b[i] = alphabet[b[i]%byte(len(alphabet))]
+	}
+	return string(b)
+}
+
 func (w *Writer) openWAV(sess *session.Session) (*os.File, error) {
-	path := filepath.Join(sess.Dir, "recording.wav")
+	path := filepath.Join(sess.Dir, fmt.Sprintf("recording-%s.wav", nanoid()))
 	f, err := os.Create(path)
 	if err != nil {
 		return nil, fmt.Errorf("creating WAV file: %w", err)
