@@ -3916,3 +3916,210 @@
 {"time":"2026-04-04T14:59:35.684382592-07:00","level":"INFO","msg":"sink adapter powered off","component":"bt.adapter"}
 {"time":"2026-04-04T14:59:35.743768519-07:00","level":"INFO","msg":"source adapter powered off","component":"bt.adapter"}
 {"time":"2026-04-04T14:59:35.744429925-07:00","level":"INFO","msg":"goodbye"}
+{"time":"2026-04-04T15:12:08.546069077-07:00","level":"INFO","msg":"configuration loaded","sink_adapter":"hci0","source_adapter":"hci1","sink_name":"Alunotes-Z3Q3ilAO","target_headphone":"","idle_timeout":30000000000,"storage_dir":"./alunotes-bt-web/public/recordings"}
+{"time":"2026-04-04T15:12:08.54712989-07:00","level":"INFO","msg":"dual-adapter mode","component":"bt.adapter","sink_adapter":"hci0","source_adapter":"hci1"}
+{"time":"2026-04-04T15:12:08.547170427-07:00","level":"INFO","msg":"configuring sink adapter","component":"bt.adapter","adapter":"hci0"}
+{"time":"2026-04-04T15:12:08.880385679-07:00","level":"INFO","msg":"sink adapter configured","component":"bt.adapter","name":"Alunotes-Z3Q3ilAO","discoverable":true}
+{"time":"2026-04-04T15:12:08.880445345-07:00","level":"INFO","msg":"configuring source adapter","component":"bt.adapter","adapter":"hci1"}
+{"time":"2026-04-04T15:12:09.00689834-07:00","level":"INFO","msg":"source adapter configured","component":"bt.adapter","discoverable":false}
+{"time":"2026-04-04T15:12:09.008389522-07:00","level":"INFO","msg":"pairing agent registered as default","component":"bt.agent"}
+{"time":"2026-04-04T15:12:09.0085908-07:00","level":"INFO","msg":"AluNotes bridge running — waiting for Bluetooth connections"}
+{"time":"2026-04-04T15:12:09.008644336-07:00","level":"INFO","msg":"API server starting","component":"api","addr":":8090"}
+{"time":"2026-04-04T15:12:09.010179871-07:00","level":"INFO","msg":"watching for Bluetooth events","component":"bt.adapter"}
+{"time":"2026-04-04T15:12:10.559884763-07:00","level":"INFO","msg":"device connection changed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A","connected":true}
+{"time":"2026-04-04T15:12:10.783596489-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:12:10.783674063-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep2","interfaces":["org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable"]}
+{"time":"2026-04-04T15:12:10.783955507-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep3","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:12:10.917230359-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/fd14","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaTransport1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:12:10.917301415-07:00","level":"INFO","msg":"media transport added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/fd14","role":"source"}
+{"time":"2026-04-04T15:12:10.917314785-07:00","level":"INFO","msg":"source transport appeared","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/fd14"}
+{"time":"2026-04-04T15:12:34.966011668-07:00","level":"INFO","msg":"connecting to device","component":"bt.adapter","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:12:53.636226697-07:00","level":"INFO","msg":"connecting to device","component":"bt.adapter","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:13:13.637399787-07:00","level":"INFO","msg":"dbus interfaces removed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/fd14","interfaces":["org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable","org.bluez.MediaTransport1"]}
+{"time":"2026-04-04T15:13:13.637489601-07:00","level":"INFO","msg":"media transport removed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/fd14","role":"source"}
+{"time":"2026-04-04T15:13:13.637624786-07:00","level":"INFO","msg":"source transport cleared","component":"bt.adapter"}
+{"time":"2026-04-04T15:13:13.63764136-07:00","level":"INFO","msg":"transport released, stopping pipeline"}
+{"time":"2026-04-04T15:13:13.775501683-07:00","level":"INFO","msg":"dbus interfaces removed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1","interfaces":["org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1"]}
+{"time":"2026-04-04T15:13:13.775587053-07:00","level":"INFO","msg":"dbus interfaces removed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep2","interfaces":["org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1"]}
+{"time":"2026-04-04T15:13:13.775895349-07:00","level":"INFO","msg":"dbus interfaces removed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep3","interfaces":["org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1"]}
+{"time":"2026-04-04T15:13:14.064184805-07:00","level":"INFO","msg":"device connection changed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A","connected":false}
+{"time":"2026-04-04T15:13:18.938252881-07:00","level":"INFO","msg":"connecting to device","component":"bt.adapter","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:13:19.280278072-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:13:19.280585683-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep2","interfaces":["org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable"]}
+{"time":"2026-04-04T15:13:19.281029663-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep3","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:13:19.313900381-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd15","interfaces":["org.bluez.MediaTransport1","org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable"]}
+{"time":"2026-04-04T15:13:19.313992436-07:00","level":"INFO","msg":"media transport added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd15","role":"source"}
+{"time":"2026-04-04T15:13:19.314009103-07:00","level":"INFO","msg":"source transport appeared","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd15"}
+{"time":"2026-04-04T15:13:19.3523352-07:00","level":"INFO","msg":"device connected","component":"bt.adapter","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:13:34.964216464-07:00","level":"INFO","msg":"device connection changed","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","connected":true}
+{"time":"2026-04-04T15:13:41.490854078-07:00","level":"INFO","msg":"device connection changed","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","connected":false}
+{"time":"2026-04-04T15:13:41.866618835-07:00","level":"INFO","msg":"device connection changed","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","connected":true}
+{"time":"2026-04-04T15:13:42.572452191-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep1","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:13:42.573222726-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep2","interfaces":["org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1"]}
+{"time":"2026-04-04T15:13:42.576179184-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep3","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:13:42.57622298-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep4","interfaces":["org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1"]}
+{"time":"2026-04-04T15:13:42.576239924-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep5","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:13:42.856996392-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep3/fd16","interfaces":["org.bluez.MediaTransport1","org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable"]}
+{"time":"2026-04-04T15:13:42.85707767-07:00","level":"INFO","msg":"media transport added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep3/fd16","role":"sink"}
+{"time":"2026-04-04T15:13:42.857093003-07:00","level":"INFO","msg":"tracked inbound device","component":"bt.adapter","device":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5"}
+{"time":"2026-04-04T15:13:42.857105058-07:00","level":"INFO","msg":"phone connected, starting PipeWire pipeline","mac":"58:79:E0:DF:2A:A5"}
+{"time":"2026-04-04T15:13:42.857139132-07:00","level":"INFO","msg":"waiting for PipeWire Bluetooth node","component":"audio.pwcapture","mac":"58:79:E0:DF:2A:A5"}
+{"time":"2026-04-04T15:13:43.265355718-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","interfaces":["org.bluez.Battery1"]}
+{"time":"2026-04-04T15:13:46.430514718-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/player0","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaPlayer1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:13:49.659360802-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"pending","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep3/fd16","role":"sink"}
+{"time":"2026-04-04T15:13:49.659453413-07:00","level":"INFO","msg":"tracked inbound device","component":"bt.adapter","device":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5"}
+{"time":"2026-04-04T15:13:49.678171026-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"active","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep3/fd16","role":"sink"}
+{"time":"2026-04-04T15:13:49.678242174-07:00","level":"INFO","msg":"tracked inbound device","component":"bt.adapter","device":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5"}
+{"time":"2026-04-04T15:13:49.819450027-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"active","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd15","role":"source"}
+{"time":"2026-04-04T15:13:49.819512916-07:00","level":"INFO","msg":"source transport appeared","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd15"}
+{"time":"2026-04-04T15:13:50.020806639-07:00","level":"INFO","msg":"found PipeWire node","component":"audio.pwcapture","target":"bluez_input.58_79_E0_DF_2A_A5.2"}
+{"time":"2026-04-04T15:13:50.021494249-07:00","level":"INFO","msg":"session started","component":"session","id":"2026-04-04/15-13-50","dir":"alunotes-bt-web/public/recordings/2026-04-04/15-13-50"}
+{"time":"2026-04-04T15:13:50.021630971-07:00","level":"INFO","msg":"recording to","component":"audio.pwcapture","path":"alunotes-bt-web/public/recordings/2026-04-04/15-13-50/recording-Ph4YwtLNxVtF.wav"}
+{"time":"2026-04-04T15:13:50.022075026-07:00","level":"INFO","msg":"pw-cat recording started","component":"audio.pwcapture","target":"bluez_input.58_79_E0_DF_2A_A5.2","path":"alunotes-bt-web/public/recordings/2026-04-04/15-13-50/recording-Ph4YwtLNxVtF.wav","rate":44100,"channels":2,"bitDepth":16}
+{"time":"2026-04-04T15:15:11.520900784-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"idle","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep3/fd16","role":"sink"}
+{"time":"2026-04-04T15:15:11.52096558-07:00","level":"INFO","msg":"sink transport cleared","component":"bt.adapter"}
+{"time":"2026-04-04T15:15:11.520977265-07:00","level":"INFO","msg":"transport released, stopping pipeline"}
+{"time":"2026-04-04T15:15:11.520990932-07:00","level":"INFO","msg":"pipeline stopped"}
+{"time":"2026-04-04T15:15:11.522004634-07:00","level":"INFO","msg":"recording complete","component":"audio.pwcapture","path":"alunotes-bt-web/public/recordings/2026-04-04/15-13-50/recording-Ph4YwtLNxVtF.wav","size":14359364}
+{"time":"2026-04-04T15:15:11.522059689-07:00","level":"INFO","msg":"capture stopped","component":"audio.pwcapture"}
+{"time":"2026-04-04T15:15:16.543336657-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"idle","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd15","role":"source"}
+{"time":"2026-04-04T15:15:16.543416768-07:00","level":"INFO","msg":"source transport cleared","component":"bt.adapter"}
+{"time":"2026-04-04T15:15:16.543434712-07:00","level":"INFO","msg":"transport released, stopping pipeline"}
+{"time":"2026-04-04T15:15:41.008752416-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/15-13-50","idle":31000000000}
+{"time":"2026-04-04T15:15:41.008832767-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/15-13-50","duration":111000000000}
+{"time":"2026-04-04T15:15:41.00884423-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/15-13-50","dir":"alunotes-bt-web/public/recordings/2026-04-04/15-13-50"}
+{"time":"2026-04-04T15:16:15.175276508-07:00","level":"INFO","msg":"shutting down..."}
+{"time":"2026-04-04T15:16:15.175626952-07:00","level":"INFO","msg":"transport watcher stopped","reason":"context canceled"}
+{"time":"2026-04-04T15:16:15.241921161-07:00","level":"INFO","msg":"sink adapter powered off","component":"bt.adapter"}
+{"time":"2026-04-04T15:16:15.295597024-07:00","level":"INFO","msg":"source adapter powered off","component":"bt.adapter"}
+{"time":"2026-04-04T15:16:15.296323449-07:00","level":"INFO","msg":"goodbye"}
+{"time":"2026-04-04T15:16:37.844574267-07:00","level":"INFO","msg":"configuration loaded","sink_adapter":"hci0","source_adapter":"hci1","sink_name":"Alunotes-Z3Q3ilAO","target_headphone":"","idle_timeout":30000000000,"storage_dir":"./alunotes-bt-web/public/recordings"}
+{"time":"2026-04-04T15:16:37.84593719-07:00","level":"INFO","msg":"dual-adapter mode","component":"bt.adapter","sink_adapter":"hci0","source_adapter":"hci1"}
+{"time":"2026-04-04T15:16:37.846061468-07:00","level":"INFO","msg":"configuring sink adapter","component":"bt.adapter","adapter":"hci0"}
+{"time":"2026-04-04T15:16:38.188165142-07:00","level":"INFO","msg":"sink adapter configured","component":"bt.adapter","name":"Alunotes-Z3Q3ilAO","discoverable":true}
+{"time":"2026-04-04T15:16:38.188231401-07:00","level":"INFO","msg":"configuring source adapter","component":"bt.adapter","adapter":"hci1"}
+{"time":"2026-04-04T15:16:38.313757814-07:00","level":"INFO","msg":"source adapter configured","component":"bt.adapter","discoverable":false}
+{"time":"2026-04-04T15:16:38.315369644-07:00","level":"INFO","msg":"pairing agent registered as default","component":"bt.agent"}
+{"time":"2026-04-04T15:16:38.31588318-07:00","level":"INFO","msg":"AluNotes bridge running — waiting for Bluetooth connections"}
+{"time":"2026-04-04T15:16:38.315960995-07:00","level":"INFO","msg":"API server starting","component":"api","addr":":8090"}
+{"time":"2026-04-04T15:16:38.316639698-07:00","level":"INFO","msg":"watching for Bluetooth events","component":"bt.adapter"}
+{"time":"2026-04-04T15:20:24.069647561-07:00","level":"INFO","msg":"connecting to device","component":"bt.adapter","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:20:24.325448758-07:00","level":"INFO","msg":"device connection changed","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A","connected":true}
+{"time":"2026-04-04T15:20:24.535178488-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:24.536579393-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep2","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:24.537625928-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep3","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:24.569997495-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17","interfaces":["org.freedesktop.DBus.Properties","org.freedesktop.DBus.Introspectable","org.bluez.MediaTransport1"]}
+{"time":"2026-04-04T15:20:24.572331491-07:00","level":"INFO","msg":"media transport added","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17","role":"source"}
+{"time":"2026-04-04T15:20:24.572374269-07:00","level":"INFO","msg":"headphone transport detected","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:20:24.600173604-07:00","level":"INFO","msg":"device connected","component":"bt.adapter","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:20:24.822819272-07:00","level":"INFO","msg":"device services resolved","component":"bt.adapter","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A","resolved":true}
+{"time":"2026-04-04T15:20:37.906264459-07:00","level":"INFO","msg":"device connection changed","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","connected":true}
+{"time":"2026-04-04T15:20:38.780810511-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","interfaces":["org.bluez.Battery1"]}
+{"time":"2026-04-04T15:20:38.888833878-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep1","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:38.889306396-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep2","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:38.889693525-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep3","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:38.890536486-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep4","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:38.891241503-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/sep5","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaEndpoint1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:39.008703742-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaTransport1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:39.008902538-07:00","level":"INFO","msg":"media transport added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18","role":"sink"}
+{"time":"2026-04-04T15:20:39.008929038-07:00","level":"INFO","msg":"tracked inbound device","component":"bt.adapter","device":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5"}
+{"time":"2026-04-04T15:20:39.008946075-07:00","level":"INFO","msg":"phone connected, starting PipeWire pipeline","mac":"58:79:E0:DF:2A:A5"}
+{"time":"2026-04-04T15:20:39.008960741-07:00","level":"INFO","msg":"starting media sync","phone":"58:79:E0:DF:2A:A5","headphone":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:20:39.009006482-07:00","level":"INFO","msg":"waiting for PipeWire Bluetooth node","component":"audio.pwcapture","mac":"58:79:E0:DF:2A:A5"}
+{"time":"2026-04-04T15:20:39.00901526-07:00","level":"INFO","msg":"starting AVRCP sync","component":"bt.avrcp","phoneDevice":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5"}
+{"time":"2026-04-04T15:20:41.010528288-07:00","level":"INFO","msg":"initial volume sync","component":"bt.avrcp","phoneVolume":102}
+{"time":"2026-04-04T15:20:41.019938696-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":102,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:41.432255556-07:00","level":"INFO","msg":"dbus interfaces added","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/player0","interfaces":["org.freedesktop.DBus.Introspectable","org.bluez.MediaPlayer1","org.freedesktop.DBus.Properties"]}
+{"time":"2026-04-04T15:20:45.752759301-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"pending","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18","role":"sink"}
+{"time":"2026-04-04T15:20:45.752840134-07:00","level":"INFO","msg":"tracked inbound device","component":"bt.adapter","device":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5"}
+{"time":"2026-04-04T15:20:45.76470376-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"active","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18","role":"sink"}
+{"time":"2026-04-04T15:20:45.7649055-07:00","level":"INFO","msg":"tracked inbound device","component":"bt.adapter","device":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5"}
+{"time":"2026-04-04T15:20:45.863684644-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"active","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17","role":"source"}
+{"time":"2026-04-04T15:20:45.863992144-07:00","level":"INFO","msg":"headphone transport detected","mac":"90:62:3F:95:23:5A"}
+{"time":"2026-04-04T15:20:46.169754282-07:00","level":"INFO","msg":"found PipeWire node","component":"audio.pwcapture","target":"bluez_input.58_79_E0_DF_2A_A5.2"}
+{"time":"2026-04-04T15:20:46.1699033-07:00","level":"INFO","msg":"session started","component":"session","id":"2026-04-04/15-20-46","dir":"alunotes-bt-web/public/recordings/2026-04-04/15-20-46"}
+{"time":"2026-04-04T15:20:46.169924207-07:00","level":"INFO","msg":"recording to","component":"audio.pwcapture","path":"alunotes-bt-web/public/recordings/2026-04-04/15-20-46/recording-umH4hBNBuSfR.wav"}
+{"time":"2026-04-04T15:20:46.170155485-07:00","level":"INFO","msg":"pw-cat recording started","component":"audio.pwcapture","target":"bluez_input.58_79_E0_DF_2A_A5.2","path":"alunotes-bt-web/public/recordings/2026-04-04/15-20-46/recording-umH4hBNBuSfR.wav","rate":44100,"channels":2,"bitDepth":16}
+{"time":"2026-04-04T15:20:49.092948899-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":101,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.096231318-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":101,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.14772372-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":100,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.151327324-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":100,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.21152419-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":95,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.214909869-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":95,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.26156665-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":94,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.270065504-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":94,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.332318571-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":92,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.338665392-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":92,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.384119231-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":86,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.386404115-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":86,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.445269281-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":84,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.447596202-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":84,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.5088879-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":81,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.510951951-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":81,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.573958183-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":80,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.576071901-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":80,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.627570562-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":79,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.629999872-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":79,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.702837233-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":77,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.70517958-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":77,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.745080819-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":76,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.747589462-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":76,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.81261619-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":73,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.815261555-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":73,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.871480651-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":71,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.874044091-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":71,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.937832895-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":70,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.94008452-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":70,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:49.987575114-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":67,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:49.989641092-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":67,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.044035173-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":66,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.046147928-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":66,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.108963123-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":64,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.111132582-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":64,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.171325208-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":62,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.173536018-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":62,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.2352169-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":61,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.23746784-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":61,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.304456564-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":59,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.309765461-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":59,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.347841574-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":58,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.35078792-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":58,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.411724822-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":57,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.414649372-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":57,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.532697239-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":56,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.534884179-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":56,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.811417632-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":55,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.813747831-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":55,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:50.943946212-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":54,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:50.946244504-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":54,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:51.53781978-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":55,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:51.540258202-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":55,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:51.601357066-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":56,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:51.603807154-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":56,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:51.665248759-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":58,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:51.667549014-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":58,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:51.713962444-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":59,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:51.716279921-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":59,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:51.773972699-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":63,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:51.776284528-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":63,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:51.83523186-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":66,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:51.837549874-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":66,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:20:52.006511625-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"headphone→phone","volume":67,"path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17"}
+{"time":"2026-04-04T15:20:52.008790843-07:00","level":"INFO","msg":"volume change detected","component":"bt.avrcp","direction":"phone→headphone","volume":67,"path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18"}
+{"time":"2026-04-04T15:21:19.993026129-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"idle","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5/fd18","role":"sink"}
+{"time":"2026-04-04T15:21:19.993110795-07:00","level":"INFO","msg":"sink transport cleared","component":"bt.adapter"}
+{"time":"2026-04-04T15:21:19.993146444-07:00","level":"INFO","msg":"transport released, stopping pipeline"}
+{"time":"2026-04-04T15:21:19.993164758-07:00","level":"INFO","msg":"pipeline stopped"}
+{"time":"2026-04-04T15:21:19.994368515-07:00","level":"INFO","msg":"recording complete","component":"audio.pwcapture","path":"alunotes-bt-web/public/recordings/2026-04-04/15-20-46/recording-umH4hBNBuSfR.wav","size":5957076}
+{"time":"2026-04-04T15:21:19.994508404-07:00","level":"INFO","msg":"capture stopped","component":"audio.pwcapture"}
+{"time":"2026-04-04T15:21:25.015534435-07:00","level":"INFO","msg":"transport state changed","component":"bt.adapter","state":"idle","path":"/org/bluez/hci1/dev_90_62_3F_95_23_5A/sep1/fd17","role":"source"}
+{"time":"2026-04-04T15:21:25.015617175-07:00","level":"INFO","msg":"source transport cleared","component":"bt.adapter"}
+{"time":"2026-04-04T15:21:25.015632435-07:00","level":"INFO","msg":"transport released, stopping pipeline"}
+{"time":"2026-04-04T15:21:46.316175234-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/15-20-46","idle":30000000000}
+{"time":"2026-04-04T15:21:46.316251845-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/15-20-46","duration":60000000000}
+{"time":"2026-04-04T15:21:46.316263049-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/15-20-46","dir":"alunotes-bt-web/public/recordings/2026-04-04/15-20-46"}
+{"time":"2026-04-04T15:23:10.860763079-07:00","level":"INFO","msg":"shutting down..."}
+{"time":"2026-04-04T15:23:10.86076282-07:00","level":"INFO","msg":"transport watcher stopped","reason":"context canceled"}
+{"time":"2026-04-04T15:23:10.934068956-07:00","level":"INFO","msg":"sink adapter powered off","component":"bt.adapter"}
+{"time":"2026-04-04T15:23:10.983956879-07:00","level":"INFO","msg":"source adapter powered off","component":"bt.adapter"}
+{"time":"2026-04-04T15:23:10.984359582-07:00","level":"INFO","msg":"goodbye"}

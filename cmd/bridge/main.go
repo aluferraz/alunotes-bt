@@ -23,7 +23,6 @@ import (
 	"github.com/aluferraz/alunotes-bt/internal/bt"
 	"github.com/aluferraz/alunotes-bt/internal/config"
 	"github.com/aluferraz/alunotes-bt/internal/logging"
-	"github.com/aluferraz/alunotes-bt/internal/pw"
 	"github.com/aluferraz/alunotes-bt/internal/session"
 )
 
@@ -144,12 +143,21 @@ func main() {
 
 	// Track the current pipeline's source MAC to avoid restarting for the same device.
 	var currentSourceMAC string
+	// Track headphone MAC detected from source transports.
+	var headphoneMAC string
 
 	// When a sink device connects (phone → Pi), start PipeWire capture for recording
 	// and link audio to the headphone if connected.
 	onTransportAcquire := func(info bt.TransportInfo) {
 		if info.Role == "source" {
-			log.Info("source transport appeared", "path", info.Path)
+			// Headphone transport — track its MAC for media sync.
+			mac := extractMAC(string(info.Path))
+			if mac != "" {
+				pipelineMu.Lock()
+				headphoneMAC = mac
+				pipelineMu.Unlock()
+				log.Info("headphone transport detected", "mac", mac)
+			}
 			return
 		}
 
@@ -181,15 +189,28 @@ func main() {
 		pipeDone := pipelineDone
 		var pipeCtx context.Context
 		pipeCtx, pipelineCancel = context.WithCancel(ctx)
+		// Resolve headphone MAC: config takes priority, else use detected.
+		hpMAC := cfg.Bluetooth.TargetHeadphone
+		if hpMAC == "" {
+			hpMAC = headphoneMAC
+		}
 		pipelineMu.Unlock()
 
-		// Start PipeWire audio routing (phone → headphone) if headphone is connected.
-		if cfg.Bluetooth.TargetHeadphone != "" {
-			go func() {
-				if err := pw.LinkBluetooth(pipeCtx, sourceMAC, cfg.Bluetooth.TargetHeadphone, log); err != nil {
-					log.Warn("PipeWire link failed (headphone may not be connected yet)", "error", err)
-				}
-			}()
+		// Start volume and AVRCP sync if a headphone is connected.
+		if hpMAC != "" {
+			log.Info("starting media sync", "phone", sourceMAC, "headphone", hpMAC)
+			avrcpSync := bt.NewAVRCPSync(
+				adapter.Conn(),
+				sourceMAC,
+				hpMAC,
+				adapter.SinkPath(),
+				adapter.SourcePath(),
+				log,
+			)
+			go avrcpSync.InitialVolumeSync()
+			go avrcpSync.Run(pipeCtx)
+		} else {
+			log.Info("no headphone connected, skipping media sync")
 		}
 
 		// Start PipeWire capture — pw-cat records directly to WAV.
