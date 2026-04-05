@@ -3,7 +3,12 @@
     "allow": [
       "Bash(busctl --user introspect org.mpris.MediaPlayer2.Lucas_s_S25_Ultra /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player)",
       "Bash(busctl call:*)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(./scripts/test-hfp.sh profile:*)",
+      "Bash(pactl set-card-profile:*)",
+      "Bash(pw-link -o)",
+      "Bash(pw-link -i)",
+      "Bash(./scripts/test-hfp.sh all:*)"
     ]
   }
 }

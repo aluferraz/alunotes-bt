@@ -23,6 +23,7 @@ import (
 	"github.com/aluferraz/alunotes-bt/internal/bt"
 	"github.com/aluferraz/alunotes-bt/internal/config"
 	"github.com/aluferraz/alunotes-bt/internal/logging"
+	"github.com/aluferraz/alunotes-bt/internal/pw"
 	"github.com/aluferraz/alunotes-bt/internal/session"
 )
 
@@ -113,6 +114,21 @@ func main() {
 
 	pwCapture := audio.NewPipeWireCapture(sessMgr, log)
 
+	// HFP call routing — runs on the main ctx (not pipeCtx) so it
+	// survives A2DP→HFP profile switches during phone calls.
+	var currentHFPMAC string
+	var hfpCancel context.CancelFunc
+
+	stopHFP := func() {
+		pipelineMu.Lock()
+		defer pipelineMu.Unlock()
+		if hfpCancel != nil {
+			hfpCancel()
+			hfpCancel = nil
+		}
+		currentHFPMAC = ""
+	}
+
 	stopPipeline := func() {
 		pipelineMu.Lock()
 		defer pipelineMu.Unlock()
@@ -196,6 +212,39 @@ func main() {
 		}
 		pipelineMu.Unlock()
 
+		// Start HFP call audio router + call controls (if not already running).
+		// Uses the main ctx so they survive A2DP transport teardowns during calls.
+		if hpMAC != "" {
+			pipelineMu.Lock()
+			needHFP := currentHFPMAC != sourceMAC
+			if needHFP {
+				if hfpCancel != nil {
+					hfpCancel()
+				}
+				var hfpCtx context.Context
+				hfpCtx, hfpCancel = context.WithCancel(ctx)
+				currentHFPMAC = sourceMAC
+				pipelineMu.Unlock()
+
+				hfpRouter := pw.NewHFPRouter(sourceMAC, hpMAC, sessMgr, log)
+				go hfpRouter.Run(hfpCtx)
+
+				// Call control: persistent MPRIS player that forwards headphone
+				// button presses as call answer/hangup during active calls.
+				callCtrl := bt.NewHFPCallControl(
+					adapter.Conn(), sourceMAC, adapter.SinkPath(),
+					hfpRouter, log,
+				)
+				go callCtrl.Run(hfpCtx)
+
+				log.Info("HFP call router + controls started",
+					"phone", sourceMAC, "headphone", hpMAC,
+				)
+			} else {
+				pipelineMu.Unlock()
+			}
+		}
+
 		// Start volume and AVRCP sync if a headphone is connected.
 		if hpMAC != "" {
 			log.Info("starting media sync", "phone", sourceMAC, "headphone", hpMAC)
@@ -248,6 +297,7 @@ func main() {
 	// Wait for shutdown signal.
 	<-ctx.Done()
 	log.Info("shutting down...")
+	stopHFP()
 	stopPipeline()
 	close(done)
 

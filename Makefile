@@ -57,7 +57,7 @@ run-all: build
 # Run this once after cloning the repo.
 deps:
 	sudo apt-get update
-	sudo apt-get install -y bluez libdbus-1-dev libsbc-dev pkg-config
+	sudo apt-get install -y bluez libdbus-1-dev libsbc-dev pkg-config pulseaudio-utils
 
 # Install D-Bus policy and set up permissions for running without root.
 # Run this once after cloning the repo.
