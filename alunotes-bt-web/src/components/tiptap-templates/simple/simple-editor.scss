@@ -1,21 +1,85 @@
 /* Simple Editor — Obsidian Glow Overrides
    Resets the template's full-viewport layout so it fits inside GlassCard
    and inherits the app's glassmorphic design language.
+   Supports independent theme scoping.
 */
 
-.tiptap.ProseMirror {
-  font-family: var(--font-inter), "Inter", sans-serif;
-  color: var(--foreground);
-  caret-color: var(--primary);
-  outline: none;
+.editor-theme-light {
+  --background: #ffffff !important;
+  --foreground: #000000 !important;
+  --primary: #7CB9E8 !important;
+  --glass-bg: #ffffff !important;
+  --glass-border: rgba(0, 0, 0, 0.08) !important;
+  --muted-foreground: #64748B !important;
+  --glass-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  --primary-glow: rgba(124, 185, 232, 0.1) !important;
+  
+  /* Force solid background for readability */
+  background-color: var(--background) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: var(--foreground) !important;
 
-  .dark & {
-    font-family: var(--font-inter), "Inter", sans-serif;
+  /* Tiptap Primitive Overrides — Force Light Mode Buttons */
+  --tt-button-default-text-color: #1a1a1a !important;
+  --tt-button-default-icon-color: #1a1a1a !important;
+  --tt-button-hover-bg-color: rgba(0, 0, 0, 0.05) !important;
+  --tt-button-active-bg-color: rgba(0, 0, 0, 0.08) !important;
+  --tt-button-active-text-color: var(--primary) !important;
+  --tt-button-active-icon-color: var(--primary) !important;
+
+  /* Force color on all button variants inside this theme */
+  .tiptap-button[data-style], .tiptap-toolbar button {
+    color: #1a1a1a !important;
+    --tt-button-default-icon-color: #1a1a1a !important;
+    --tt-button-default-text-color: #1a1a1a !important;
+    
+    .tiptap-button-icon {
+      color: inherit !important;
+    }
   }
 }
 
-/* Reset full-page layout — embed mode */
+.editor-theme-dark {
+  --background: #0b0f10 !important;
+  --foreground: #ffffff !important;
+  --primary: #00E5FF !important;
+  --glass-bg: #131313 !important;
+  --glass-border: rgba(255, 255, 255, 0.08) !important;
+  --muted-foreground: #ababab !important;
+  --glass-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  --primary-glow: rgba(0, 229, 255, 0.1) !important;
+
+  /* Force solid dark background */
+  background-color: var(--background) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: var(--foreground) !important;
+
+  /* Tiptap Primitive Overrides — Force Dark Mode Buttons */
+  --tt-button-default-text-color: #eeeeee !important;
+  --tt-button-default-icon-color: #eeeeee !important;
+  --tt-button-hover-bg-color: rgba(255, 255, 255, 0.1) !important;
+  --tt-button-active-bg-color: rgba(255, 255, 255, 0.15) !important;
+  --tt-button-active-text-color: var(--primary) !important;
+  --tt-button-active-icon-color: var(--primary) !important;
+
+  /* Force color on all button variants inside this theme */
+  .tiptap-button[data-style], .tiptap-toolbar button {
+    color: #eeeeee !important;
+    --tt-button-default-icon-color: #eeeeee !important;
+    --tt-button-default-text-color: #eeeeee !important;
+
+    .tiptap-button-icon {
+      color: inherit !important;
+    }
+  }
+}
+
 .simple-editor-wrapper {
+  /* Layout logic */
   width: 100%;
   height: auto;
   min-height: 400px;
@@ -25,6 +89,14 @@
   gap: 0.75rem;
 }
 
+.tiptap.ProseMirror {
+  font-family: var(--font-inter), "Inter", sans-serif;
+  color: var(--foreground);
+  caret-color: var(--primary);
+  outline: none;
+}
+
+/* Reset full-page layout — embed mode */
 .simple-editor-content {
   max-width: 100%;
   width: 100%;
@@ -58,11 +130,9 @@
   box-shadow: var(--glass-shadow-sm) !important;
   border-radius: 9999px !important;
 
-  /* Dark mode glow accent */
-  .dark & {
-    box-shadow: 0 0 0 0.5px rgba(0, 229, 255, 0.08),
-                0 4px 20px rgba(0, 229, 255, 0.05) !important;
-  }
+  /* Theme-aware glow accent */
+  box-shadow: 0 0 0 0.5px color-mix(in srgb, var(--primary) 10%, transparent),
+              0 4px 20px var(--primary-glow) !important;
 
   /* Layout */
   display: flex;
@@ -152,7 +222,7 @@
   }
 
   pre {
-    background: var(--muted);
+    background: color-mix(in srgb, var(--muted-foreground) 10%, transparent);
     border-radius: 1rem;
     padding: 1rem 1.25rem;
     overflow-x: auto;

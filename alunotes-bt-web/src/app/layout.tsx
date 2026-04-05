@@ -5,6 +5,7 @@ import { Inter, Manrope } from "next/font/google";
 
 import { ORPCReactProvider } from "~/orpc/react";
 import { ThemeProvider } from "~/components/theme-provider";
+import { ThemeApplier } from "~/components/theme-applier";
 
 export const metadata: Metadata = {
   title: "AluNotes Bridge",
@@ -48,7 +49,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <ORPCReactProvider>{children}</ORPCReactProvider>
+          <ORPCReactProvider>
+            <ThemeApplier />
+            {children}
+          </ORPCReactProvider>
         </ThemeProvider>
       </body>
     </html>

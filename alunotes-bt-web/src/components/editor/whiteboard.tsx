@@ -29,12 +29,12 @@ export function WhiteboardEditor({ initialElements, initialAppState, onChange }:
   if (!mounted) return <div className="w-full h-full bg-glass-bg animate-pulse rounded-2xl" />;
 
   return (
-    <div className="w-full h-full rounded-2xl overflow-hidden glass-border shadow-glass-lg" style={{ height: "70vh" }}>
+    <div className="excalidraw-container w-full h-full rounded-2xl overflow-hidden glass-border shadow-glass-lg" style={{ height: "70vh" }}>
       <Excalidraw
         initialData={{
           elements: initialElements,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-          appState: initialAppState as any,
+          appState: { ...initialAppState, collaborators: new Map() } as any,
         }}
         theme={theme === "dark" ? "dark" : "light"}
         onChange={(elements, appState) => {

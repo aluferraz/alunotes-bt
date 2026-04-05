@@ -3,9 +3,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
-import { Shield, KeyRound, Headphones, User, Trash2, Link as LinkIcon, Unlink } from "lucide-react";
+import { Shield, KeyRound, Headphones, User, Trash2, Link as LinkIcon, Unlink, Sun, Moon } from "lucide-react";
 import { AddDeviceDialog } from "~/components/add-device-dialog";
 import { Button } from "~/components/ui/button";
+import { useUIPreferences } from "~/stores/ui-preferences";
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();
@@ -31,6 +32,9 @@ export default function SettingsPage() {
     ...orpc.bluetooth.connect.mutationOptions(),
     onSuccess: invalidateBluetooth,
   });
+
+  const { theme, setTheme } = useUIPreferences();
+  const isDark = theme === "dark";
 
   return (
     <div className="flex flex-col gap-8 max-w-3xl mx-auto">
@@ -124,6 +128,37 @@ export default function SettingsPage() {
                    </div>
                  ))
                )}
+            </div>
+         </GlassCard>
+
+         <GlassCard className="p-8">
+            <h2 className="text-2xl font-bold flex items-center gap-3 mb-6">
+              {isDark ? <Moon className="w-5 h-5 text-secondary" /> : <Sun className="w-5 h-5 text-yellow-400" />}
+              Appearance
+            </h2>
+            <div className="flex items-center justify-between p-4 bg-background/50 rounded-xl border border-glass-border">
+               <div className="flex flex-col gap-0.5">
+                 <span className="font-semibold">App Theme</span>
+                 <span className="text-xs text-muted-foreground">Choose between dark and light mode across the entire app.</span>
+               </div>
+               <div className="flex items-center gap-1 p-1 rounded-full bg-glass-bg border border-glass-border">
+                 <button
+                   onClick={() => setTheme("light")}
+                   className={`px-3 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 text-sm font-medium ${
+                     !isDark ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
+                   }`}
+                 >
+                   <Sun className="w-3.5 h-3.5" /> Light
+                 </button>
+                 <button
+                   onClick={() => setTheme("dark")}
+                   className={`px-3 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 text-sm font-medium ${
+                     isDark ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
+                   }`}
+                 >
+                   <Moon className="w-3.5 h-3.5" /> Dark
+                 </button>
+               </div>
             </div>
          </GlassCard>
 

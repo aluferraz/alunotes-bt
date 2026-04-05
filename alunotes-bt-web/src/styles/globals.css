@@ -135,7 +135,7 @@
 }
 
 @layer base {
-  * {
+  *:not(.excalidraw-container *) {
     @apply border-border outline-ring/50;
   }
   body {
@@ -192,6 +192,18 @@
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
+}
+
+/* Excalidraw: undo Tailwind v4 preflight that breaks layout */
+.excalidraw-container svg {
+  display: inline !important;
+  max-width: none !important;
+  vertical-align: initial !important;
+}
+
+.excalidraw-container img {
+  display: inline !important;
+  max-width: none !important;
 }
 
 /* Sonner Toast Glass Overrides */

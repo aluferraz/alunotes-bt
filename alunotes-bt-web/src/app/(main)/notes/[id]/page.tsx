@@ -13,6 +13,7 @@ import { GlassCard } from "~/components/ui/glass-card";
 import { Save, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { debounce } from "lodash";
+import { useUIPreferences } from "~/stores/ui-preferences";
 
 export default function NotePage(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params);
@@ -58,6 +59,8 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
     onUpdate: handleUpdateContent,
   });
 
+  const editorTheme = useUIPreferences((s) => s.editorTheme);
+
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -72,7 +75,7 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
 
   return (
     <EditorContext.Provider value={{ editor: editorState.editor }}>
-      <div className="flex flex-col gap-6 max-w-4xl mx-auto min-h-screen">
+      <div className="flex flex-col gap-6 max-w-4xl mx-auto min-h-screen pb-20">
 
         {/* Minimal sticky header — back button + save status only */}
         <div className="flex items-center justify-between sticky top-0 z-20 py-3 -mx-4 px-4 sm:mx-0 sm:px-0 bg-background/60 backdrop-blur-xl border-b border-glass-border">
@@ -93,34 +96,39 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
           </div>
         </div>
 
-        {/* Editor card: toolbar → title → content */}
-        <GlassCard className="p-6 sm:p-10 min-h-[70vh] flex flex-col gap-0 transition-all duration-500 ease-out hover:shadow-glass-lg overflow-hidden">
-          {/* Toolbar at top of card, spanning full width */}
-          <div className="pb-5 border-b border-glass-border">
-            <SimpleEditorToolbar {...editorState} />
-          </div>
-
-          {/* Title */}
-          <input
-            type="text"
-            value={title}
-            onChange={handleUpdateTitle}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                editorState.editor?.commands.focus("start");
-              }
-            }}
-            placeholder="Note Title"
-            className="text-4xl sm:text-5xl font-manrope font-extrabold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/30 px-0 focus:ring-0 w-full pt-8 pb-4"
-          />
-
-          {/* Editor body */}
-          {content !== null && (
-            <div className="simple-editor-wrapper flex-1">
-              <SimpleEditorContent editor={editorState.editor} />
+        {/* Editor card */}
+        <GlassCard 
+          className={`transition-all duration-500 ease-out hover:shadow-glass-lg overflow-hidden editor-theme-${editorTheme}`}
+        >
+          {/* Internal layout - p-6/p-10 and flex column */}
+          <div className="simple-editor-wrapper flex flex-col p-6 sm:p-10 min-h-[70vh]">
+            {/* Toolbar at top of card */}
+            <div className="pb-5 border-b border-white/10">
+              <SimpleEditorToolbar {...editorState} />
             </div>
-          )}
+
+            {/* Title */}
+            <input
+              type="text"
+              value={title}
+              onChange={handleUpdateTitle}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  editorState.editor?.commands.focus("start");
+                }
+              }}
+              placeholder="Note Title"
+              className="text-4xl sm:text-5xl font-manrope font-extrabold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/30 px-0 focus:ring-0 w-full pt-8 pb-4"
+            />
+
+            {/* Editor body */}
+            {content !== null && (
+              <div className="simple-editor-content-area flex-1">
+                <SimpleEditorContent editor={editorState.editor} />
+              </div>
+            )}
+          </div>
         </GlassCard>
       </div>
     </EditorContext.Provider>
