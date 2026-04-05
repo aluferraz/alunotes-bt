@@ -81,12 +81,7 @@ Key settings:
 
 ### 4. Set up the web app
 
-```bash
-cd alunotes-bt-web
-cp .env.example .env
-pnpm install
-pnpm db:push
-```
+For details on the PWA control plane, UI stack, and frontend environment setup, please refer to the dedicated [Web App README](./alunotes-bt-web/README.md).
 
 ## Run
 

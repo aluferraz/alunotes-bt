@@ -164,7 +164,7 @@ export const bluetoothRouter = {
       }),
     )
     .handler(async ({ input, context }) => {
-      return context.db.device.upsert({
+      const device = await context.db.device.upsert({
         where: { macAddress: input.macAddress },
         create: {
           macAddress: input.macAddress,
@@ -181,12 +181,33 @@ export const bluetoothRouter = {
           lastSeen: new Date(),
         },
       });
+
+      // Auto-connect after saving
+      await bridgeApiCallSafe("/api/v1/bluetooth/connect", {
+        method: "POST",
+        body: JSON.stringify({ mac_address: input.macAddress }),
+      });
+
+      return device;
     }),
 
-  // Remove a device from local DB
+  // Unpair and remove a device
   removeDevice: publicProcedure
     .input(z.object({ id: z.string() }))
     .handler(async ({ input, context }) => {
+      // Look up MAC before deleting so we can unpair via BlueZ
+      const device = await context.db.device.findUnique({
+        where: { id: input.id },
+      });
+
+      if (device) {
+        // Unpair from BlueZ (disconnect + remove pairing)
+        await bridgeApiCallSafe("/api/v1/bluetooth/remove", {
+          method: "POST",
+          body: JSON.stringify({ mac_address: device.macAddress }),
+        });
+      }
+
       await context.db.device.delete({ where: { id: input.id } });
     }),
 };

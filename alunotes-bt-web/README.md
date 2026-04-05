@@ -1,29 +1,27 @@
-# Create T3 App
+# AluNotes Web App (PWA)
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This is the control plane UI for the AluNotes Bluetooth Bridge. It exposes a frontend for managing and viewing Bluetooth recordings, notes, tasks, and an interactive Excalidraw whiteboard.
 
-## What's next? How do I make an app with this?
+## Stack Overview
+- **Framework**: Next.js 15 (App Router, React 19)
+- **API Engine**: oRPC with TanStack Query
+- **Styling**: Tailwind CSS v4 featuring the "Ethereal Curator" glassmorphism design system.
+- **Database**: Prisma with SQLite
+- **Auth**: Better Auth (Google OAuth + Email/Password) *(Note: check environment variables)*
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Setup
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+```bash
+cd alunotes-bt-web
+cp .env.example .env
+pnpm install
+pnpm db:push
+```
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Running the Web App
 
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+The app runs out-of-the-box connected to the local Go daemon audio bridge API.
+```bash
+pnpm dev
+# The web app will start on http://localhost:3000
+```

@@ -19,6 +19,12 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  folders     Folder[]
+  tags        Tag[]
+  notes       Note[]
+  tasks       Task[]
+  whiteboards Whiteboard[]
+
   @@unique([email])
   @@map("user")
 }
@@ -99,4 +105,87 @@ model RecordingMeta {
 
   @@index([sessionId])
   @@map("recording_meta")
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  color     String?
+  icon      String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("folder")
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String
+  color     String?
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     NoteTag[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([name, userId])
+  @@map("tag")
+}
+
+model Note {
+  id        String    @id @default(cuid())
+  title     String    @default("Untitled")
+  content   String? // JSON from Tiptap stored as stringified dict
+  isPublic  Boolean   @default(false)
+  folderId  String?
+  folder    Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags      NoteTag[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("note")
+}
+
+model NoteTag {
+  noteId String
+  tagId  String
+  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+  @@map("note_tag")
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  status      String    @default("TODO") // "TODO" | "IN_PROGRESS" | "DONE"
+  priority    String    @default("MEDIUM") // "LOW" | "MEDIUM" | "HIGH"
+  dueDate     DateTime?
+  order       Int       @default(0)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("task")
+}
+
+model Whiteboard {
+  id        String   @id @default(cuid())
+  name      String   @default("Untitled Canvas")
+  elements  String? // JSON string of Excalidraw elements
+  appState  String? // JSON string of Excalidraw appState
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("whiteboard")
 }

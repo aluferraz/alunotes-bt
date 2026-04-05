@@ -43,6 +43,36 @@ export type Device = $Result.DefaultSelection<Prisma.$DevicePayload>
  * 
  */
 export type RecordingMeta = $Result.DefaultSelection<Prisma.$RecordingMetaPayload>
+/**
+ * Model Folder
+ * 
+ */
+export type Folder = $Result.DefaultSelection<Prisma.$FolderPayload>
+/**
+ * Model Tag
+ * 
+ */
+export type Tag = $Result.DefaultSelection<Prisma.$TagPayload>
+/**
+ * Model Note
+ * 
+ */
+export type Note = $Result.DefaultSelection<Prisma.$NotePayload>
+/**
+ * Model NoteTag
+ * 
+ */
+export type NoteTag = $Result.DefaultSelection<Prisma.$NoteTagPayload>
+/**
+ * Model Task
+ * 
+ */
+export type Task = $Result.DefaultSelection<Prisma.$TaskPayload>
+/**
+ * Model Whiteboard
+ * 
+ */
+export type Whiteboard = $Result.DefaultSelection<Prisma.$WhiteboardPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -221,6 +251,66 @@ export class PrismaClient<
     * ```
     */
   get recordingMeta(): Prisma.RecordingMetaDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.folder`: Exposes CRUD operations for the **Folder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Folders
+    * const folders = await prisma.folder.findMany()
+    * ```
+    */
+  get folder(): Prisma.FolderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tag`: Exposes CRUD operations for the **Tag** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tags
+    * const tags = await prisma.tag.findMany()
+    * ```
+    */
+  get tag(): Prisma.TagDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.note`: Exposes CRUD operations for the **Note** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notes
+    * const notes = await prisma.note.findMany()
+    * ```
+    */
+  get note(): Prisma.NoteDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.noteTag`: Exposes CRUD operations for the **NoteTag** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NoteTags
+    * const noteTags = await prisma.noteTag.findMany()
+    * ```
+    */
+  get noteTag(): Prisma.NoteTagDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.task`: Exposes CRUD operations for the **Task** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tasks
+    * const tasks = await prisma.task.findMany()
+    * ```
+    */
+  get task(): Prisma.TaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.whiteboard`: Exposes CRUD operations for the **Whiteboard** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Whiteboards
+    * const whiteboards = await prisma.whiteboard.findMany()
+    * ```
+    */
+  get whiteboard(): Prisma.WhiteboardDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -667,7 +757,13 @@ export namespace Prisma {
     Account: 'Account',
     Verification: 'Verification',
     Device: 'Device',
-    RecordingMeta: 'RecordingMeta'
+    RecordingMeta: 'RecordingMeta',
+    Folder: 'Folder',
+    Tag: 'Tag',
+    Note: 'Note',
+    NoteTag: 'NoteTag',
+    Task: 'Task',
+    Whiteboard: 'Whiteboard'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -686,7 +782,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "verification" | "device" | "recordingMeta"
+      modelProps: "user" | "session" | "account" | "verification" | "device" | "recordingMeta" | "folder" | "tag" | "note" | "noteTag" | "task" | "whiteboard"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1134,6 +1230,450 @@ export namespace Prisma {
           }
         }
       }
+      Folder: {
+        payload: Prisma.$FolderPayload<ExtArgs>
+        fields: Prisma.FolderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FolderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FolderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>
+          }
+          findFirst: {
+            args: Prisma.FolderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FolderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>
+          }
+          findMany: {
+            args: Prisma.FolderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>[]
+          }
+          create: {
+            args: Prisma.FolderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>
+          }
+          createMany: {
+            args: Prisma.FolderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FolderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>[]
+          }
+          delete: {
+            args: Prisma.FolderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>
+          }
+          update: {
+            args: Prisma.FolderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>
+          }
+          deleteMany: {
+            args: Prisma.FolderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FolderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FolderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>[]
+          }
+          upsert: {
+            args: Prisma.FolderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FolderPayload>
+          }
+          aggregate: {
+            args: Prisma.FolderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFolder>
+          }
+          groupBy: {
+            args: Prisma.FolderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FolderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FolderCountArgs<ExtArgs>
+            result: $Utils.Optional<FolderCountAggregateOutputType> | number
+          }
+        }
+      }
+      Tag: {
+        payload: Prisma.$TagPayload<ExtArgs>
+        fields: Prisma.TagFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TagFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TagFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          findFirst: {
+            args: Prisma.TagFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TagFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          findMany: {
+            args: Prisma.TagFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>[]
+          }
+          create: {
+            args: Prisma.TagCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          createMany: {
+            args: Prisma.TagCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TagCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>[]
+          }
+          delete: {
+            args: Prisma.TagDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          update: {
+            args: Prisma.TagUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          deleteMany: {
+            args: Prisma.TagDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TagUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TagUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>[]
+          }
+          upsert: {
+            args: Prisma.TagUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TagPayload>
+          }
+          aggregate: {
+            args: Prisma.TagAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTag>
+          }
+          groupBy: {
+            args: Prisma.TagGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TagGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TagCountArgs<ExtArgs>
+            result: $Utils.Optional<TagCountAggregateOutputType> | number
+          }
+        }
+      }
+      Note: {
+        payload: Prisma.$NotePayload<ExtArgs>
+        fields: Prisma.NoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>
+          }
+          findFirst: {
+            args: Prisma.NoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>
+          }
+          findMany: {
+            args: Prisma.NoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>[]
+          }
+          create: {
+            args: Prisma.NoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>
+          }
+          createMany: {
+            args: Prisma.NoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>[]
+          }
+          delete: {
+            args: Prisma.NoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>
+          }
+          update: {
+            args: Prisma.NoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>
+          }
+          deleteMany: {
+            args: Prisma.NoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>[]
+          }
+          upsert: {
+            args: Prisma.NoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotePayload>
+          }
+          aggregate: {
+            args: Prisma.NoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNote>
+          }
+          groupBy: {
+            args: Prisma.NoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NoteCountArgs<ExtArgs>
+            result: $Utils.Optional<NoteCountAggregateOutputType> | number
+          }
+        }
+      }
+      NoteTag: {
+        payload: Prisma.$NoteTagPayload<ExtArgs>
+        fields: Prisma.NoteTagFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NoteTagFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NoteTagFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>
+          }
+          findFirst: {
+            args: Prisma.NoteTagFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NoteTagFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>
+          }
+          findMany: {
+            args: Prisma.NoteTagFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>[]
+          }
+          create: {
+            args: Prisma.NoteTagCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>
+          }
+          createMany: {
+            args: Prisma.NoteTagCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NoteTagCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>[]
+          }
+          delete: {
+            args: Prisma.NoteTagDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>
+          }
+          update: {
+            args: Prisma.NoteTagUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>
+          }
+          deleteMany: {
+            args: Prisma.NoteTagDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NoteTagUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NoteTagUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>[]
+          }
+          upsert: {
+            args: Prisma.NoteTagUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NoteTagPayload>
+          }
+          aggregate: {
+            args: Prisma.NoteTagAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNoteTag>
+          }
+          groupBy: {
+            args: Prisma.NoteTagGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NoteTagGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NoteTagCountArgs<ExtArgs>
+            result: $Utils.Optional<NoteTagCountAggregateOutputType> | number
+          }
+        }
+      }
+      Task: {
+        payload: Prisma.$TaskPayload<ExtArgs>
+        fields: Prisma.TaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          findFirst: {
+            args: Prisma.TaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          findMany: {
+            args: Prisma.TaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>[]
+          }
+          create: {
+            args: Prisma.TaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          createMany: {
+            args: Prisma.TaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>[]
+          }
+          delete: {
+            args: Prisma.TaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          update: {
+            args: Prisma.TaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.TaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.TaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TaskPayload>
+          }
+          aggregate: {
+            args: Prisma.TaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTask>
+          }
+          groupBy: {
+            args: Prisma.TaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TaskCountArgs<ExtArgs>
+            result: $Utils.Optional<TaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      Whiteboard: {
+        payload: Prisma.$WhiteboardPayload<ExtArgs>
+        fields: Prisma.WhiteboardFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WhiteboardFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WhiteboardFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>
+          }
+          findFirst: {
+            args: Prisma.WhiteboardFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WhiteboardFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>
+          }
+          findMany: {
+            args: Prisma.WhiteboardFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>[]
+          }
+          create: {
+            args: Prisma.WhiteboardCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>
+          }
+          createMany: {
+            args: Prisma.WhiteboardCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WhiteboardCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>[]
+          }
+          delete: {
+            args: Prisma.WhiteboardDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>
+          }
+          update: {
+            args: Prisma.WhiteboardUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>
+          }
+          deleteMany: {
+            args: Prisma.WhiteboardDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WhiteboardUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WhiteboardUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>[]
+          }
+          upsert: {
+            args: Prisma.WhiteboardUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WhiteboardPayload>
+          }
+          aggregate: {
+            args: Prisma.WhiteboardAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWhiteboard>
+          }
+          groupBy: {
+            args: Prisma.WhiteboardGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WhiteboardGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WhiteboardCountArgs<ExtArgs>
+            result: $Utils.Optional<WhiteboardCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1236,6 +1776,12 @@ export namespace Prisma {
     verification?: VerificationOmit
     device?: DeviceOmit
     recordingMeta?: RecordingMetaOmit
+    folder?: FolderOmit
+    tag?: TagOmit
+    note?: NoteOmit
+    noteTag?: NoteTagOmit
+    task?: TaskOmit
+    whiteboard?: WhiteboardOmit
   }
 
   /* Types for Logging */
@@ -1318,11 +1864,21 @@ export namespace Prisma {
   export type UserCountOutputType = {
     sessions: number
     accounts: number
+    folders: number
+    tags: number
+    notes: number
+    tasks: number
+    whiteboards: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
+    folders?: boolean | UserCountOutputTypeCountFoldersArgs
+    tags?: boolean | UserCountOutputTypeCountTagsArgs
+    notes?: boolean | UserCountOutputTypeCountNotesArgs
+    tasks?: boolean | UserCountOutputTypeCountTasksArgs
+    whiteboards?: boolean | UserCountOutputTypeCountWhiteboardsArgs
   }
 
   // Custom InputTypes
@@ -1348,6 +1904,134 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AccountWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFoldersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FolderWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TagWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NoteWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountWhiteboardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhiteboardWhereInput
+  }
+
+
+  /**
+   * Count Type FolderCountOutputType
+   */
+
+  export type FolderCountOutputType = {
+    notes: number
+  }
+
+  export type FolderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    notes?: boolean | FolderCountOutputTypeCountNotesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FolderCountOutputType without action
+   */
+  export type FolderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FolderCountOutputType
+     */
+    select?: FolderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FolderCountOutputType without action
+   */
+  export type FolderCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NoteWhereInput
+  }
+
+
+  /**
+   * Count Type TagCountOutputType
+   */
+
+  export type TagCountOutputType = {
+    notes: number
+  }
+
+  export type TagCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    notes?: boolean | TagCountOutputTypeCountNotesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TagCountOutputType without action
+   */
+  export type TagCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TagCountOutputType
+     */
+    select?: TagCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TagCountOutputType without action
+   */
+  export type TagCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NoteTagWhereInput
+  }
+
+
+  /**
+   * Count Type NoteCountOutputType
+   */
+
+  export type NoteCountOutputType = {
+    tags: number
+  }
+
+  export type NoteCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    tags?: boolean | NoteCountOutputTypeCountTagsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * NoteCountOutputType without action
+   */
+  export type NoteCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteCountOutputType
+     */
+    select?: NoteCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * NoteCountOutputType without action
+   */
+  export type NoteCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NoteTagWhereInput
   }
 
 
@@ -1537,6 +2221,11 @@ export namespace Prisma {
     updatedAt?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    folders?: boolean | User$foldersArgs<ExtArgs>
+    tags?: boolean | User$tagsArgs<ExtArgs>
+    notes?: boolean | User$notesArgs<ExtArgs>
+    tasks?: boolean | User$tasksArgs<ExtArgs>
+    whiteboards?: boolean | User$whiteboardsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1574,6 +2263,11 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
+    folders?: boolean | User$foldersArgs<ExtArgs>
+    tags?: boolean | User$tagsArgs<ExtArgs>
+    notes?: boolean | User$notesArgs<ExtArgs>
+    tasks?: boolean | User$tasksArgs<ExtArgs>
+    whiteboards?: boolean | User$whiteboardsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1584,6 +2278,11 @@ export namespace Prisma {
     objects: {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
+      folders: Prisma.$FolderPayload<ExtArgs>[]
+      tags: Prisma.$TagPayload<ExtArgs>[]
+      notes: Prisma.$NotePayload<ExtArgs>[]
+      tasks: Prisma.$TaskPayload<ExtArgs>[]
+      whiteboards: Prisma.$WhiteboardPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1989,6 +2688,11 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    folders<T extends User$foldersArgs<ExtArgs> = {}>(args?: Subset<T, User$foldersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tags<T extends User$tagsArgs<ExtArgs> = {}>(args?: Subset<T, User$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notes<T extends User$notesArgs<ExtArgs> = {}>(args?: Subset<T, User$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tasks<T extends User$tasksArgs<ExtArgs> = {}>(args?: Subset<T, User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    whiteboards<T extends User$whiteboardsArgs<ExtArgs> = {}>(args?: Subset<T, User$whiteboardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2456,6 +3160,126 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
+  }
+
+  /**
+   * User.folders
+   */
+  export type User$foldersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    where?: FolderWhereInput
+    orderBy?: FolderOrderByWithRelationInput | FolderOrderByWithRelationInput[]
+    cursor?: FolderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FolderScalarFieldEnum | FolderScalarFieldEnum[]
+  }
+
+  /**
+   * User.tags
+   */
+  export type User$tagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    where?: TagWhereInput
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    cursor?: TagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * User.notes
+   */
+  export type User$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    where?: NoteWhereInput
+    orderBy?: NoteOrderByWithRelationInput | NoteOrderByWithRelationInput[]
+    cursor?: NoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NoteScalarFieldEnum | NoteScalarFieldEnum[]
+  }
+
+  /**
+   * User.tasks
+   */
+  export type User$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    where?: TaskWhereInput
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    cursor?: TaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * User.whiteboards
+   */
+  export type User$whiteboardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    where?: WhiteboardWhereInput
+    orderBy?: WhiteboardOrderByWithRelationInput | WhiteboardOrderByWithRelationInput[]
+    cursor?: WhiteboardWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WhiteboardScalarFieldEnum | WhiteboardScalarFieldEnum[]
   }
 
   /**
@@ -7918,6 +8742,6631 @@ export namespace Prisma {
 
 
   /**
+   * Model Folder
+   */
+
+  export type AggregateFolder = {
+    _count: FolderCountAggregateOutputType | null
+    _min: FolderMinAggregateOutputType | null
+    _max: FolderMaxAggregateOutputType | null
+  }
+
+  export type FolderMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    color: string | null
+    icon: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FolderMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    color: string | null
+    icon: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FolderCountAggregateOutputType = {
+    id: number
+    name: number
+    color: number
+    icon: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FolderMinAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    icon?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FolderMaxAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    icon?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FolderCountAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    icon?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FolderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Folder to aggregate.
+     */
+    where?: FolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Folders to fetch.
+     */
+    orderBy?: FolderOrderByWithRelationInput | FolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Folders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Folders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Folders
+    **/
+    _count?: true | FolderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FolderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FolderMaxAggregateInputType
+  }
+
+  export type GetFolderAggregateType<T extends FolderAggregateArgs> = {
+        [P in keyof T & keyof AggregateFolder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFolder[P]>
+      : GetScalarType<T[P], AggregateFolder[P]>
+  }
+
+
+
+
+  export type FolderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FolderWhereInput
+    orderBy?: FolderOrderByWithAggregationInput | FolderOrderByWithAggregationInput[]
+    by: FolderScalarFieldEnum[] | FolderScalarFieldEnum
+    having?: FolderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FolderCountAggregateInputType | true
+    _min?: FolderMinAggregateInputType
+    _max?: FolderMaxAggregateInputType
+  }
+
+  export type FolderGroupByOutputType = {
+    id: string
+    name: string
+    color: string | null
+    icon: string | null
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: FolderCountAggregateOutputType | null
+    _min: FolderMinAggregateOutputType | null
+    _max: FolderMaxAggregateOutputType | null
+  }
+
+  type GetFolderGroupByPayload<T extends FolderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FolderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FolderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FolderGroupByOutputType[P]>
+            : GetScalarType<T[P], FolderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FolderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    icon?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    notes?: boolean | Folder$notesArgs<ExtArgs>
+    _count?: boolean | FolderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["folder"]>
+
+  export type FolderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    icon?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["folder"]>
+
+  export type FolderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    icon?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["folder"]>
+
+  export type FolderSelectScalar = {
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    icon?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FolderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "color" | "icon" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["folder"]>
+  export type FolderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    notes?: boolean | Folder$notesArgs<ExtArgs>
+    _count?: boolean | FolderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FolderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type FolderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $FolderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Folder"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      notes: Prisma.$NotePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      color: string | null
+      icon: string | null
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["folder"]>
+    composites: {}
+  }
+
+  type FolderGetPayload<S extends boolean | null | undefined | FolderDefaultArgs> = $Result.GetResult<Prisma.$FolderPayload, S>
+
+  type FolderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FolderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FolderCountAggregateInputType | true
+    }
+
+  export interface FolderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Folder'], meta: { name: 'Folder' } }
+    /**
+     * Find zero or one Folder that matches the filter.
+     * @param {FolderFindUniqueArgs} args - Arguments to find a Folder
+     * @example
+     * // Get one Folder
+     * const folder = await prisma.folder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FolderFindUniqueArgs>(args: SelectSubset<T, FolderFindUniqueArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Folder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FolderFindUniqueOrThrowArgs} args - Arguments to find a Folder
+     * @example
+     * // Get one Folder
+     * const folder = await prisma.folder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FolderFindUniqueOrThrowArgs>(args: SelectSubset<T, FolderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Folder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FolderFindFirstArgs} args - Arguments to find a Folder
+     * @example
+     * // Get one Folder
+     * const folder = await prisma.folder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FolderFindFirstArgs>(args?: SelectSubset<T, FolderFindFirstArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Folder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FolderFindFirstOrThrowArgs} args - Arguments to find a Folder
+     * @example
+     * // Get one Folder
+     * const folder = await prisma.folder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FolderFindFirstOrThrowArgs>(args?: SelectSubset<T, FolderFindFirstOrThrowArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Folders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FolderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Folders
+     * const folders = await prisma.folder.findMany()
+     * 
+     * // Get first 10 Folders
+     * const folders = await prisma.folder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const folderWithIdOnly = await prisma.folder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FolderFindManyArgs>(args?: SelectSubset<T, FolderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Folder.
+     * @param {FolderCreateArgs} args - Arguments to create a Folder.
+     * @example
+     * // Create one Folder
+     * const Folder = await prisma.folder.create({
+     *   data: {
+     *     // ... data to create a Folder
+     *   }
+     * })
+     * 
+     */
+    create<T extends FolderCreateArgs>(args: SelectSubset<T, FolderCreateArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Folders.
+     * @param {FolderCreateManyArgs} args - Arguments to create many Folders.
+     * @example
+     * // Create many Folders
+     * const folder = await prisma.folder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FolderCreateManyArgs>(args?: SelectSubset<T, FolderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Folders and returns the data saved in the database.
+     * @param {FolderCreateManyAndReturnArgs} args - Arguments to create many Folders.
+     * @example
+     * // Create many Folders
+     * const folder = await prisma.folder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Folders and only return the `id`
+     * const folderWithIdOnly = await prisma.folder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FolderCreateManyAndReturnArgs>(args?: SelectSubset<T, FolderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Folder.
+     * @param {FolderDeleteArgs} args - Arguments to delete one Folder.
+     * @example
+     * // Delete one Folder
+     * const Folder = await prisma.folder.delete({
+     *   where: {
+     *     // ... filter to delete one Folder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FolderDeleteArgs>(args: SelectSubset<T, FolderDeleteArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Folder.
+     * @param {FolderUpdateArgs} args - Arguments to update one Folder.
+     * @example
+     * // Update one Folder
+     * const folder = await prisma.folder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FolderUpdateArgs>(args: SelectSubset<T, FolderUpdateArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Folders.
+     * @param {FolderDeleteManyArgs} args - Arguments to filter Folders to delete.
+     * @example
+     * // Delete a few Folders
+     * const { count } = await prisma.folder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FolderDeleteManyArgs>(args?: SelectSubset<T, FolderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Folders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FolderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Folders
+     * const folder = await prisma.folder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FolderUpdateManyArgs>(args: SelectSubset<T, FolderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Folders and returns the data updated in the database.
+     * @param {FolderUpdateManyAndReturnArgs} args - Arguments to update many Folders.
+     * @example
+     * // Update many Folders
+     * const folder = await prisma.folder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Folders and only return the `id`
+     * const folderWithIdOnly = await prisma.folder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FolderUpdateManyAndReturnArgs>(args: SelectSubset<T, FolderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Folder.
+     * @param {FolderUpsertArgs} args - Arguments to update or create a Folder.
+     * @example
+     * // Update or create a Folder
+     * const folder = await prisma.folder.upsert({
+     *   create: {
+     *     // ... data to create a Folder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Folder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FolderUpsertArgs>(args: SelectSubset<T, FolderUpsertArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Folders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FolderCountArgs} args - Arguments to filter Folders to count.
+     * @example
+     * // Count the number of Folders
+     * const count = await prisma.folder.count({
+     *   where: {
+     *     // ... the filter for the Folders we want to count
+     *   }
+     * })
+    **/
+    count<T extends FolderCountArgs>(
+      args?: Subset<T, FolderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FolderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Folder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FolderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FolderAggregateArgs>(args: Subset<T, FolderAggregateArgs>): Prisma.PrismaPromise<GetFolderAggregateType<T>>
+
+    /**
+     * Group by Folder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FolderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FolderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FolderGroupByArgs['orderBy'] }
+        : { orderBy?: FolderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FolderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFolderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Folder model
+   */
+  readonly fields: FolderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Folder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FolderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    notes<T extends Folder$notesArgs<ExtArgs> = {}>(args?: Subset<T, Folder$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Folder model
+   */
+  interface FolderFieldRefs {
+    readonly id: FieldRef<"Folder", 'String'>
+    readonly name: FieldRef<"Folder", 'String'>
+    readonly color: FieldRef<"Folder", 'String'>
+    readonly icon: FieldRef<"Folder", 'String'>
+    readonly userId: FieldRef<"Folder", 'String'>
+    readonly createdAt: FieldRef<"Folder", 'DateTime'>
+    readonly updatedAt: FieldRef<"Folder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Folder findUnique
+   */
+  export type FolderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * Filter, which Folder to fetch.
+     */
+    where: FolderWhereUniqueInput
+  }
+
+  /**
+   * Folder findUniqueOrThrow
+   */
+  export type FolderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * Filter, which Folder to fetch.
+     */
+    where: FolderWhereUniqueInput
+  }
+
+  /**
+   * Folder findFirst
+   */
+  export type FolderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * Filter, which Folder to fetch.
+     */
+    where?: FolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Folders to fetch.
+     */
+    orderBy?: FolderOrderByWithRelationInput | FolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Folders.
+     */
+    cursor?: FolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Folders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Folders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Folders.
+     */
+    distinct?: FolderScalarFieldEnum | FolderScalarFieldEnum[]
+  }
+
+  /**
+   * Folder findFirstOrThrow
+   */
+  export type FolderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * Filter, which Folder to fetch.
+     */
+    where?: FolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Folders to fetch.
+     */
+    orderBy?: FolderOrderByWithRelationInput | FolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Folders.
+     */
+    cursor?: FolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Folders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Folders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Folders.
+     */
+    distinct?: FolderScalarFieldEnum | FolderScalarFieldEnum[]
+  }
+
+  /**
+   * Folder findMany
+   */
+  export type FolderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * Filter, which Folders to fetch.
+     */
+    where?: FolderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Folders to fetch.
+     */
+    orderBy?: FolderOrderByWithRelationInput | FolderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Folders.
+     */
+    cursor?: FolderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Folders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Folders.
+     */
+    skip?: number
+    distinct?: FolderScalarFieldEnum | FolderScalarFieldEnum[]
+  }
+
+  /**
+   * Folder create
+   */
+  export type FolderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Folder.
+     */
+    data: XOR<FolderCreateInput, FolderUncheckedCreateInput>
+  }
+
+  /**
+   * Folder createMany
+   */
+  export type FolderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Folders.
+     */
+    data: FolderCreateManyInput | FolderCreateManyInput[]
+  }
+
+  /**
+   * Folder createManyAndReturn
+   */
+  export type FolderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * The data used to create many Folders.
+     */
+    data: FolderCreateManyInput | FolderCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Folder update
+   */
+  export type FolderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Folder.
+     */
+    data: XOR<FolderUpdateInput, FolderUncheckedUpdateInput>
+    /**
+     * Choose, which Folder to update.
+     */
+    where: FolderWhereUniqueInput
+  }
+
+  /**
+   * Folder updateMany
+   */
+  export type FolderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Folders.
+     */
+    data: XOR<FolderUpdateManyMutationInput, FolderUncheckedUpdateManyInput>
+    /**
+     * Filter which Folders to update
+     */
+    where?: FolderWhereInput
+    /**
+     * Limit how many Folders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Folder updateManyAndReturn
+   */
+  export type FolderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * The data used to update Folders.
+     */
+    data: XOR<FolderUpdateManyMutationInput, FolderUncheckedUpdateManyInput>
+    /**
+     * Filter which Folders to update
+     */
+    where?: FolderWhereInput
+    /**
+     * Limit how many Folders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Folder upsert
+   */
+  export type FolderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Folder to update in case it exists.
+     */
+    where: FolderWhereUniqueInput
+    /**
+     * In case the Folder found by the `where` argument doesn't exist, create a new Folder with this data.
+     */
+    create: XOR<FolderCreateInput, FolderUncheckedCreateInput>
+    /**
+     * In case the Folder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FolderUpdateInput, FolderUncheckedUpdateInput>
+  }
+
+  /**
+   * Folder delete
+   */
+  export type FolderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    /**
+     * Filter which Folder to delete.
+     */
+    where: FolderWhereUniqueInput
+  }
+
+  /**
+   * Folder deleteMany
+   */
+  export type FolderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Folders to delete
+     */
+    where?: FolderWhereInput
+    /**
+     * Limit how many Folders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Folder.notes
+   */
+  export type Folder$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    where?: NoteWhereInput
+    orderBy?: NoteOrderByWithRelationInput | NoteOrderByWithRelationInput[]
+    cursor?: NoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NoteScalarFieldEnum | NoteScalarFieldEnum[]
+  }
+
+  /**
+   * Folder without action
+   */
+  export type FolderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Tag
+   */
+
+  export type AggregateTag = {
+    _count: TagCountAggregateOutputType | null
+    _min: TagMinAggregateOutputType | null
+    _max: TagMaxAggregateOutputType | null
+  }
+
+  export type TagMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    color: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TagMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    color: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TagCountAggregateOutputType = {
+    id: number
+    name: number
+    color: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TagMinAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TagMaxAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TagCountAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TagAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Tag to aggregate.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Tags
+    **/
+    _count?: true | TagCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TagMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TagMaxAggregateInputType
+  }
+
+  export type GetTagAggregateType<T extends TagAggregateArgs> = {
+        [P in keyof T & keyof AggregateTag]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTag[P]>
+      : GetScalarType<T[P], AggregateTag[P]>
+  }
+
+
+
+
+  export type TagGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TagWhereInput
+    orderBy?: TagOrderByWithAggregationInput | TagOrderByWithAggregationInput[]
+    by: TagScalarFieldEnum[] | TagScalarFieldEnum
+    having?: TagScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TagCountAggregateInputType | true
+    _min?: TagMinAggregateInputType
+    _max?: TagMaxAggregateInputType
+  }
+
+  export type TagGroupByOutputType = {
+    id: string
+    name: string
+    color: string | null
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: TagCountAggregateOutputType | null
+    _min: TagMinAggregateOutputType | null
+    _max: TagMaxAggregateOutputType | null
+  }
+
+  type GetTagGroupByPayload<T extends TagGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TagGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TagGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TagGroupByOutputType[P]>
+            : GetScalarType<T[P], TagGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    notes?: boolean | Tag$notesArgs<ExtArgs>
+    _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tag"]>
+
+  export type TagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tag"]>
+
+  export type TagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tag"]>
+
+  export type TagSelectScalar = {
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "color" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["tag"]>
+  export type TagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    notes?: boolean | Tag$notesArgs<ExtArgs>
+    _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type TagIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TagIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TagPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Tag"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      notes: Prisma.$NoteTagPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      color: string | null
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["tag"]>
+    composites: {}
+  }
+
+  type TagGetPayload<S extends boolean | null | undefined | TagDefaultArgs> = $Result.GetResult<Prisma.$TagPayload, S>
+
+  type TagCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TagCountAggregateInputType | true
+    }
+
+  export interface TagDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Tag'], meta: { name: 'Tag' } }
+    /**
+     * Find zero or one Tag that matches the filter.
+     * @param {TagFindUniqueArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TagFindUniqueArgs>(args: SelectSubset<T, TagFindUniqueArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Tag that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TagFindUniqueOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TagFindUniqueOrThrowArgs>(args: SelectSubset<T, TagFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tag that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagFindFirstArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TagFindFirstArgs>(args?: SelectSubset<T, TagFindFirstArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tag that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagFindFirstOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TagFindFirstOrThrowArgs>(args?: SelectSubset<T, TagFindFirstOrThrowArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Tags that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tags
+     * const tags = await prisma.tag.findMany()
+     * 
+     * // Get first 10 Tags
+     * const tags = await prisma.tag.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tagWithIdOnly = await prisma.tag.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TagFindManyArgs>(args?: SelectSubset<T, TagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Tag.
+     * @param {TagCreateArgs} args - Arguments to create a Tag.
+     * @example
+     * // Create one Tag
+     * const Tag = await prisma.tag.create({
+     *   data: {
+     *     // ... data to create a Tag
+     *   }
+     * })
+     * 
+     */
+    create<T extends TagCreateArgs>(args: SelectSubset<T, TagCreateArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Tags.
+     * @param {TagCreateManyArgs} args - Arguments to create many Tags.
+     * @example
+     * // Create many Tags
+     * const tag = await prisma.tag.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TagCreateManyArgs>(args?: SelectSubset<T, TagCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Tags and returns the data saved in the database.
+     * @param {TagCreateManyAndReturnArgs} args - Arguments to create many Tags.
+     * @example
+     * // Create many Tags
+     * const tag = await prisma.tag.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Tags and only return the `id`
+     * const tagWithIdOnly = await prisma.tag.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TagCreateManyAndReturnArgs>(args?: SelectSubset<T, TagCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Tag.
+     * @param {TagDeleteArgs} args - Arguments to delete one Tag.
+     * @example
+     * // Delete one Tag
+     * const Tag = await prisma.tag.delete({
+     *   where: {
+     *     // ... filter to delete one Tag
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TagDeleteArgs>(args: SelectSubset<T, TagDeleteArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Tag.
+     * @param {TagUpdateArgs} args - Arguments to update one Tag.
+     * @example
+     * // Update one Tag
+     * const tag = await prisma.tag.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TagUpdateArgs>(args: SelectSubset<T, TagUpdateArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Tags.
+     * @param {TagDeleteManyArgs} args - Arguments to filter Tags to delete.
+     * @example
+     * // Delete a few Tags
+     * const { count } = await prisma.tag.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TagDeleteManyArgs>(args?: SelectSubset<T, TagDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tags
+     * const tag = await prisma.tag.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TagUpdateManyArgs>(args: SelectSubset<T, TagUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tags and returns the data updated in the database.
+     * @param {TagUpdateManyAndReturnArgs} args - Arguments to update many Tags.
+     * @example
+     * // Update many Tags
+     * const tag = await prisma.tag.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Tags and only return the `id`
+     * const tagWithIdOnly = await prisma.tag.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TagUpdateManyAndReturnArgs>(args: SelectSubset<T, TagUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Tag.
+     * @param {TagUpsertArgs} args - Arguments to update or create a Tag.
+     * @example
+     * // Update or create a Tag
+     * const tag = await prisma.tag.upsert({
+     *   create: {
+     *     // ... data to create a Tag
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Tag we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TagUpsertArgs>(args: SelectSubset<T, TagUpsertArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Tags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagCountArgs} args - Arguments to filter Tags to count.
+     * @example
+     * // Count the number of Tags
+     * const count = await prisma.tag.count({
+     *   where: {
+     *     // ... the filter for the Tags we want to count
+     *   }
+     * })
+    **/
+    count<T extends TagCountArgs>(
+      args?: Subset<T, TagCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TagCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Tag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TagAggregateArgs>(args: Subset<T, TagAggregateArgs>): Prisma.PrismaPromise<GetTagAggregateType<T>>
+
+    /**
+     * Group by Tag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TagGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TagGroupByArgs['orderBy'] }
+        : { orderBy?: TagGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TagGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTagGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Tag model
+   */
+  readonly fields: TagFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Tag.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TagClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    notes<T extends Tag$notesArgs<ExtArgs> = {}>(args?: Subset<T, Tag$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Tag model
+   */
+  interface TagFieldRefs {
+    readonly id: FieldRef<"Tag", 'String'>
+    readonly name: FieldRef<"Tag", 'String'>
+    readonly color: FieldRef<"Tag", 'String'>
+    readonly userId: FieldRef<"Tag", 'String'>
+    readonly createdAt: FieldRef<"Tag", 'DateTime'>
+    readonly updatedAt: FieldRef<"Tag", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Tag findUnique
+   */
+  export type TagFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag findUniqueOrThrow
+   */
+  export type TagFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag findFirst
+   */
+  export type TagFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tags.
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tags.
+     */
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Tag findFirstOrThrow
+   */
+  export type TagFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tag to fetch.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tags.
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tags.
+     */
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Tag findMany
+   */
+  export type TagFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter, which Tags to fetch.
+     */
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     */
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Tags.
+     */
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     */
+    skip?: number
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+  }
+
+  /**
+   * Tag create
+   */
+  export type TagCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Tag.
+     */
+    data: XOR<TagCreateInput, TagUncheckedCreateInput>
+  }
+
+  /**
+   * Tag createMany
+   */
+  export type TagCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Tags.
+     */
+    data: TagCreateManyInput | TagCreateManyInput[]
+  }
+
+  /**
+   * Tag createManyAndReturn
+   */
+  export type TagCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * The data used to create many Tags.
+     */
+    data: TagCreateManyInput | TagCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Tag update
+   */
+  export type TagUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Tag.
+     */
+    data: XOR<TagUpdateInput, TagUncheckedUpdateInput>
+    /**
+     * Choose, which Tag to update.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag updateMany
+   */
+  export type TagUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Tags.
+     */
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyInput>
+    /**
+     * Filter which Tags to update
+     */
+    where?: TagWhereInput
+    /**
+     * Limit how many Tags to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Tag updateManyAndReturn
+   */
+  export type TagUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * The data used to update Tags.
+     */
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyInput>
+    /**
+     * Filter which Tags to update
+     */
+    where?: TagWhereInput
+    /**
+     * Limit how many Tags to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Tag upsert
+   */
+  export type TagUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Tag to update in case it exists.
+     */
+    where: TagWhereUniqueInput
+    /**
+     * In case the Tag found by the `where` argument doesn't exist, create a new Tag with this data.
+     */
+    create: XOR<TagCreateInput, TagUncheckedCreateInput>
+    /**
+     * In case the Tag was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TagUpdateInput, TagUncheckedUpdateInput>
+  }
+
+  /**
+   * Tag delete
+   */
+  export type TagDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+    /**
+     * Filter which Tag to delete.
+     */
+    where: TagWhereUniqueInput
+  }
+
+  /**
+   * Tag deleteMany
+   */
+  export type TagDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Tags to delete
+     */
+    where?: TagWhereInput
+    /**
+     * Limit how many Tags to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Tag.notes
+   */
+  export type Tag$notesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    where?: NoteTagWhereInput
+    orderBy?: NoteTagOrderByWithRelationInput | NoteTagOrderByWithRelationInput[]
+    cursor?: NoteTagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NoteTagScalarFieldEnum | NoteTagScalarFieldEnum[]
+  }
+
+  /**
+   * Tag without action
+   */
+  export type TagDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tag
+     */
+    select?: TagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tag
+     */
+    omit?: TagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TagInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Note
+   */
+
+  export type AggregateNote = {
+    _count: NoteCountAggregateOutputType | null
+    _min: NoteMinAggregateOutputType | null
+    _max: NoteMaxAggregateOutputType | null
+  }
+
+  export type NoteMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    content: string | null
+    isPublic: boolean | null
+    folderId: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NoteMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    content: string | null
+    isPublic: boolean | null
+    folderId: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NoteCountAggregateOutputType = {
+    id: number
+    title: number
+    content: number
+    isPublic: number
+    folderId: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type NoteMinAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    isPublic?: true
+    folderId?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NoteMaxAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    isPublic?: true
+    folderId?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NoteCountAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    isPublic?: true
+    folderId?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type NoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Note to aggregate.
+     */
+    where?: NoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notes to fetch.
+     */
+    orderBy?: NoteOrderByWithRelationInput | NoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Notes
+    **/
+    _count?: true | NoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NoteMaxAggregateInputType
+  }
+
+  export type GetNoteAggregateType<T extends NoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateNote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNote[P]>
+      : GetScalarType<T[P], AggregateNote[P]>
+  }
+
+
+
+
+  export type NoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NoteWhereInput
+    orderBy?: NoteOrderByWithAggregationInput | NoteOrderByWithAggregationInput[]
+    by: NoteScalarFieldEnum[] | NoteScalarFieldEnum
+    having?: NoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NoteCountAggregateInputType | true
+    _min?: NoteMinAggregateInputType
+    _max?: NoteMaxAggregateInputType
+  }
+
+  export type NoteGroupByOutputType = {
+    id: string
+    title: string
+    content: string | null
+    isPublic: boolean
+    folderId: string | null
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: NoteCountAggregateOutputType | null
+    _min: NoteMinAggregateOutputType | null
+    _max: NoteMaxAggregateOutputType | null
+  }
+
+  type GetNoteGroupByPayload<T extends NoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NoteGroupByOutputType[P]>
+            : GetScalarType<T[P], NoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    isPublic?: boolean
+    folderId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    folder?: boolean | Note$folderArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    tags?: boolean | Note$tagsArgs<ExtArgs>
+    _count?: boolean | NoteCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["note"]>
+
+  export type NoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    isPublic?: boolean
+    folderId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    folder?: boolean | Note$folderArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["note"]>
+
+  export type NoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    isPublic?: boolean
+    folderId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    folder?: boolean | Note$folderArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["note"]>
+
+  export type NoteSelectScalar = {
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    isPublic?: boolean
+    folderId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type NoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "isPublic" | "folderId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["note"]>
+  export type NoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Note$folderArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    tags?: boolean | Note$tagsArgs<ExtArgs>
+    _count?: boolean | NoteCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type NoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Note$folderArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Note$folderArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $NotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Note"
+    objects: {
+      folder: Prisma.$FolderPayload<ExtArgs> | null
+      user: Prisma.$UserPayload<ExtArgs>
+      tags: Prisma.$NoteTagPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      content: string | null
+      isPublic: boolean
+      folderId: string | null
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["note"]>
+    composites: {}
+  }
+
+  type NoteGetPayload<S extends boolean | null | undefined | NoteDefaultArgs> = $Result.GetResult<Prisma.$NotePayload, S>
+
+  type NoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NoteCountAggregateInputType | true
+    }
+
+  export interface NoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Note'], meta: { name: 'Note' } }
+    /**
+     * Find zero or one Note that matches the filter.
+     * @param {NoteFindUniqueArgs} args - Arguments to find a Note
+     * @example
+     * // Get one Note
+     * const note = await prisma.note.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NoteFindUniqueArgs>(args: SelectSubset<T, NoteFindUniqueArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Note that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NoteFindUniqueOrThrowArgs} args - Arguments to find a Note
+     * @example
+     * // Get one Note
+     * const note = await prisma.note.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NoteFindUniqueOrThrowArgs>(args: SelectSubset<T, NoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Note that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteFindFirstArgs} args - Arguments to find a Note
+     * @example
+     * // Get one Note
+     * const note = await prisma.note.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NoteFindFirstArgs>(args?: SelectSubset<T, NoteFindFirstArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Note that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteFindFirstOrThrowArgs} args - Arguments to find a Note
+     * @example
+     * // Get one Note
+     * const note = await prisma.note.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NoteFindFirstOrThrowArgs>(args?: SelectSubset<T, NoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Notes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notes
+     * const notes = await prisma.note.findMany()
+     * 
+     * // Get first 10 Notes
+     * const notes = await prisma.note.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const noteWithIdOnly = await prisma.note.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NoteFindManyArgs>(args?: SelectSubset<T, NoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Note.
+     * @param {NoteCreateArgs} args - Arguments to create a Note.
+     * @example
+     * // Create one Note
+     * const Note = await prisma.note.create({
+     *   data: {
+     *     // ... data to create a Note
+     *   }
+     * })
+     * 
+     */
+    create<T extends NoteCreateArgs>(args: SelectSubset<T, NoteCreateArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Notes.
+     * @param {NoteCreateManyArgs} args - Arguments to create many Notes.
+     * @example
+     * // Create many Notes
+     * const note = await prisma.note.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NoteCreateManyArgs>(args?: SelectSubset<T, NoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Notes and returns the data saved in the database.
+     * @param {NoteCreateManyAndReturnArgs} args - Arguments to create many Notes.
+     * @example
+     * // Create many Notes
+     * const note = await prisma.note.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Notes and only return the `id`
+     * const noteWithIdOnly = await prisma.note.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NoteCreateManyAndReturnArgs>(args?: SelectSubset<T, NoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Note.
+     * @param {NoteDeleteArgs} args - Arguments to delete one Note.
+     * @example
+     * // Delete one Note
+     * const Note = await prisma.note.delete({
+     *   where: {
+     *     // ... filter to delete one Note
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NoteDeleteArgs>(args: SelectSubset<T, NoteDeleteArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Note.
+     * @param {NoteUpdateArgs} args - Arguments to update one Note.
+     * @example
+     * // Update one Note
+     * const note = await prisma.note.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NoteUpdateArgs>(args: SelectSubset<T, NoteUpdateArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Notes.
+     * @param {NoteDeleteManyArgs} args - Arguments to filter Notes to delete.
+     * @example
+     * // Delete a few Notes
+     * const { count } = await prisma.note.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NoteDeleteManyArgs>(args?: SelectSubset<T, NoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notes
+     * const note = await prisma.note.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NoteUpdateManyArgs>(args: SelectSubset<T, NoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notes and returns the data updated in the database.
+     * @param {NoteUpdateManyAndReturnArgs} args - Arguments to update many Notes.
+     * @example
+     * // Update many Notes
+     * const note = await prisma.note.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Notes and only return the `id`
+     * const noteWithIdOnly = await prisma.note.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NoteUpdateManyAndReturnArgs>(args: SelectSubset<T, NoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Note.
+     * @param {NoteUpsertArgs} args - Arguments to update or create a Note.
+     * @example
+     * // Update or create a Note
+     * const note = await prisma.note.upsert({
+     *   create: {
+     *     // ... data to create a Note
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Note we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NoteUpsertArgs>(args: SelectSubset<T, NoteUpsertArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Notes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteCountArgs} args - Arguments to filter Notes to count.
+     * @example
+     * // Count the number of Notes
+     * const count = await prisma.note.count({
+     *   where: {
+     *     // ... the filter for the Notes we want to count
+     *   }
+     * })
+    **/
+    count<T extends NoteCountArgs>(
+      args?: Subset<T, NoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Note.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NoteAggregateArgs>(args: Subset<T, NoteAggregateArgs>): Prisma.PrismaPromise<GetNoteAggregateType<T>>
+
+    /**
+     * Group by Note.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NoteGroupByArgs['orderBy'] }
+        : { orderBy?: NoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Note model
+   */
+  readonly fields: NoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Note.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    folder<T extends Note$folderArgs<ExtArgs> = {}>(args?: Subset<T, Note$folderArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tags<T extends Note$tagsArgs<ExtArgs> = {}>(args?: Subset<T, Note$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Note model
+   */
+  interface NoteFieldRefs {
+    readonly id: FieldRef<"Note", 'String'>
+    readonly title: FieldRef<"Note", 'String'>
+    readonly content: FieldRef<"Note", 'String'>
+    readonly isPublic: FieldRef<"Note", 'Boolean'>
+    readonly folderId: FieldRef<"Note", 'String'>
+    readonly userId: FieldRef<"Note", 'String'>
+    readonly createdAt: FieldRef<"Note", 'DateTime'>
+    readonly updatedAt: FieldRef<"Note", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Note findUnique
+   */
+  export type NoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * Filter, which Note to fetch.
+     */
+    where: NoteWhereUniqueInput
+  }
+
+  /**
+   * Note findUniqueOrThrow
+   */
+  export type NoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * Filter, which Note to fetch.
+     */
+    where: NoteWhereUniqueInput
+  }
+
+  /**
+   * Note findFirst
+   */
+  export type NoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * Filter, which Note to fetch.
+     */
+    where?: NoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notes to fetch.
+     */
+    orderBy?: NoteOrderByWithRelationInput | NoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notes.
+     */
+    cursor?: NoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notes.
+     */
+    distinct?: NoteScalarFieldEnum | NoteScalarFieldEnum[]
+  }
+
+  /**
+   * Note findFirstOrThrow
+   */
+  export type NoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * Filter, which Note to fetch.
+     */
+    where?: NoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notes to fetch.
+     */
+    orderBy?: NoteOrderByWithRelationInput | NoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notes.
+     */
+    cursor?: NoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notes.
+     */
+    distinct?: NoteScalarFieldEnum | NoteScalarFieldEnum[]
+  }
+
+  /**
+   * Note findMany
+   */
+  export type NoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * Filter, which Notes to fetch.
+     */
+    where?: NoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notes to fetch.
+     */
+    orderBy?: NoteOrderByWithRelationInput | NoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Notes.
+     */
+    cursor?: NoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notes.
+     */
+    skip?: number
+    distinct?: NoteScalarFieldEnum | NoteScalarFieldEnum[]
+  }
+
+  /**
+   * Note create
+   */
+  export type NoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Note.
+     */
+    data: XOR<NoteCreateInput, NoteUncheckedCreateInput>
+  }
+
+  /**
+   * Note createMany
+   */
+  export type NoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Notes.
+     */
+    data: NoteCreateManyInput | NoteCreateManyInput[]
+  }
+
+  /**
+   * Note createManyAndReturn
+   */
+  export type NoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many Notes.
+     */
+    data: NoteCreateManyInput | NoteCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Note update
+   */
+  export type NoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Note.
+     */
+    data: XOR<NoteUpdateInput, NoteUncheckedUpdateInput>
+    /**
+     * Choose, which Note to update.
+     */
+    where: NoteWhereUniqueInput
+  }
+
+  /**
+   * Note updateMany
+   */
+  export type NoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Notes.
+     */
+    data: XOR<NoteUpdateManyMutationInput, NoteUncheckedUpdateManyInput>
+    /**
+     * Filter which Notes to update
+     */
+    where?: NoteWhereInput
+    /**
+     * Limit how many Notes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Note updateManyAndReturn
+   */
+  export type NoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * The data used to update Notes.
+     */
+    data: XOR<NoteUpdateManyMutationInput, NoteUncheckedUpdateManyInput>
+    /**
+     * Filter which Notes to update
+     */
+    where?: NoteWhereInput
+    /**
+     * Limit how many Notes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Note upsert
+   */
+  export type NoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Note to update in case it exists.
+     */
+    where: NoteWhereUniqueInput
+    /**
+     * In case the Note found by the `where` argument doesn't exist, create a new Note with this data.
+     */
+    create: XOR<NoteCreateInput, NoteUncheckedCreateInput>
+    /**
+     * In case the Note was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NoteUpdateInput, NoteUncheckedUpdateInput>
+  }
+
+  /**
+   * Note delete
+   */
+  export type NoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+    /**
+     * Filter which Note to delete.
+     */
+    where: NoteWhereUniqueInput
+  }
+
+  /**
+   * Note deleteMany
+   */
+  export type NoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notes to delete
+     */
+    where?: NoteWhereInput
+    /**
+     * Limit how many Notes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Note.folder
+   */
+  export type Note$folderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    where?: FolderWhereInput
+  }
+
+  /**
+   * Note.tags
+   */
+  export type Note$tagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    where?: NoteTagWhereInput
+    orderBy?: NoteTagOrderByWithRelationInput | NoteTagOrderByWithRelationInput[]
+    cursor?: NoteTagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NoteTagScalarFieldEnum | NoteTagScalarFieldEnum[]
+  }
+
+  /**
+   * Note without action
+   */
+  export type NoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Note
+     */
+    select?: NoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Note
+     */
+    omit?: NoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model NoteTag
+   */
+
+  export type AggregateNoteTag = {
+    _count: NoteTagCountAggregateOutputType | null
+    _min: NoteTagMinAggregateOutputType | null
+    _max: NoteTagMaxAggregateOutputType | null
+  }
+
+  export type NoteTagMinAggregateOutputType = {
+    noteId: string | null
+    tagId: string | null
+  }
+
+  export type NoteTagMaxAggregateOutputType = {
+    noteId: string | null
+    tagId: string | null
+  }
+
+  export type NoteTagCountAggregateOutputType = {
+    noteId: number
+    tagId: number
+    _all: number
+  }
+
+
+  export type NoteTagMinAggregateInputType = {
+    noteId?: true
+    tagId?: true
+  }
+
+  export type NoteTagMaxAggregateInputType = {
+    noteId?: true
+    tagId?: true
+  }
+
+  export type NoteTagCountAggregateInputType = {
+    noteId?: true
+    tagId?: true
+    _all?: true
+  }
+
+  export type NoteTagAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NoteTag to aggregate.
+     */
+    where?: NoteTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NoteTags to fetch.
+     */
+    orderBy?: NoteTagOrderByWithRelationInput | NoteTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NoteTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NoteTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NoteTags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NoteTags
+    **/
+    _count?: true | NoteTagCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NoteTagMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NoteTagMaxAggregateInputType
+  }
+
+  export type GetNoteTagAggregateType<T extends NoteTagAggregateArgs> = {
+        [P in keyof T & keyof AggregateNoteTag]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNoteTag[P]>
+      : GetScalarType<T[P], AggregateNoteTag[P]>
+  }
+
+
+
+
+  export type NoteTagGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NoteTagWhereInput
+    orderBy?: NoteTagOrderByWithAggregationInput | NoteTagOrderByWithAggregationInput[]
+    by: NoteTagScalarFieldEnum[] | NoteTagScalarFieldEnum
+    having?: NoteTagScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NoteTagCountAggregateInputType | true
+    _min?: NoteTagMinAggregateInputType
+    _max?: NoteTagMaxAggregateInputType
+  }
+
+  export type NoteTagGroupByOutputType = {
+    noteId: string
+    tagId: string
+    _count: NoteTagCountAggregateOutputType | null
+    _min: NoteTagMinAggregateOutputType | null
+    _max: NoteTagMaxAggregateOutputType | null
+  }
+
+  type GetNoteTagGroupByPayload<T extends NoteTagGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NoteTagGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NoteTagGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NoteTagGroupByOutputType[P]>
+            : GetScalarType<T[P], NoteTagGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NoteTagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    noteId?: boolean
+    tagId?: boolean
+    note?: boolean | NoteDefaultArgs<ExtArgs>
+    tag?: boolean | TagDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["noteTag"]>
+
+  export type NoteTagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    noteId?: boolean
+    tagId?: boolean
+    note?: boolean | NoteDefaultArgs<ExtArgs>
+    tag?: boolean | TagDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["noteTag"]>
+
+  export type NoteTagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    noteId?: boolean
+    tagId?: boolean
+    note?: boolean | NoteDefaultArgs<ExtArgs>
+    tag?: boolean | TagDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["noteTag"]>
+
+  export type NoteTagSelectScalar = {
+    noteId?: boolean
+    tagId?: boolean
+  }
+
+  export type NoteTagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"noteId" | "tagId", ExtArgs["result"]["noteTag"]>
+  export type NoteTagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    note?: boolean | NoteDefaultArgs<ExtArgs>
+    tag?: boolean | TagDefaultArgs<ExtArgs>
+  }
+  export type NoteTagIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    note?: boolean | NoteDefaultArgs<ExtArgs>
+    tag?: boolean | TagDefaultArgs<ExtArgs>
+  }
+  export type NoteTagIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    note?: boolean | NoteDefaultArgs<ExtArgs>
+    tag?: boolean | TagDefaultArgs<ExtArgs>
+  }
+
+  export type $NoteTagPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NoteTag"
+    objects: {
+      note: Prisma.$NotePayload<ExtArgs>
+      tag: Prisma.$TagPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      noteId: string
+      tagId: string
+    }, ExtArgs["result"]["noteTag"]>
+    composites: {}
+  }
+
+  type NoteTagGetPayload<S extends boolean | null | undefined | NoteTagDefaultArgs> = $Result.GetResult<Prisma.$NoteTagPayload, S>
+
+  type NoteTagCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NoteTagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NoteTagCountAggregateInputType | true
+    }
+
+  export interface NoteTagDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NoteTag'], meta: { name: 'NoteTag' } }
+    /**
+     * Find zero or one NoteTag that matches the filter.
+     * @param {NoteTagFindUniqueArgs} args - Arguments to find a NoteTag
+     * @example
+     * // Get one NoteTag
+     * const noteTag = await prisma.noteTag.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NoteTagFindUniqueArgs>(args: SelectSubset<T, NoteTagFindUniqueArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one NoteTag that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NoteTagFindUniqueOrThrowArgs} args - Arguments to find a NoteTag
+     * @example
+     * // Get one NoteTag
+     * const noteTag = await prisma.noteTag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NoteTagFindUniqueOrThrowArgs>(args: SelectSubset<T, NoteTagFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NoteTag that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteTagFindFirstArgs} args - Arguments to find a NoteTag
+     * @example
+     * // Get one NoteTag
+     * const noteTag = await prisma.noteTag.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NoteTagFindFirstArgs>(args?: SelectSubset<T, NoteTagFindFirstArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NoteTag that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteTagFindFirstOrThrowArgs} args - Arguments to find a NoteTag
+     * @example
+     * // Get one NoteTag
+     * const noteTag = await prisma.noteTag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NoteTagFindFirstOrThrowArgs>(args?: SelectSubset<T, NoteTagFindFirstOrThrowArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more NoteTags that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteTagFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NoteTags
+     * const noteTags = await prisma.noteTag.findMany()
+     * 
+     * // Get first 10 NoteTags
+     * const noteTags = await prisma.noteTag.findMany({ take: 10 })
+     * 
+     * // Only select the `noteId`
+     * const noteTagWithNoteIdOnly = await prisma.noteTag.findMany({ select: { noteId: true } })
+     * 
+     */
+    findMany<T extends NoteTagFindManyArgs>(args?: SelectSubset<T, NoteTagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a NoteTag.
+     * @param {NoteTagCreateArgs} args - Arguments to create a NoteTag.
+     * @example
+     * // Create one NoteTag
+     * const NoteTag = await prisma.noteTag.create({
+     *   data: {
+     *     // ... data to create a NoteTag
+     *   }
+     * })
+     * 
+     */
+    create<T extends NoteTagCreateArgs>(args: SelectSubset<T, NoteTagCreateArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many NoteTags.
+     * @param {NoteTagCreateManyArgs} args - Arguments to create many NoteTags.
+     * @example
+     * // Create many NoteTags
+     * const noteTag = await prisma.noteTag.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NoteTagCreateManyArgs>(args?: SelectSubset<T, NoteTagCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many NoteTags and returns the data saved in the database.
+     * @param {NoteTagCreateManyAndReturnArgs} args - Arguments to create many NoteTags.
+     * @example
+     * // Create many NoteTags
+     * const noteTag = await prisma.noteTag.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many NoteTags and only return the `noteId`
+     * const noteTagWithNoteIdOnly = await prisma.noteTag.createManyAndReturn({
+     *   select: { noteId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NoteTagCreateManyAndReturnArgs>(args?: SelectSubset<T, NoteTagCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a NoteTag.
+     * @param {NoteTagDeleteArgs} args - Arguments to delete one NoteTag.
+     * @example
+     * // Delete one NoteTag
+     * const NoteTag = await prisma.noteTag.delete({
+     *   where: {
+     *     // ... filter to delete one NoteTag
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NoteTagDeleteArgs>(args: SelectSubset<T, NoteTagDeleteArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one NoteTag.
+     * @param {NoteTagUpdateArgs} args - Arguments to update one NoteTag.
+     * @example
+     * // Update one NoteTag
+     * const noteTag = await prisma.noteTag.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NoteTagUpdateArgs>(args: SelectSubset<T, NoteTagUpdateArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more NoteTags.
+     * @param {NoteTagDeleteManyArgs} args - Arguments to filter NoteTags to delete.
+     * @example
+     * // Delete a few NoteTags
+     * const { count } = await prisma.noteTag.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NoteTagDeleteManyArgs>(args?: SelectSubset<T, NoteTagDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NoteTags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteTagUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NoteTags
+     * const noteTag = await prisma.noteTag.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NoteTagUpdateManyArgs>(args: SelectSubset<T, NoteTagUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NoteTags and returns the data updated in the database.
+     * @param {NoteTagUpdateManyAndReturnArgs} args - Arguments to update many NoteTags.
+     * @example
+     * // Update many NoteTags
+     * const noteTag = await prisma.noteTag.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more NoteTags and only return the `noteId`
+     * const noteTagWithNoteIdOnly = await prisma.noteTag.updateManyAndReturn({
+     *   select: { noteId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NoteTagUpdateManyAndReturnArgs>(args: SelectSubset<T, NoteTagUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one NoteTag.
+     * @param {NoteTagUpsertArgs} args - Arguments to update or create a NoteTag.
+     * @example
+     * // Update or create a NoteTag
+     * const noteTag = await prisma.noteTag.upsert({
+     *   create: {
+     *     // ... data to create a NoteTag
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NoteTag we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NoteTagUpsertArgs>(args: SelectSubset<T, NoteTagUpsertArgs<ExtArgs>>): Prisma__NoteTagClient<$Result.GetResult<Prisma.$NoteTagPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of NoteTags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteTagCountArgs} args - Arguments to filter NoteTags to count.
+     * @example
+     * // Count the number of NoteTags
+     * const count = await prisma.noteTag.count({
+     *   where: {
+     *     // ... the filter for the NoteTags we want to count
+     *   }
+     * })
+    **/
+    count<T extends NoteTagCountArgs>(
+      args?: Subset<T, NoteTagCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NoteTagCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NoteTag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteTagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NoteTagAggregateArgs>(args: Subset<T, NoteTagAggregateArgs>): Prisma.PrismaPromise<GetNoteTagAggregateType<T>>
+
+    /**
+     * Group by NoteTag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NoteTagGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NoteTagGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NoteTagGroupByArgs['orderBy'] }
+        : { orderBy?: NoteTagGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NoteTagGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNoteTagGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NoteTag model
+   */
+  readonly fields: NoteTagFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NoteTag.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NoteTagClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    note<T extends NoteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, NoteDefaultArgs<ExtArgs>>): Prisma__NoteClient<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tag<T extends TagDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TagDefaultArgs<ExtArgs>>): Prisma__TagClient<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NoteTag model
+   */
+  interface NoteTagFieldRefs {
+    readonly noteId: FieldRef<"NoteTag", 'String'>
+    readonly tagId: FieldRef<"NoteTag", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NoteTag findUnique
+   */
+  export type NoteTagFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * Filter, which NoteTag to fetch.
+     */
+    where: NoteTagWhereUniqueInput
+  }
+
+  /**
+   * NoteTag findUniqueOrThrow
+   */
+  export type NoteTagFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * Filter, which NoteTag to fetch.
+     */
+    where: NoteTagWhereUniqueInput
+  }
+
+  /**
+   * NoteTag findFirst
+   */
+  export type NoteTagFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * Filter, which NoteTag to fetch.
+     */
+    where?: NoteTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NoteTags to fetch.
+     */
+    orderBy?: NoteTagOrderByWithRelationInput | NoteTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NoteTags.
+     */
+    cursor?: NoteTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NoteTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NoteTags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NoteTags.
+     */
+    distinct?: NoteTagScalarFieldEnum | NoteTagScalarFieldEnum[]
+  }
+
+  /**
+   * NoteTag findFirstOrThrow
+   */
+  export type NoteTagFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * Filter, which NoteTag to fetch.
+     */
+    where?: NoteTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NoteTags to fetch.
+     */
+    orderBy?: NoteTagOrderByWithRelationInput | NoteTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NoteTags.
+     */
+    cursor?: NoteTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NoteTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NoteTags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NoteTags.
+     */
+    distinct?: NoteTagScalarFieldEnum | NoteTagScalarFieldEnum[]
+  }
+
+  /**
+   * NoteTag findMany
+   */
+  export type NoteTagFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * Filter, which NoteTags to fetch.
+     */
+    where?: NoteTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NoteTags to fetch.
+     */
+    orderBy?: NoteTagOrderByWithRelationInput | NoteTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NoteTags.
+     */
+    cursor?: NoteTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NoteTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NoteTags.
+     */
+    skip?: number
+    distinct?: NoteTagScalarFieldEnum | NoteTagScalarFieldEnum[]
+  }
+
+  /**
+   * NoteTag create
+   */
+  export type NoteTagCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * The data needed to create a NoteTag.
+     */
+    data: XOR<NoteTagCreateInput, NoteTagUncheckedCreateInput>
+  }
+
+  /**
+   * NoteTag createMany
+   */
+  export type NoteTagCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NoteTags.
+     */
+    data: NoteTagCreateManyInput | NoteTagCreateManyInput[]
+  }
+
+  /**
+   * NoteTag createManyAndReturn
+   */
+  export type NoteTagCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * The data used to create many NoteTags.
+     */
+    data: NoteTagCreateManyInput | NoteTagCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NoteTag update
+   */
+  export type NoteTagUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * The data needed to update a NoteTag.
+     */
+    data: XOR<NoteTagUpdateInput, NoteTagUncheckedUpdateInput>
+    /**
+     * Choose, which NoteTag to update.
+     */
+    where: NoteTagWhereUniqueInput
+  }
+
+  /**
+   * NoteTag updateMany
+   */
+  export type NoteTagUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NoteTags.
+     */
+    data: XOR<NoteTagUpdateManyMutationInput, NoteTagUncheckedUpdateManyInput>
+    /**
+     * Filter which NoteTags to update
+     */
+    where?: NoteTagWhereInput
+    /**
+     * Limit how many NoteTags to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * NoteTag updateManyAndReturn
+   */
+  export type NoteTagUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * The data used to update NoteTags.
+     */
+    data: XOR<NoteTagUpdateManyMutationInput, NoteTagUncheckedUpdateManyInput>
+    /**
+     * Filter which NoteTags to update
+     */
+    where?: NoteTagWhereInput
+    /**
+     * Limit how many NoteTags to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * NoteTag upsert
+   */
+  export type NoteTagUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * The filter to search for the NoteTag to update in case it exists.
+     */
+    where: NoteTagWhereUniqueInput
+    /**
+     * In case the NoteTag found by the `where` argument doesn't exist, create a new NoteTag with this data.
+     */
+    create: XOR<NoteTagCreateInput, NoteTagUncheckedCreateInput>
+    /**
+     * In case the NoteTag was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NoteTagUpdateInput, NoteTagUncheckedUpdateInput>
+  }
+
+  /**
+   * NoteTag delete
+   */
+  export type NoteTagDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+    /**
+     * Filter which NoteTag to delete.
+     */
+    where: NoteTagWhereUniqueInput
+  }
+
+  /**
+   * NoteTag deleteMany
+   */
+  export type NoteTagDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NoteTags to delete
+     */
+    where?: NoteTagWhereInput
+    /**
+     * Limit how many NoteTags to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * NoteTag without action
+   */
+  export type NoteTagDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NoteTag
+     */
+    select?: NoteTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NoteTag
+     */
+    omit?: NoteTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NoteTagInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Task
+   */
+
+  export type AggregateTask = {
+    _count: TaskCountAggregateOutputType | null
+    _avg: TaskAvgAggregateOutputType | null
+    _sum: TaskSumAggregateOutputType | null
+    _min: TaskMinAggregateOutputType | null
+    _max: TaskMaxAggregateOutputType | null
+  }
+
+  export type TaskAvgAggregateOutputType = {
+    order: number | null
+  }
+
+  export type TaskSumAggregateOutputType = {
+    order: number | null
+  }
+
+  export type TaskMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    status: string | null
+    priority: string | null
+    dueDate: Date | null
+    order: number | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TaskMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    status: string | null
+    priority: string | null
+    dueDate: Date | null
+    order: number | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TaskCountAggregateOutputType = {
+    id: number
+    title: number
+    description: number
+    status: number
+    priority: number
+    dueDate: number
+    order: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TaskAvgAggregateInputType = {
+    order?: true
+  }
+
+  export type TaskSumAggregateInputType = {
+    order?: true
+  }
+
+  export type TaskMinAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    status?: true
+    priority?: true
+    dueDate?: true
+    order?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TaskMaxAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    status?: true
+    priority?: true
+    dueDate?: true
+    order?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TaskCountAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    status?: true
+    priority?: true
+    dueDate?: true
+    order?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Task to aggregate.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Tasks
+    **/
+    _count?: true | TaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TaskAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TaskSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TaskMaxAggregateInputType
+  }
+
+  export type GetTaskAggregateType<T extends TaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTask[P]>
+      : GetScalarType<T[P], AggregateTask[P]>
+  }
+
+
+
+
+  export type TaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskWhereInput
+    orderBy?: TaskOrderByWithAggregationInput | TaskOrderByWithAggregationInput[]
+    by: TaskScalarFieldEnum[] | TaskScalarFieldEnum
+    having?: TaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TaskCountAggregateInputType | true
+    _avg?: TaskAvgAggregateInputType
+    _sum?: TaskSumAggregateInputType
+    _min?: TaskMinAggregateInputType
+    _max?: TaskMaxAggregateInputType
+  }
+
+  export type TaskGroupByOutputType = {
+    id: string
+    title: string
+    description: string | null
+    status: string
+    priority: string
+    dueDate: Date | null
+    order: number
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: TaskCountAggregateOutputType | null
+    _avg: TaskAvgAggregateOutputType | null
+    _sum: TaskSumAggregateOutputType | null
+    _min: TaskMinAggregateOutputType | null
+    _max: TaskMaxAggregateOutputType | null
+  }
+
+  type GetTaskGroupByPayload<T extends TaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TaskGroupByOutputType[P]>
+            : GetScalarType<T[P], TaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    dueDate?: boolean
+    order?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["task"]>
+
+  export type TaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    dueDate?: boolean
+    order?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["task"]>
+
+  export type TaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    dueDate?: boolean
+    order?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["task"]>
+
+  export type TaskSelectScalar = {
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    priority?: boolean
+    dueDate?: boolean
+    order?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "priority" | "dueDate" | "order" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+  export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Task"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      description: string | null
+      status: string
+      priority: string
+      dueDate: Date | null
+      order: number
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["task"]>
+    composites: {}
+  }
+
+  type TaskGetPayload<S extends boolean | null | undefined | TaskDefaultArgs> = $Result.GetResult<Prisma.$TaskPayload, S>
+
+  type TaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TaskCountAggregateInputType | true
+    }
+
+  export interface TaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Task'], meta: { name: 'Task' } }
+    /**
+     * Find zero or one Task that matches the filter.
+     * @param {TaskFindUniqueArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TaskFindUniqueArgs>(args: SelectSubset<T, TaskFindUniqueArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Task that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TaskFindUniqueOrThrowArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TaskFindUniqueOrThrowArgs>(args: SelectSubset<T, TaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Task that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskFindFirstArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TaskFindFirstArgs>(args?: SelectSubset<T, TaskFindFirstArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Task that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskFindFirstOrThrowArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TaskFindFirstOrThrowArgs>(args?: SelectSubset<T, TaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Tasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tasks
+     * const tasks = await prisma.task.findMany()
+     * 
+     * // Get first 10 Tasks
+     * const tasks = await prisma.task.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const taskWithIdOnly = await prisma.task.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TaskFindManyArgs>(args?: SelectSubset<T, TaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Task.
+     * @param {TaskCreateArgs} args - Arguments to create a Task.
+     * @example
+     * // Create one Task
+     * const Task = await prisma.task.create({
+     *   data: {
+     *     // ... data to create a Task
+     *   }
+     * })
+     * 
+     */
+    create<T extends TaskCreateArgs>(args: SelectSubset<T, TaskCreateArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Tasks.
+     * @param {TaskCreateManyArgs} args - Arguments to create many Tasks.
+     * @example
+     * // Create many Tasks
+     * const task = await prisma.task.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TaskCreateManyArgs>(args?: SelectSubset<T, TaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Tasks and returns the data saved in the database.
+     * @param {TaskCreateManyAndReturnArgs} args - Arguments to create many Tasks.
+     * @example
+     * // Create many Tasks
+     * const task = await prisma.task.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Tasks and only return the `id`
+     * const taskWithIdOnly = await prisma.task.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TaskCreateManyAndReturnArgs>(args?: SelectSubset<T, TaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Task.
+     * @param {TaskDeleteArgs} args - Arguments to delete one Task.
+     * @example
+     * // Delete one Task
+     * const Task = await prisma.task.delete({
+     *   where: {
+     *     // ... filter to delete one Task
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TaskDeleteArgs>(args: SelectSubset<T, TaskDeleteArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Task.
+     * @param {TaskUpdateArgs} args - Arguments to update one Task.
+     * @example
+     * // Update one Task
+     * const task = await prisma.task.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TaskUpdateArgs>(args: SelectSubset<T, TaskUpdateArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Tasks.
+     * @param {TaskDeleteManyArgs} args - Arguments to filter Tasks to delete.
+     * @example
+     * // Delete a few Tasks
+     * const { count } = await prisma.task.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TaskDeleteManyArgs>(args?: SelectSubset<T, TaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tasks
+     * const task = await prisma.task.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TaskUpdateManyArgs>(args: SelectSubset<T, TaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tasks and returns the data updated in the database.
+     * @param {TaskUpdateManyAndReturnArgs} args - Arguments to update many Tasks.
+     * @example
+     * // Update many Tasks
+     * const task = await prisma.task.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Tasks and only return the `id`
+     * const taskWithIdOnly = await prisma.task.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TaskUpdateManyAndReturnArgs>(args: SelectSubset<T, TaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Task.
+     * @param {TaskUpsertArgs} args - Arguments to update or create a Task.
+     * @example
+     * // Update or create a Task
+     * const task = await prisma.task.upsert({
+     *   create: {
+     *     // ... data to create a Task
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Task we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TaskUpsertArgs>(args: SelectSubset<T, TaskUpsertArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskCountArgs} args - Arguments to filter Tasks to count.
+     * @example
+     * // Count the number of Tasks
+     * const count = await prisma.task.count({
+     *   where: {
+     *     // ... the filter for the Tasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends TaskCountArgs>(
+      args?: Subset<T, TaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Task.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TaskAggregateArgs>(args: Subset<T, TaskAggregateArgs>): Prisma.PrismaPromise<GetTaskAggregateType<T>>
+
+    /**
+     * Group by Task.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TaskGroupByArgs['orderBy'] }
+        : { orderBy?: TaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Task model
+   */
+  readonly fields: TaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Task.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Task model
+   */
+  interface TaskFieldRefs {
+    readonly id: FieldRef<"Task", 'String'>
+    readonly title: FieldRef<"Task", 'String'>
+    readonly description: FieldRef<"Task", 'String'>
+    readonly status: FieldRef<"Task", 'String'>
+    readonly priority: FieldRef<"Task", 'String'>
+    readonly dueDate: FieldRef<"Task", 'DateTime'>
+    readonly order: FieldRef<"Task", 'Int'>
+    readonly userId: FieldRef<"Task", 'String'>
+    readonly createdAt: FieldRef<"Task", 'DateTime'>
+    readonly updatedAt: FieldRef<"Task", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Task findUnique
+   */
+  export type TaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task findUniqueOrThrow
+   */
+  export type TaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task findFirst
+   */
+  export type TaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tasks.
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tasks.
+     */
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Task findFirstOrThrow
+   */
+  export type TaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Task to fetch.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tasks.
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tasks.
+     */
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Task findMany
+   */
+  export type TaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter, which Tasks to fetch.
+     */
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     */
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Tasks.
+     */
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     */
+    skip?: number
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Task create
+   */
+  export type TaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Task.
+     */
+    data: XOR<TaskCreateInput, TaskUncheckedCreateInput>
+  }
+
+  /**
+   * Task createMany
+   */
+  export type TaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Tasks.
+     */
+    data: TaskCreateManyInput | TaskCreateManyInput[]
+  }
+
+  /**
+   * Task createManyAndReturn
+   */
+  export type TaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many Tasks.
+     */
+    data: TaskCreateManyInput | TaskCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Task update
+   */
+  export type TaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Task.
+     */
+    data: XOR<TaskUpdateInput, TaskUncheckedUpdateInput>
+    /**
+     * Choose, which Task to update.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task updateMany
+   */
+  export type TaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Tasks.
+     */
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyInput>
+    /**
+     * Filter which Tasks to update
+     */
+    where?: TaskWhereInput
+    /**
+     * Limit how many Tasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Task updateManyAndReturn
+   */
+  export type TaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * The data used to update Tasks.
+     */
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyInput>
+    /**
+     * Filter which Tasks to update
+     */
+    where?: TaskWhereInput
+    /**
+     * Limit how many Tasks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Task upsert
+   */
+  export type TaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Task to update in case it exists.
+     */
+    where: TaskWhereUniqueInput
+    /**
+     * In case the Task found by the `where` argument doesn't exist, create a new Task with this data.
+     */
+    create: XOR<TaskCreateInput, TaskUncheckedCreateInput>
+    /**
+     * In case the Task was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TaskUpdateInput, TaskUncheckedUpdateInput>
+  }
+
+  /**
+   * Task delete
+   */
+  export type TaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    /**
+     * Filter which Task to delete.
+     */
+    where: TaskWhereUniqueInput
+  }
+
+  /**
+   * Task deleteMany
+   */
+  export type TaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Tasks to delete
+     */
+    where?: TaskWhereInput
+    /**
+     * Limit how many Tasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Task without action
+   */
+  export type TaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Whiteboard
+   */
+
+  export type AggregateWhiteboard = {
+    _count: WhiteboardCountAggregateOutputType | null
+    _min: WhiteboardMinAggregateOutputType | null
+    _max: WhiteboardMaxAggregateOutputType | null
+  }
+
+  export type WhiteboardMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    elements: string | null
+    appState: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhiteboardMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    elements: string | null
+    appState: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WhiteboardCountAggregateOutputType = {
+    id: number
+    name: number
+    elements: number
+    appState: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WhiteboardMinAggregateInputType = {
+    id?: true
+    name?: true
+    elements?: true
+    appState?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhiteboardMaxAggregateInputType = {
+    id?: true
+    name?: true
+    elements?: true
+    appState?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WhiteboardCountAggregateInputType = {
+    id?: true
+    name?: true
+    elements?: true
+    appState?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WhiteboardAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Whiteboard to aggregate.
+     */
+    where?: WhiteboardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Whiteboards to fetch.
+     */
+    orderBy?: WhiteboardOrderByWithRelationInput | WhiteboardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WhiteboardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Whiteboards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Whiteboards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Whiteboards
+    **/
+    _count?: true | WhiteboardCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WhiteboardMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WhiteboardMaxAggregateInputType
+  }
+
+  export type GetWhiteboardAggregateType<T extends WhiteboardAggregateArgs> = {
+        [P in keyof T & keyof AggregateWhiteboard]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWhiteboard[P]>
+      : GetScalarType<T[P], AggregateWhiteboard[P]>
+  }
+
+
+
+
+  export type WhiteboardGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhiteboardWhereInput
+    orderBy?: WhiteboardOrderByWithAggregationInput | WhiteboardOrderByWithAggregationInput[]
+    by: WhiteboardScalarFieldEnum[] | WhiteboardScalarFieldEnum
+    having?: WhiteboardScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WhiteboardCountAggregateInputType | true
+    _min?: WhiteboardMinAggregateInputType
+    _max?: WhiteboardMaxAggregateInputType
+  }
+
+  export type WhiteboardGroupByOutputType = {
+    id: string
+    name: string
+    elements: string | null
+    appState: string | null
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: WhiteboardCountAggregateOutputType | null
+    _min: WhiteboardMinAggregateOutputType | null
+    _max: WhiteboardMaxAggregateOutputType | null
+  }
+
+  type GetWhiteboardGroupByPayload<T extends WhiteboardGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WhiteboardGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WhiteboardGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WhiteboardGroupByOutputType[P]>
+            : GetScalarType<T[P], WhiteboardGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WhiteboardSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    elements?: boolean
+    appState?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whiteboard"]>
+
+  export type WhiteboardSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    elements?: boolean
+    appState?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whiteboard"]>
+
+  export type WhiteboardSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    elements?: boolean
+    appState?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["whiteboard"]>
+
+  export type WhiteboardSelectScalar = {
+    id?: boolean
+    name?: boolean
+    elements?: boolean
+    appState?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WhiteboardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "elements" | "appState" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["whiteboard"]>
+  export type WhiteboardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WhiteboardIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type WhiteboardIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $WhiteboardPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Whiteboard"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      elements: string | null
+      appState: string | null
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["whiteboard"]>
+    composites: {}
+  }
+
+  type WhiteboardGetPayload<S extends boolean | null | undefined | WhiteboardDefaultArgs> = $Result.GetResult<Prisma.$WhiteboardPayload, S>
+
+  type WhiteboardCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WhiteboardFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WhiteboardCountAggregateInputType | true
+    }
+
+  export interface WhiteboardDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Whiteboard'], meta: { name: 'Whiteboard' } }
+    /**
+     * Find zero or one Whiteboard that matches the filter.
+     * @param {WhiteboardFindUniqueArgs} args - Arguments to find a Whiteboard
+     * @example
+     * // Get one Whiteboard
+     * const whiteboard = await prisma.whiteboard.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WhiteboardFindUniqueArgs>(args: SelectSubset<T, WhiteboardFindUniqueArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Whiteboard that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WhiteboardFindUniqueOrThrowArgs} args - Arguments to find a Whiteboard
+     * @example
+     * // Get one Whiteboard
+     * const whiteboard = await prisma.whiteboard.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WhiteboardFindUniqueOrThrowArgs>(args: SelectSubset<T, WhiteboardFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Whiteboard that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhiteboardFindFirstArgs} args - Arguments to find a Whiteboard
+     * @example
+     * // Get one Whiteboard
+     * const whiteboard = await prisma.whiteboard.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WhiteboardFindFirstArgs>(args?: SelectSubset<T, WhiteboardFindFirstArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Whiteboard that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhiteboardFindFirstOrThrowArgs} args - Arguments to find a Whiteboard
+     * @example
+     * // Get one Whiteboard
+     * const whiteboard = await prisma.whiteboard.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WhiteboardFindFirstOrThrowArgs>(args?: SelectSubset<T, WhiteboardFindFirstOrThrowArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Whiteboards that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhiteboardFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Whiteboards
+     * const whiteboards = await prisma.whiteboard.findMany()
+     * 
+     * // Get first 10 Whiteboards
+     * const whiteboards = await prisma.whiteboard.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const whiteboardWithIdOnly = await prisma.whiteboard.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WhiteboardFindManyArgs>(args?: SelectSubset<T, WhiteboardFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Whiteboard.
+     * @param {WhiteboardCreateArgs} args - Arguments to create a Whiteboard.
+     * @example
+     * // Create one Whiteboard
+     * const Whiteboard = await prisma.whiteboard.create({
+     *   data: {
+     *     // ... data to create a Whiteboard
+     *   }
+     * })
+     * 
+     */
+    create<T extends WhiteboardCreateArgs>(args: SelectSubset<T, WhiteboardCreateArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Whiteboards.
+     * @param {WhiteboardCreateManyArgs} args - Arguments to create many Whiteboards.
+     * @example
+     * // Create many Whiteboards
+     * const whiteboard = await prisma.whiteboard.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WhiteboardCreateManyArgs>(args?: SelectSubset<T, WhiteboardCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Whiteboards and returns the data saved in the database.
+     * @param {WhiteboardCreateManyAndReturnArgs} args - Arguments to create many Whiteboards.
+     * @example
+     * // Create many Whiteboards
+     * const whiteboard = await prisma.whiteboard.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Whiteboards and only return the `id`
+     * const whiteboardWithIdOnly = await prisma.whiteboard.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WhiteboardCreateManyAndReturnArgs>(args?: SelectSubset<T, WhiteboardCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Whiteboard.
+     * @param {WhiteboardDeleteArgs} args - Arguments to delete one Whiteboard.
+     * @example
+     * // Delete one Whiteboard
+     * const Whiteboard = await prisma.whiteboard.delete({
+     *   where: {
+     *     // ... filter to delete one Whiteboard
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WhiteboardDeleteArgs>(args: SelectSubset<T, WhiteboardDeleteArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Whiteboard.
+     * @param {WhiteboardUpdateArgs} args - Arguments to update one Whiteboard.
+     * @example
+     * // Update one Whiteboard
+     * const whiteboard = await prisma.whiteboard.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WhiteboardUpdateArgs>(args: SelectSubset<T, WhiteboardUpdateArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Whiteboards.
+     * @param {WhiteboardDeleteManyArgs} args - Arguments to filter Whiteboards to delete.
+     * @example
+     * // Delete a few Whiteboards
+     * const { count } = await prisma.whiteboard.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WhiteboardDeleteManyArgs>(args?: SelectSubset<T, WhiteboardDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Whiteboards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhiteboardUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Whiteboards
+     * const whiteboard = await prisma.whiteboard.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WhiteboardUpdateManyArgs>(args: SelectSubset<T, WhiteboardUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Whiteboards and returns the data updated in the database.
+     * @param {WhiteboardUpdateManyAndReturnArgs} args - Arguments to update many Whiteboards.
+     * @example
+     * // Update many Whiteboards
+     * const whiteboard = await prisma.whiteboard.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Whiteboards and only return the `id`
+     * const whiteboardWithIdOnly = await prisma.whiteboard.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WhiteboardUpdateManyAndReturnArgs>(args: SelectSubset<T, WhiteboardUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Whiteboard.
+     * @param {WhiteboardUpsertArgs} args - Arguments to update or create a Whiteboard.
+     * @example
+     * // Update or create a Whiteboard
+     * const whiteboard = await prisma.whiteboard.upsert({
+     *   create: {
+     *     // ... data to create a Whiteboard
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Whiteboard we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WhiteboardUpsertArgs>(args: SelectSubset<T, WhiteboardUpsertArgs<ExtArgs>>): Prisma__WhiteboardClient<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Whiteboards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhiteboardCountArgs} args - Arguments to filter Whiteboards to count.
+     * @example
+     * // Count the number of Whiteboards
+     * const count = await prisma.whiteboard.count({
+     *   where: {
+     *     // ... the filter for the Whiteboards we want to count
+     *   }
+     * })
+    **/
+    count<T extends WhiteboardCountArgs>(
+      args?: Subset<T, WhiteboardCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WhiteboardCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Whiteboard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhiteboardAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WhiteboardAggregateArgs>(args: Subset<T, WhiteboardAggregateArgs>): Prisma.PrismaPromise<GetWhiteboardAggregateType<T>>
+
+    /**
+     * Group by Whiteboard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WhiteboardGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WhiteboardGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WhiteboardGroupByArgs['orderBy'] }
+        : { orderBy?: WhiteboardGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WhiteboardGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWhiteboardGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Whiteboard model
+   */
+  readonly fields: WhiteboardFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Whiteboard.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WhiteboardClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Whiteboard model
+   */
+  interface WhiteboardFieldRefs {
+    readonly id: FieldRef<"Whiteboard", 'String'>
+    readonly name: FieldRef<"Whiteboard", 'String'>
+    readonly elements: FieldRef<"Whiteboard", 'String'>
+    readonly appState: FieldRef<"Whiteboard", 'String'>
+    readonly userId: FieldRef<"Whiteboard", 'String'>
+    readonly createdAt: FieldRef<"Whiteboard", 'DateTime'>
+    readonly updatedAt: FieldRef<"Whiteboard", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Whiteboard findUnique
+   */
+  export type WhiteboardFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * Filter, which Whiteboard to fetch.
+     */
+    where: WhiteboardWhereUniqueInput
+  }
+
+  /**
+   * Whiteboard findUniqueOrThrow
+   */
+  export type WhiteboardFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * Filter, which Whiteboard to fetch.
+     */
+    where: WhiteboardWhereUniqueInput
+  }
+
+  /**
+   * Whiteboard findFirst
+   */
+  export type WhiteboardFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * Filter, which Whiteboard to fetch.
+     */
+    where?: WhiteboardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Whiteboards to fetch.
+     */
+    orderBy?: WhiteboardOrderByWithRelationInput | WhiteboardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Whiteboards.
+     */
+    cursor?: WhiteboardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Whiteboards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Whiteboards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Whiteboards.
+     */
+    distinct?: WhiteboardScalarFieldEnum | WhiteboardScalarFieldEnum[]
+  }
+
+  /**
+   * Whiteboard findFirstOrThrow
+   */
+  export type WhiteboardFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * Filter, which Whiteboard to fetch.
+     */
+    where?: WhiteboardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Whiteboards to fetch.
+     */
+    orderBy?: WhiteboardOrderByWithRelationInput | WhiteboardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Whiteboards.
+     */
+    cursor?: WhiteboardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Whiteboards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Whiteboards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Whiteboards.
+     */
+    distinct?: WhiteboardScalarFieldEnum | WhiteboardScalarFieldEnum[]
+  }
+
+  /**
+   * Whiteboard findMany
+   */
+  export type WhiteboardFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * Filter, which Whiteboards to fetch.
+     */
+    where?: WhiteboardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Whiteboards to fetch.
+     */
+    orderBy?: WhiteboardOrderByWithRelationInput | WhiteboardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Whiteboards.
+     */
+    cursor?: WhiteboardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Whiteboards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Whiteboards.
+     */
+    skip?: number
+    distinct?: WhiteboardScalarFieldEnum | WhiteboardScalarFieldEnum[]
+  }
+
+  /**
+   * Whiteboard create
+   */
+  export type WhiteboardCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Whiteboard.
+     */
+    data: XOR<WhiteboardCreateInput, WhiteboardUncheckedCreateInput>
+  }
+
+  /**
+   * Whiteboard createMany
+   */
+  export type WhiteboardCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Whiteboards.
+     */
+    data: WhiteboardCreateManyInput | WhiteboardCreateManyInput[]
+  }
+
+  /**
+   * Whiteboard createManyAndReturn
+   */
+  export type WhiteboardCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * The data used to create many Whiteboards.
+     */
+    data: WhiteboardCreateManyInput | WhiteboardCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Whiteboard update
+   */
+  export type WhiteboardUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Whiteboard.
+     */
+    data: XOR<WhiteboardUpdateInput, WhiteboardUncheckedUpdateInput>
+    /**
+     * Choose, which Whiteboard to update.
+     */
+    where: WhiteboardWhereUniqueInput
+  }
+
+  /**
+   * Whiteboard updateMany
+   */
+  export type WhiteboardUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Whiteboards.
+     */
+    data: XOR<WhiteboardUpdateManyMutationInput, WhiteboardUncheckedUpdateManyInput>
+    /**
+     * Filter which Whiteboards to update
+     */
+    where?: WhiteboardWhereInput
+    /**
+     * Limit how many Whiteboards to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Whiteboard updateManyAndReturn
+   */
+  export type WhiteboardUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * The data used to update Whiteboards.
+     */
+    data: XOR<WhiteboardUpdateManyMutationInput, WhiteboardUncheckedUpdateManyInput>
+    /**
+     * Filter which Whiteboards to update
+     */
+    where?: WhiteboardWhereInput
+    /**
+     * Limit how many Whiteboards to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Whiteboard upsert
+   */
+  export type WhiteboardUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Whiteboard to update in case it exists.
+     */
+    where: WhiteboardWhereUniqueInput
+    /**
+     * In case the Whiteboard found by the `where` argument doesn't exist, create a new Whiteboard with this data.
+     */
+    create: XOR<WhiteboardCreateInput, WhiteboardUncheckedCreateInput>
+    /**
+     * In case the Whiteboard was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WhiteboardUpdateInput, WhiteboardUncheckedUpdateInput>
+  }
+
+  /**
+   * Whiteboard delete
+   */
+  export type WhiteboardDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    /**
+     * Filter which Whiteboard to delete.
+     */
+    where: WhiteboardWhereUniqueInput
+  }
+
+  /**
+   * Whiteboard deleteMany
+   */
+  export type WhiteboardDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Whiteboards to delete
+     */
+    where?: WhiteboardWhereInput
+    /**
+     * Limit how many Whiteboards to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Whiteboard without action
+   */
+  export type WhiteboardDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8019,6 +15468,82 @@ export namespace Prisma {
   export type RecordingMetaScalarFieldEnum = (typeof RecordingMetaScalarFieldEnum)[keyof typeof RecordingMetaScalarFieldEnum]
 
 
+  export const FolderScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    color: 'color',
+    icon: 'icon',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
+
+
+  export const TagScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    color: 'color',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
+
+
+  export const NoteScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    content: 'content',
+    isPublic: 'isPublic',
+    folderId: 'folderId',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
+
+
+  export const NoteTagScalarFieldEnum: {
+    noteId: 'noteId',
+    tagId: 'tagId'
+  };
+
+  export type NoteTagScalarFieldEnum = (typeof NoteTagScalarFieldEnum)[keyof typeof NoteTagScalarFieldEnum]
+
+
+  export const TaskScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    status: 'status',
+    priority: 'priority',
+    dueDate: 'dueDate',
+    order: 'order',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+  export const WhiteboardScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    elements: 'elements',
+    appState: 'appState',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WhiteboardScalarFieldEnum = (typeof WhiteboardScalarFieldEnum)[keyof typeof WhiteboardScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -8091,6 +15616,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    folders?: FolderListRelationFilter
+    tags?: TagListRelationFilter
+    notes?: NoteListRelationFilter
+    tasks?: TaskListRelationFilter
+    whiteboards?: WhiteboardListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8103,6 +15633,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
+    folders?: FolderOrderByRelationAggregateInput
+    tags?: TagOrderByRelationAggregateInput
+    notes?: NoteOrderByRelationAggregateInput
+    tasks?: TaskOrderByRelationAggregateInput
+    whiteboards?: WhiteboardOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8118,6 +15653,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
+    folders?: FolderListRelationFilter
+    tags?: TagListRelationFilter
+    notes?: NoteListRelationFilter
+    tasks?: TaskListRelationFilter
+    whiteboards?: WhiteboardListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8529,6 +16069,405 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"RecordingMeta"> | Date | string
   }
 
+  export type FolderWhereInput = {
+    AND?: FolderWhereInput | FolderWhereInput[]
+    OR?: FolderWhereInput[]
+    NOT?: FolderWhereInput | FolderWhereInput[]
+    id?: StringFilter<"Folder"> | string
+    name?: StringFilter<"Folder"> | string
+    color?: StringNullableFilter<"Folder"> | string | null
+    icon?: StringNullableFilter<"Folder"> | string | null
+    userId?: StringFilter<"Folder"> | string
+    createdAt?: DateTimeFilter<"Folder"> | Date | string
+    updatedAt?: DateTimeFilter<"Folder"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    notes?: NoteListRelationFilter
+  }
+
+  export type FolderOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    notes?: NoteOrderByRelationAggregateInput
+  }
+
+  export type FolderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FolderWhereInput | FolderWhereInput[]
+    OR?: FolderWhereInput[]
+    NOT?: FolderWhereInput | FolderWhereInput[]
+    name?: StringFilter<"Folder"> | string
+    color?: StringNullableFilter<"Folder"> | string | null
+    icon?: StringNullableFilter<"Folder"> | string | null
+    userId?: StringFilter<"Folder"> | string
+    createdAt?: DateTimeFilter<"Folder"> | Date | string
+    updatedAt?: DateTimeFilter<"Folder"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    notes?: NoteListRelationFilter
+  }, "id">
+
+  export type FolderOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrderInput | SortOrder
+    icon?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FolderCountOrderByAggregateInput
+    _max?: FolderMaxOrderByAggregateInput
+    _min?: FolderMinOrderByAggregateInput
+  }
+
+  export type FolderScalarWhereWithAggregatesInput = {
+    AND?: FolderScalarWhereWithAggregatesInput | FolderScalarWhereWithAggregatesInput[]
+    OR?: FolderScalarWhereWithAggregatesInput[]
+    NOT?: FolderScalarWhereWithAggregatesInput | FolderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Folder"> | string
+    name?: StringWithAggregatesFilter<"Folder"> | string
+    color?: StringNullableWithAggregatesFilter<"Folder"> | string | null
+    icon?: StringNullableWithAggregatesFilter<"Folder"> | string | null
+    userId?: StringWithAggregatesFilter<"Folder"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Folder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Folder"> | Date | string
+  }
+
+  export type TagWhereInput = {
+    AND?: TagWhereInput | TagWhereInput[]
+    OR?: TagWhereInput[]
+    NOT?: TagWhereInput | TagWhereInput[]
+    id?: StringFilter<"Tag"> | string
+    name?: StringFilter<"Tag"> | string
+    color?: StringNullableFilter<"Tag"> | string | null
+    userId?: StringFilter<"Tag"> | string
+    createdAt?: DateTimeFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeFilter<"Tag"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    notes?: NoteTagListRelationFilter
+  }
+
+  export type TagOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    notes?: NoteTagOrderByRelationAggregateInput
+  }
+
+  export type TagWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name_userId?: TagNameUserIdCompoundUniqueInput
+    AND?: TagWhereInput | TagWhereInput[]
+    OR?: TagWhereInput[]
+    NOT?: TagWhereInput | TagWhereInput[]
+    name?: StringFilter<"Tag"> | string
+    color?: StringNullableFilter<"Tag"> | string | null
+    userId?: StringFilter<"Tag"> | string
+    createdAt?: DateTimeFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeFilter<"Tag"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    notes?: NoteTagListRelationFilter
+  }, "id" | "name_userId">
+
+  export type TagOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TagCountOrderByAggregateInput
+    _max?: TagMaxOrderByAggregateInput
+    _min?: TagMinOrderByAggregateInput
+  }
+
+  export type TagScalarWhereWithAggregatesInput = {
+    AND?: TagScalarWhereWithAggregatesInput | TagScalarWhereWithAggregatesInput[]
+    OR?: TagScalarWhereWithAggregatesInput[]
+    NOT?: TagScalarWhereWithAggregatesInput | TagScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Tag"> | string
+    name?: StringWithAggregatesFilter<"Tag"> | string
+    color?: StringNullableWithAggregatesFilter<"Tag"> | string | null
+    userId?: StringWithAggregatesFilter<"Tag"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
+  }
+
+  export type NoteWhereInput = {
+    AND?: NoteWhereInput | NoteWhereInput[]
+    OR?: NoteWhereInput[]
+    NOT?: NoteWhereInput | NoteWhereInput[]
+    id?: StringFilter<"Note"> | string
+    title?: StringFilter<"Note"> | string
+    content?: StringNullableFilter<"Note"> | string | null
+    isPublic?: BoolFilter<"Note"> | boolean
+    folderId?: StringNullableFilter<"Note"> | string | null
+    userId?: StringFilter<"Note"> | string
+    createdAt?: DateTimeFilter<"Note"> | Date | string
+    updatedAt?: DateTimeFilter<"Note"> | Date | string
+    folder?: XOR<FolderNullableScalarRelationFilter, FolderWhereInput> | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    tags?: NoteTagListRelationFilter
+  }
+
+  export type NoteOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
+    folderId?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    folder?: FolderOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    tags?: NoteTagOrderByRelationAggregateInput
+  }
+
+  export type NoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: NoteWhereInput | NoteWhereInput[]
+    OR?: NoteWhereInput[]
+    NOT?: NoteWhereInput | NoteWhereInput[]
+    title?: StringFilter<"Note"> | string
+    content?: StringNullableFilter<"Note"> | string | null
+    isPublic?: BoolFilter<"Note"> | boolean
+    folderId?: StringNullableFilter<"Note"> | string | null
+    userId?: StringFilter<"Note"> | string
+    createdAt?: DateTimeFilter<"Note"> | Date | string
+    updatedAt?: DateTimeFilter<"Note"> | Date | string
+    folder?: XOR<FolderNullableScalarRelationFilter, FolderWhereInput> | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    tags?: NoteTagListRelationFilter
+  }, "id">
+
+  export type NoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
+    folderId?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: NoteCountOrderByAggregateInput
+    _max?: NoteMaxOrderByAggregateInput
+    _min?: NoteMinOrderByAggregateInput
+  }
+
+  export type NoteScalarWhereWithAggregatesInput = {
+    AND?: NoteScalarWhereWithAggregatesInput | NoteScalarWhereWithAggregatesInput[]
+    OR?: NoteScalarWhereWithAggregatesInput[]
+    NOT?: NoteScalarWhereWithAggregatesInput | NoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Note"> | string
+    title?: StringWithAggregatesFilter<"Note"> | string
+    content?: StringNullableWithAggregatesFilter<"Note"> | string | null
+    isPublic?: BoolWithAggregatesFilter<"Note"> | boolean
+    folderId?: StringNullableWithAggregatesFilter<"Note"> | string | null
+    userId?: StringWithAggregatesFilter<"Note"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Note"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Note"> | Date | string
+  }
+
+  export type NoteTagWhereInput = {
+    AND?: NoteTagWhereInput | NoteTagWhereInput[]
+    OR?: NoteTagWhereInput[]
+    NOT?: NoteTagWhereInput | NoteTagWhereInput[]
+    noteId?: StringFilter<"NoteTag"> | string
+    tagId?: StringFilter<"NoteTag"> | string
+    note?: XOR<NoteScalarRelationFilter, NoteWhereInput>
+    tag?: XOR<TagScalarRelationFilter, TagWhereInput>
+  }
+
+  export type NoteTagOrderByWithRelationInput = {
+    noteId?: SortOrder
+    tagId?: SortOrder
+    note?: NoteOrderByWithRelationInput
+    tag?: TagOrderByWithRelationInput
+  }
+
+  export type NoteTagWhereUniqueInput = Prisma.AtLeast<{
+    noteId_tagId?: NoteTagNoteIdTagIdCompoundUniqueInput
+    AND?: NoteTagWhereInput | NoteTagWhereInput[]
+    OR?: NoteTagWhereInput[]
+    NOT?: NoteTagWhereInput | NoteTagWhereInput[]
+    noteId?: StringFilter<"NoteTag"> | string
+    tagId?: StringFilter<"NoteTag"> | string
+    note?: XOR<NoteScalarRelationFilter, NoteWhereInput>
+    tag?: XOR<TagScalarRelationFilter, TagWhereInput>
+  }, "noteId_tagId">
+
+  export type NoteTagOrderByWithAggregationInput = {
+    noteId?: SortOrder
+    tagId?: SortOrder
+    _count?: NoteTagCountOrderByAggregateInput
+    _max?: NoteTagMaxOrderByAggregateInput
+    _min?: NoteTagMinOrderByAggregateInput
+  }
+
+  export type NoteTagScalarWhereWithAggregatesInput = {
+    AND?: NoteTagScalarWhereWithAggregatesInput | NoteTagScalarWhereWithAggregatesInput[]
+    OR?: NoteTagScalarWhereWithAggregatesInput[]
+    NOT?: NoteTagScalarWhereWithAggregatesInput | NoteTagScalarWhereWithAggregatesInput[]
+    noteId?: StringWithAggregatesFilter<"NoteTag"> | string
+    tagId?: StringWithAggregatesFilter<"NoteTag"> | string
+  }
+
+  export type TaskWhereInput = {
+    AND?: TaskWhereInput | TaskWhereInput[]
+    OR?: TaskWhereInput[]
+    NOT?: TaskWhereInput | TaskWhereInput[]
+    id?: StringFilter<"Task"> | string
+    title?: StringFilter<"Task"> | string
+    description?: StringNullableFilter<"Task"> | string | null
+    status?: StringFilter<"Task"> | string
+    priority?: StringFilter<"Task"> | string
+    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
+    order?: IntFilter<"Task"> | number
+    userId?: StringFilter<"Task"> | string
+    createdAt?: DateTimeFilter<"Task"> | Date | string
+    updatedAt?: DateTimeFilter<"Task"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type TaskOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    order?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type TaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TaskWhereInput | TaskWhereInput[]
+    OR?: TaskWhereInput[]
+    NOT?: TaskWhereInput | TaskWhereInput[]
+    title?: StringFilter<"Task"> | string
+    description?: StringNullableFilter<"Task"> | string | null
+    status?: StringFilter<"Task"> | string
+    priority?: StringFilter<"Task"> | string
+    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
+    order?: IntFilter<"Task"> | number
+    userId?: StringFilter<"Task"> | string
+    createdAt?: DateTimeFilter<"Task"> | Date | string
+    updatedAt?: DateTimeFilter<"Task"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type TaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    order?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TaskCountOrderByAggregateInput
+    _avg?: TaskAvgOrderByAggregateInput
+    _max?: TaskMaxOrderByAggregateInput
+    _min?: TaskMinOrderByAggregateInput
+    _sum?: TaskSumOrderByAggregateInput
+  }
+
+  export type TaskScalarWhereWithAggregatesInput = {
+    AND?: TaskScalarWhereWithAggregatesInput | TaskScalarWhereWithAggregatesInput[]
+    OR?: TaskScalarWhereWithAggregatesInput[]
+    NOT?: TaskScalarWhereWithAggregatesInput | TaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Task"> | string
+    title?: StringWithAggregatesFilter<"Task"> | string
+    description?: StringNullableWithAggregatesFilter<"Task"> | string | null
+    status?: StringWithAggregatesFilter<"Task"> | string
+    priority?: StringWithAggregatesFilter<"Task"> | string
+    dueDate?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
+    order?: IntWithAggregatesFilter<"Task"> | number
+    userId?: StringWithAggregatesFilter<"Task"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
+  }
+
+  export type WhiteboardWhereInput = {
+    AND?: WhiteboardWhereInput | WhiteboardWhereInput[]
+    OR?: WhiteboardWhereInput[]
+    NOT?: WhiteboardWhereInput | WhiteboardWhereInput[]
+    id?: StringFilter<"Whiteboard"> | string
+    name?: StringFilter<"Whiteboard"> | string
+    elements?: StringNullableFilter<"Whiteboard"> | string | null
+    appState?: StringNullableFilter<"Whiteboard"> | string | null
+    userId?: StringFilter<"Whiteboard"> | string
+    createdAt?: DateTimeFilter<"Whiteboard"> | Date | string
+    updatedAt?: DateTimeFilter<"Whiteboard"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type WhiteboardOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    elements?: SortOrderInput | SortOrder
+    appState?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type WhiteboardWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WhiteboardWhereInput | WhiteboardWhereInput[]
+    OR?: WhiteboardWhereInput[]
+    NOT?: WhiteboardWhereInput | WhiteboardWhereInput[]
+    name?: StringFilter<"Whiteboard"> | string
+    elements?: StringNullableFilter<"Whiteboard"> | string | null
+    appState?: StringNullableFilter<"Whiteboard"> | string | null
+    userId?: StringFilter<"Whiteboard"> | string
+    createdAt?: DateTimeFilter<"Whiteboard"> | Date | string
+    updatedAt?: DateTimeFilter<"Whiteboard"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type WhiteboardOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    elements?: SortOrderInput | SortOrder
+    appState?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WhiteboardCountOrderByAggregateInput
+    _max?: WhiteboardMaxOrderByAggregateInput
+    _min?: WhiteboardMinOrderByAggregateInput
+  }
+
+  export type WhiteboardScalarWhereWithAggregatesInput = {
+    AND?: WhiteboardScalarWhereWithAggregatesInput | WhiteboardScalarWhereWithAggregatesInput[]
+    OR?: WhiteboardScalarWhereWithAggregatesInput[]
+    NOT?: WhiteboardScalarWhereWithAggregatesInput | WhiteboardScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Whiteboard"> | string
+    name?: StringWithAggregatesFilter<"Whiteboard"> | string
+    elements?: StringNullableWithAggregatesFilter<"Whiteboard"> | string | null
+    appState?: StringNullableWithAggregatesFilter<"Whiteboard"> | string | null
+    userId?: StringWithAggregatesFilter<"Whiteboard"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Whiteboard"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Whiteboard"> | Date | string
+  }
+
   export type UserCreateInput = {
     id: string
     name: string
@@ -8539,6 +16478,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    folders?: FolderCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8551,6 +16495,11 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    folders?: FolderUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -8563,6 +16512,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    folders?: FolderUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8575,6 +16529,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    folders?: FolderUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -9046,6 +17005,417 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FolderCreateInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutFoldersInput
+    notes?: NoteCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderUncheckedCreateInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFoldersNestedInput
+    notes?: NoteUpdateManyWithoutFolderNestedInput
+  }
+
+  export type FolderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteUncheckedUpdateManyWithoutFolderNestedInput
+  }
+
+  export type FolderCreateManyInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FolderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FolderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TagCreateInput = {
+    id?: string
+    name: string
+    color?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTagsInput
+    notes?: NoteTagCreateNestedManyWithoutTagInput
+  }
+
+  export type TagUncheckedCreateInput = {
+    id?: string
+    name: string
+    color?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteTagUncheckedCreateNestedManyWithoutTagInput
+  }
+
+  export type TagUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTagsNestedInput
+    notes?: NoteTagUpdateManyWithoutTagNestedInput
+  }
+
+  export type TagUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteTagUncheckedUpdateManyWithoutTagNestedInput
+  }
+
+  export type TagCreateManyInput = {
+    id?: string
+    name: string
+    color?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TagUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TagUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NoteCreateInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    folder?: FolderCreateNestedOneWithoutNotesInput
+    user: UserCreateNestedOneWithoutNotesInput
+    tags?: NoteTagCreateNestedManyWithoutNoteInput
+  }
+
+  export type NoteUncheckedCreateInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    folderId?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tags?: NoteTagUncheckedCreateNestedManyWithoutNoteInput
+  }
+
+  export type NoteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: FolderUpdateOneWithoutNotesNestedInput
+    user?: UserUpdateOneRequiredWithoutNotesNestedInput
+    tags?: NoteTagUpdateManyWithoutNoteNestedInput
+  }
+
+  export type NoteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tags?: NoteTagUncheckedUpdateManyWithoutNoteNestedInput
+  }
+
+  export type NoteCreateManyInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    folderId?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NoteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NoteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NoteTagCreateInput = {
+    note: NoteCreateNestedOneWithoutTagsInput
+    tag: TagCreateNestedOneWithoutNotesInput
+  }
+
+  export type NoteTagUncheckedCreateInput = {
+    noteId: string
+    tagId: string
+  }
+
+  export type NoteTagUpdateInput = {
+    note?: NoteUpdateOneRequiredWithoutTagsNestedInput
+    tag?: TagUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type NoteTagUncheckedUpdateInput = {
+    noteId?: StringFieldUpdateOperationsInput | string
+    tagId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type NoteTagCreateManyInput = {
+    noteId: string
+    tagId: string
+  }
+
+  export type NoteTagUpdateManyMutationInput = {
+
+  }
+
+  export type NoteTagUncheckedUpdateManyInput = {
+    noteId?: StringFieldUpdateOperationsInput | string
+    tagId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TaskCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTasksInput
+  }
+
+  export type TaskUncheckedCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+  }
+
+  export type TaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskCreateManyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardCreateInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutWhiteboardsInput
+  }
+
+  export type WhiteboardUncheckedCreateInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhiteboardUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutWhiteboardsNestedInput
+  }
+
+  export type WhiteboardUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardCreateManyInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhiteboardUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[]
@@ -9102,6 +17472,36 @@ export namespace Prisma {
     none?: AccountWhereInput
   }
 
+  export type FolderListRelationFilter = {
+    every?: FolderWhereInput
+    some?: FolderWhereInput
+    none?: FolderWhereInput
+  }
+
+  export type TagListRelationFilter = {
+    every?: TagWhereInput
+    some?: TagWhereInput
+    none?: TagWhereInput
+  }
+
+  export type NoteListRelationFilter = {
+    every?: NoteWhereInput
+    some?: NoteWhereInput
+    none?: NoteWhereInput
+  }
+
+  export type TaskListRelationFilter = {
+    every?: TaskWhereInput
+    some?: TaskWhereInput
+    none?: TaskWhereInput
+  }
+
+  export type WhiteboardListRelationFilter = {
+    every?: WhiteboardWhereInput
+    some?: WhiteboardWhereInput
+    none?: WhiteboardWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -9112,6 +17512,26 @@ export namespace Prisma {
   }
 
   export type AccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FolderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TagOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NoteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TaskOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WhiteboardOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9517,6 +17937,223 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type FolderCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    icon?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FolderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    icon?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FolderMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    icon?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NoteTagListRelationFilter = {
+    every?: NoteTagWhereInput
+    some?: NoteTagWhereInput
+    none?: NoteTagWhereInput
+  }
+
+  export type NoteTagOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TagNameUserIdCompoundUniqueInput = {
+    name: string
+    userId: string
+  }
+
+  export type TagCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TagMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TagMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FolderNullableScalarRelationFilter = {
+    is?: FolderWhereInput | null
+    isNot?: FolderWhereInput | null
+  }
+
+  export type NoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    isPublic?: SortOrder
+    folderId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    isPublic?: SortOrder
+    folderId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    isPublic?: SortOrder
+    folderId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NoteScalarRelationFilter = {
+    is?: NoteWhereInput
+    isNot?: NoteWhereInput
+  }
+
+  export type TagScalarRelationFilter = {
+    is?: TagWhereInput
+    isNot?: TagWhereInput
+  }
+
+  export type NoteTagNoteIdTagIdCompoundUniqueInput = {
+    noteId: string
+    tagId: string
+  }
+
+  export type NoteTagCountOrderByAggregateInput = {
+    noteId?: SortOrder
+    tagId?: SortOrder
+  }
+
+  export type NoteTagMaxOrderByAggregateInput = {
+    noteId?: SortOrder
+    tagId?: SortOrder
+  }
+
+  export type NoteTagMinOrderByAggregateInput = {
+    noteId?: SortOrder
+    tagId?: SortOrder
+  }
+
+  export type TaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    order?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TaskAvgOrderByAggregateInput = {
+    order?: SortOrder
+  }
+
+  export type TaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    order?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    priority?: SortOrder
+    dueDate?: SortOrder
+    order?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TaskSumOrderByAggregateInput = {
+    order?: SortOrder
+  }
+
+  export type WhiteboardCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    elements?: SortOrder
+    appState?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhiteboardMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    elements?: SortOrder
+    appState?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WhiteboardMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    elements?: SortOrder
+    appState?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -9531,6 +18168,41 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
+  export type FolderCreateNestedManyWithoutUserInput = {
+    create?: XOR<FolderCreateWithoutUserInput, FolderUncheckedCreateWithoutUserInput> | FolderCreateWithoutUserInput[] | FolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FolderCreateOrConnectWithoutUserInput | FolderCreateOrConnectWithoutUserInput[]
+    createMany?: FolderCreateManyUserInputEnvelope
+    connect?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+  }
+
+  export type TagCreateNestedManyWithoutUserInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  }
+
+  export type NoteCreateNestedManyWithoutUserInput = {
+    create?: XOR<NoteCreateWithoutUserInput, NoteUncheckedCreateWithoutUserInput> | NoteCreateWithoutUserInput[] | NoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutUserInput | NoteCreateOrConnectWithoutUserInput[]
+    createMany?: NoteCreateManyUserInputEnvelope
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+  }
+
+  export type TaskCreateNestedManyWithoutUserInput = {
+    create?: XOR<TaskCreateWithoutUserInput, TaskUncheckedCreateWithoutUserInput> | TaskCreateWithoutUserInput[] | TaskUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutUserInput | TaskCreateOrConnectWithoutUserInput[]
+    createMany?: TaskCreateManyUserInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type WhiteboardCreateNestedManyWithoutUserInput = {
+    create?: XOR<WhiteboardCreateWithoutUserInput, WhiteboardUncheckedCreateWithoutUserInput> | WhiteboardCreateWithoutUserInput[] | WhiteboardUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutUserInput | WhiteboardCreateOrConnectWithoutUserInput[]
+    createMany?: WhiteboardCreateManyUserInputEnvelope
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -9543,6 +18215,41 @@ export namespace Prisma {
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+  }
+
+  export type FolderUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FolderCreateWithoutUserInput, FolderUncheckedCreateWithoutUserInput> | FolderCreateWithoutUserInput[] | FolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FolderCreateOrConnectWithoutUserInput | FolderCreateOrConnectWithoutUserInput[]
+    createMany?: FolderCreateManyUserInputEnvelope
+    connect?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+  }
+
+  export type TagUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  }
+
+  export type NoteUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NoteCreateWithoutUserInput, NoteUncheckedCreateWithoutUserInput> | NoteCreateWithoutUserInput[] | NoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutUserInput | NoteCreateOrConnectWithoutUserInput[]
+    createMany?: NoteCreateManyUserInputEnvelope
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+  }
+
+  export type TaskUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TaskCreateWithoutUserInput, TaskUncheckedCreateWithoutUserInput> | TaskCreateWithoutUserInput[] | TaskUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutUserInput | TaskCreateOrConnectWithoutUserInput[]
+    createMany?: TaskCreateManyUserInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type WhiteboardUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<WhiteboardCreateWithoutUserInput, WhiteboardUncheckedCreateWithoutUserInput> | WhiteboardCreateWithoutUserInput[] | WhiteboardUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutUserInput | WhiteboardCreateOrConnectWithoutUserInput[]
+    createMany?: WhiteboardCreateManyUserInputEnvelope
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -9589,6 +18296,76 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
+  export type FolderUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FolderCreateWithoutUserInput, FolderUncheckedCreateWithoutUserInput> | FolderCreateWithoutUserInput[] | FolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FolderCreateOrConnectWithoutUserInput | FolderCreateOrConnectWithoutUserInput[]
+    upsert?: FolderUpsertWithWhereUniqueWithoutUserInput | FolderUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FolderCreateManyUserInputEnvelope
+    set?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    disconnect?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    delete?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    connect?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    update?: FolderUpdateWithWhereUniqueWithoutUserInput | FolderUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FolderUpdateManyWithWhereWithoutUserInput | FolderUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FolderScalarWhereInput | FolderScalarWhereInput[]
+  }
+
+  export type TagUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutUserInput | TagUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutUserInput | TagUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutUserInput | TagUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
+  export type NoteUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NoteCreateWithoutUserInput, NoteUncheckedCreateWithoutUserInput> | NoteCreateWithoutUserInput[] | NoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutUserInput | NoteCreateOrConnectWithoutUserInput[]
+    upsert?: NoteUpsertWithWhereUniqueWithoutUserInput | NoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NoteCreateManyUserInputEnvelope
+    set?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    disconnect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    delete?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    update?: NoteUpdateWithWhereUniqueWithoutUserInput | NoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NoteUpdateManyWithWhereWithoutUserInput | NoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
+  }
+
+  export type TaskUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TaskCreateWithoutUserInput, TaskUncheckedCreateWithoutUserInput> | TaskCreateWithoutUserInput[] | TaskUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutUserInput | TaskCreateOrConnectWithoutUserInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutUserInput | TaskUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TaskCreateManyUserInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutUserInput | TaskUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutUserInput | TaskUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type WhiteboardUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WhiteboardCreateWithoutUserInput, WhiteboardUncheckedCreateWithoutUserInput> | WhiteboardCreateWithoutUserInput[] | WhiteboardUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutUserInput | WhiteboardCreateOrConnectWithoutUserInput[]
+    upsert?: WhiteboardUpsertWithWhereUniqueWithoutUserInput | WhiteboardUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WhiteboardCreateManyUserInputEnvelope
+    set?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    disconnect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    delete?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    update?: WhiteboardUpdateWithWhereUniqueWithoutUserInput | WhiteboardUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WhiteboardUpdateManyWithWhereWithoutUserInput | WhiteboardUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WhiteboardScalarWhereInput | WhiteboardScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -9615,6 +18392,76 @@ export namespace Prisma {
     update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
+  }
+
+  export type FolderUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FolderCreateWithoutUserInput, FolderUncheckedCreateWithoutUserInput> | FolderCreateWithoutUserInput[] | FolderUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FolderCreateOrConnectWithoutUserInput | FolderCreateOrConnectWithoutUserInput[]
+    upsert?: FolderUpsertWithWhereUniqueWithoutUserInput | FolderUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FolderCreateManyUserInputEnvelope
+    set?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    disconnect?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    delete?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    connect?: FolderWhereUniqueInput | FolderWhereUniqueInput[]
+    update?: FolderUpdateWithWhereUniqueWithoutUserInput | FolderUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FolderUpdateManyWithWhereWithoutUserInput | FolderUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FolderScalarWhereInput | FolderScalarWhereInput[]
+  }
+
+  export type TagUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutUserInput | TagUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutUserInput | TagUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutUserInput | TagUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
+  export type NoteUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NoteCreateWithoutUserInput, NoteUncheckedCreateWithoutUserInput> | NoteCreateWithoutUserInput[] | NoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutUserInput | NoteCreateOrConnectWithoutUserInput[]
+    upsert?: NoteUpsertWithWhereUniqueWithoutUserInput | NoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NoteCreateManyUserInputEnvelope
+    set?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    disconnect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    delete?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    update?: NoteUpdateWithWhereUniqueWithoutUserInput | NoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NoteUpdateManyWithWhereWithoutUserInput | NoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
+  }
+
+  export type TaskUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TaskCreateWithoutUserInput, TaskUncheckedCreateWithoutUserInput> | TaskCreateWithoutUserInput[] | TaskUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutUserInput | TaskCreateOrConnectWithoutUserInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutUserInput | TaskUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TaskCreateManyUserInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutUserInput | TaskUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutUserInput | TaskUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type WhiteboardUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<WhiteboardCreateWithoutUserInput, WhiteboardUncheckedCreateWithoutUserInput> | WhiteboardCreateWithoutUserInput[] | WhiteboardUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutUserInput | WhiteboardCreateOrConnectWithoutUserInput[]
+    upsert?: WhiteboardUpsertWithWhereUniqueWithoutUserInput | WhiteboardUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: WhiteboardCreateManyUserInputEnvelope
+    set?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    disconnect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    delete?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    update?: WhiteboardUpdateWithWhereUniqueWithoutUserInput | WhiteboardUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: WhiteboardUpdateManyWithWhereWithoutUserInput | WhiteboardUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: WhiteboardScalarWhereInput | WhiteboardScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -9671,6 +18518,246 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type UserCreateNestedOneWithoutFoldersInput = {
+    create?: XOR<UserCreateWithoutFoldersInput, UserUncheckedCreateWithoutFoldersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFoldersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NoteCreateNestedManyWithoutFolderInput = {
+    create?: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput> | NoteCreateWithoutFolderInput[] | NoteUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutFolderInput | NoteCreateOrConnectWithoutFolderInput[]
+    createMany?: NoteCreateManyFolderInputEnvelope
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+  }
+
+  export type NoteUncheckedCreateNestedManyWithoutFolderInput = {
+    create?: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput> | NoteCreateWithoutFolderInput[] | NoteUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutFolderInput | NoteCreateOrConnectWithoutFolderInput[]
+    createMany?: NoteCreateManyFolderInputEnvelope
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutFoldersNestedInput = {
+    create?: XOR<UserCreateWithoutFoldersInput, UserUncheckedCreateWithoutFoldersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFoldersInput
+    upsert?: UserUpsertWithoutFoldersInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFoldersInput, UserUpdateWithoutFoldersInput>, UserUncheckedUpdateWithoutFoldersInput>
+  }
+
+  export type NoteUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput> | NoteCreateWithoutFolderInput[] | NoteUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutFolderInput | NoteCreateOrConnectWithoutFolderInput[]
+    upsert?: NoteUpsertWithWhereUniqueWithoutFolderInput | NoteUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: NoteCreateManyFolderInputEnvelope
+    set?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    disconnect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    delete?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    update?: NoteUpdateWithWhereUniqueWithoutFolderInput | NoteUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: NoteUpdateManyWithWhereWithoutFolderInput | NoteUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
+  }
+
+  export type NoteUncheckedUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput> | NoteCreateWithoutFolderInput[] | NoteUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: NoteCreateOrConnectWithoutFolderInput | NoteCreateOrConnectWithoutFolderInput[]
+    upsert?: NoteUpsertWithWhereUniqueWithoutFolderInput | NoteUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: NoteCreateManyFolderInputEnvelope
+    set?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    disconnect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    delete?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+    update?: NoteUpdateWithWhereUniqueWithoutFolderInput | NoteUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: NoteUpdateManyWithWhereWithoutFolderInput | NoteUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutTagsInput = {
+    create?: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTagsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NoteTagCreateNestedManyWithoutTagInput = {
+    create?: XOR<NoteTagCreateWithoutTagInput, NoteTagUncheckedCreateWithoutTagInput> | NoteTagCreateWithoutTagInput[] | NoteTagUncheckedCreateWithoutTagInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutTagInput | NoteTagCreateOrConnectWithoutTagInput[]
+    createMany?: NoteTagCreateManyTagInputEnvelope
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+  }
+
+  export type NoteTagUncheckedCreateNestedManyWithoutTagInput = {
+    create?: XOR<NoteTagCreateWithoutTagInput, NoteTagUncheckedCreateWithoutTagInput> | NoteTagCreateWithoutTagInput[] | NoteTagUncheckedCreateWithoutTagInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutTagInput | NoteTagCreateOrConnectWithoutTagInput[]
+    createMany?: NoteTagCreateManyTagInputEnvelope
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutTagsNestedInput = {
+    create?: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTagsInput
+    upsert?: UserUpsertWithoutTagsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTagsInput, UserUpdateWithoutTagsInput>, UserUncheckedUpdateWithoutTagsInput>
+  }
+
+  export type NoteTagUpdateManyWithoutTagNestedInput = {
+    create?: XOR<NoteTagCreateWithoutTagInput, NoteTagUncheckedCreateWithoutTagInput> | NoteTagCreateWithoutTagInput[] | NoteTagUncheckedCreateWithoutTagInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutTagInput | NoteTagCreateOrConnectWithoutTagInput[]
+    upsert?: NoteTagUpsertWithWhereUniqueWithoutTagInput | NoteTagUpsertWithWhereUniqueWithoutTagInput[]
+    createMany?: NoteTagCreateManyTagInputEnvelope
+    set?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    disconnect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    delete?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    update?: NoteTagUpdateWithWhereUniqueWithoutTagInput | NoteTagUpdateWithWhereUniqueWithoutTagInput[]
+    updateMany?: NoteTagUpdateManyWithWhereWithoutTagInput | NoteTagUpdateManyWithWhereWithoutTagInput[]
+    deleteMany?: NoteTagScalarWhereInput | NoteTagScalarWhereInput[]
+  }
+
+  export type NoteTagUncheckedUpdateManyWithoutTagNestedInput = {
+    create?: XOR<NoteTagCreateWithoutTagInput, NoteTagUncheckedCreateWithoutTagInput> | NoteTagCreateWithoutTagInput[] | NoteTagUncheckedCreateWithoutTagInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutTagInput | NoteTagCreateOrConnectWithoutTagInput[]
+    upsert?: NoteTagUpsertWithWhereUniqueWithoutTagInput | NoteTagUpsertWithWhereUniqueWithoutTagInput[]
+    createMany?: NoteTagCreateManyTagInputEnvelope
+    set?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    disconnect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    delete?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    update?: NoteTagUpdateWithWhereUniqueWithoutTagInput | NoteTagUpdateWithWhereUniqueWithoutTagInput[]
+    updateMany?: NoteTagUpdateManyWithWhereWithoutTagInput | NoteTagUpdateManyWithWhereWithoutTagInput[]
+    deleteMany?: NoteTagScalarWhereInput | NoteTagScalarWhereInput[]
+  }
+
+  export type FolderCreateNestedOneWithoutNotesInput = {
+    create?: XOR<FolderCreateWithoutNotesInput, FolderUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: FolderCreateOrConnectWithoutNotesInput
+    connect?: FolderWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutNotesInput = {
+    create?: XOR<UserCreateWithoutNotesInput, UserUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NoteTagCreateNestedManyWithoutNoteInput = {
+    create?: XOR<NoteTagCreateWithoutNoteInput, NoteTagUncheckedCreateWithoutNoteInput> | NoteTagCreateWithoutNoteInput[] | NoteTagUncheckedCreateWithoutNoteInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutNoteInput | NoteTagCreateOrConnectWithoutNoteInput[]
+    createMany?: NoteTagCreateManyNoteInputEnvelope
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+  }
+
+  export type NoteTagUncheckedCreateNestedManyWithoutNoteInput = {
+    create?: XOR<NoteTagCreateWithoutNoteInput, NoteTagUncheckedCreateWithoutNoteInput> | NoteTagCreateWithoutNoteInput[] | NoteTagUncheckedCreateWithoutNoteInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutNoteInput | NoteTagCreateOrConnectWithoutNoteInput[]
+    createMany?: NoteTagCreateManyNoteInputEnvelope
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+  }
+
+  export type FolderUpdateOneWithoutNotesNestedInput = {
+    create?: XOR<FolderCreateWithoutNotesInput, FolderUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: FolderCreateOrConnectWithoutNotesInput
+    upsert?: FolderUpsertWithoutNotesInput
+    disconnect?: FolderWhereInput | boolean
+    delete?: FolderWhereInput | boolean
+    connect?: FolderWhereUniqueInput
+    update?: XOR<XOR<FolderUpdateToOneWithWhereWithoutNotesInput, FolderUpdateWithoutNotesInput>, FolderUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutNotesNestedInput = {
+    create?: XOR<UserCreateWithoutNotesInput, UserUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotesInput
+    upsert?: UserUpsertWithoutNotesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotesInput, UserUpdateWithoutNotesInput>, UserUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type NoteTagUpdateManyWithoutNoteNestedInput = {
+    create?: XOR<NoteTagCreateWithoutNoteInput, NoteTagUncheckedCreateWithoutNoteInput> | NoteTagCreateWithoutNoteInput[] | NoteTagUncheckedCreateWithoutNoteInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutNoteInput | NoteTagCreateOrConnectWithoutNoteInput[]
+    upsert?: NoteTagUpsertWithWhereUniqueWithoutNoteInput | NoteTagUpsertWithWhereUniqueWithoutNoteInput[]
+    createMany?: NoteTagCreateManyNoteInputEnvelope
+    set?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    disconnect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    delete?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    update?: NoteTagUpdateWithWhereUniqueWithoutNoteInput | NoteTagUpdateWithWhereUniqueWithoutNoteInput[]
+    updateMany?: NoteTagUpdateManyWithWhereWithoutNoteInput | NoteTagUpdateManyWithWhereWithoutNoteInput[]
+    deleteMany?: NoteTagScalarWhereInput | NoteTagScalarWhereInput[]
+  }
+
+  export type NoteTagUncheckedUpdateManyWithoutNoteNestedInput = {
+    create?: XOR<NoteTagCreateWithoutNoteInput, NoteTagUncheckedCreateWithoutNoteInput> | NoteTagCreateWithoutNoteInput[] | NoteTagUncheckedCreateWithoutNoteInput[]
+    connectOrCreate?: NoteTagCreateOrConnectWithoutNoteInput | NoteTagCreateOrConnectWithoutNoteInput[]
+    upsert?: NoteTagUpsertWithWhereUniqueWithoutNoteInput | NoteTagUpsertWithWhereUniqueWithoutNoteInput[]
+    createMany?: NoteTagCreateManyNoteInputEnvelope
+    set?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    disconnect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    delete?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    connect?: NoteTagWhereUniqueInput | NoteTagWhereUniqueInput[]
+    update?: NoteTagUpdateWithWhereUniqueWithoutNoteInput | NoteTagUpdateWithWhereUniqueWithoutNoteInput[]
+    updateMany?: NoteTagUpdateManyWithWhereWithoutNoteInput | NoteTagUpdateManyWithWhereWithoutNoteInput[]
+    deleteMany?: NoteTagScalarWhereInput | NoteTagScalarWhereInput[]
+  }
+
+  export type NoteCreateNestedOneWithoutTagsInput = {
+    create?: XOR<NoteCreateWithoutTagsInput, NoteUncheckedCreateWithoutTagsInput>
+    connectOrCreate?: NoteCreateOrConnectWithoutTagsInput
+    connect?: NoteWhereUniqueInput
+  }
+
+  export type TagCreateNestedOneWithoutNotesInput = {
+    create?: XOR<TagCreateWithoutNotesInput, TagUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: TagCreateOrConnectWithoutNotesInput
+    connect?: TagWhereUniqueInput
+  }
+
+  export type NoteUpdateOneRequiredWithoutTagsNestedInput = {
+    create?: XOR<NoteCreateWithoutTagsInput, NoteUncheckedCreateWithoutTagsInput>
+    connectOrCreate?: NoteCreateOrConnectWithoutTagsInput
+    upsert?: NoteUpsertWithoutTagsInput
+    connect?: NoteWhereUniqueInput
+    update?: XOR<XOR<NoteUpdateToOneWithWhereWithoutTagsInput, NoteUpdateWithoutTagsInput>, NoteUncheckedUpdateWithoutTagsInput>
+  }
+
+  export type TagUpdateOneRequiredWithoutNotesNestedInput = {
+    create?: XOR<TagCreateWithoutNotesInput, TagUncheckedCreateWithoutNotesInput>
+    connectOrCreate?: TagCreateOrConnectWithoutNotesInput
+    upsert?: TagUpsertWithoutNotesInput
+    connect?: TagWhereUniqueInput
+    update?: XOR<XOR<TagUpdateToOneWithWhereWithoutNotesInput, TagUpdateWithoutNotesInput>, TagUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type UserCreateNestedOneWithoutTasksInput = {
+    create?: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTasksInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutTasksNestedInput = {
+    create?: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTasksInput
+    upsert?: UserUpsertWithoutTasksInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTasksInput, UserUpdateWithoutTasksInput>, UserUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type UserCreateNestedOneWithoutWhiteboardsInput = {
+    create?: XOR<UserCreateWithoutWhiteboardsInput, UserUncheckedCreateWithoutWhiteboardsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWhiteboardsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutWhiteboardsNestedInput = {
+    create?: XOR<UserCreateWithoutWhiteboardsInput, UserUncheckedCreateWithoutWhiteboardsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWhiteboardsInput
+    upsert?: UserUpsertWithoutWhiteboardsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWhiteboardsInput, UserUpdateWithoutWhiteboardsInput>, UserUncheckedUpdateWithoutWhiteboardsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -9958,6 +19045,153 @@ export namespace Prisma {
     data: AccountCreateManyUserInput | AccountCreateManyUserInput[]
   }
 
+  export type FolderCreateWithoutUserInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderCreateOrConnectWithoutUserInput = {
+    where: FolderWhereUniqueInput
+    create: XOR<FolderCreateWithoutUserInput, FolderUncheckedCreateWithoutUserInput>
+  }
+
+  export type FolderCreateManyUserInputEnvelope = {
+    data: FolderCreateManyUserInput | FolderCreateManyUserInput[]
+  }
+
+  export type TagCreateWithoutUserInput = {
+    id?: string
+    name: string
+    color?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteTagCreateNestedManyWithoutTagInput
+  }
+
+  export type TagUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    color?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteTagUncheckedCreateNestedManyWithoutTagInput
+  }
+
+  export type TagCreateOrConnectWithoutUserInput = {
+    where: TagWhereUniqueInput
+    create: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput>
+  }
+
+  export type TagCreateManyUserInputEnvelope = {
+    data: TagCreateManyUserInput | TagCreateManyUserInput[]
+  }
+
+  export type NoteCreateWithoutUserInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    folder?: FolderCreateNestedOneWithoutNotesInput
+    tags?: NoteTagCreateNestedManyWithoutNoteInput
+  }
+
+  export type NoteUncheckedCreateWithoutUserInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    folderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tags?: NoteTagUncheckedCreateNestedManyWithoutNoteInput
+  }
+
+  export type NoteCreateOrConnectWithoutUserInput = {
+    where: NoteWhereUniqueInput
+    create: XOR<NoteCreateWithoutUserInput, NoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type NoteCreateManyUserInputEnvelope = {
+    data: NoteCreateManyUserInput | NoteCreateManyUserInput[]
+  }
+
+  export type TaskCreateWithoutUserInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskUncheckedCreateWithoutUserInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskCreateOrConnectWithoutUserInput = {
+    where: TaskWhereUniqueInput
+    create: XOR<TaskCreateWithoutUserInput, TaskUncheckedCreateWithoutUserInput>
+  }
+
+  export type TaskCreateManyUserInputEnvelope = {
+    data: TaskCreateManyUserInput | TaskCreateManyUserInput[]
+  }
+
+  export type WhiteboardCreateWithoutUserInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhiteboardUncheckedCreateWithoutUserInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhiteboardCreateOrConnectWithoutUserInput = {
+    where: WhiteboardWhereUniqueInput
+    create: XOR<WhiteboardCreateWithoutUserInput, WhiteboardUncheckedCreateWithoutUserInput>
+  }
+
+  export type WhiteboardCreateManyUserInputEnvelope = {
+    data: WhiteboardCreateManyUserInput | WhiteboardCreateManyUserInput[]
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -10023,6 +19257,154 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Account"> | Date | string
   }
 
+  export type FolderUpsertWithWhereUniqueWithoutUserInput = {
+    where: FolderWhereUniqueInput
+    update: XOR<FolderUpdateWithoutUserInput, FolderUncheckedUpdateWithoutUserInput>
+    create: XOR<FolderCreateWithoutUserInput, FolderUncheckedCreateWithoutUserInput>
+  }
+
+  export type FolderUpdateWithWhereUniqueWithoutUserInput = {
+    where: FolderWhereUniqueInput
+    data: XOR<FolderUpdateWithoutUserInput, FolderUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FolderUpdateManyWithWhereWithoutUserInput = {
+    where: FolderScalarWhereInput
+    data: XOR<FolderUpdateManyMutationInput, FolderUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FolderScalarWhereInput = {
+    AND?: FolderScalarWhereInput | FolderScalarWhereInput[]
+    OR?: FolderScalarWhereInput[]
+    NOT?: FolderScalarWhereInput | FolderScalarWhereInput[]
+    id?: StringFilter<"Folder"> | string
+    name?: StringFilter<"Folder"> | string
+    color?: StringNullableFilter<"Folder"> | string | null
+    icon?: StringNullableFilter<"Folder"> | string | null
+    userId?: StringFilter<"Folder"> | string
+    createdAt?: DateTimeFilter<"Folder"> | Date | string
+    updatedAt?: DateTimeFilter<"Folder"> | Date | string
+  }
+
+  export type TagUpsertWithWhereUniqueWithoutUserInput = {
+    where: TagWhereUniqueInput
+    update: XOR<TagUpdateWithoutUserInput, TagUncheckedUpdateWithoutUserInput>
+    create: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput>
+  }
+
+  export type TagUpdateWithWhereUniqueWithoutUserInput = {
+    where: TagWhereUniqueInput
+    data: XOR<TagUpdateWithoutUserInput, TagUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TagUpdateManyWithWhereWithoutUserInput = {
+    where: TagScalarWhereInput
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TagScalarWhereInput = {
+    AND?: TagScalarWhereInput | TagScalarWhereInput[]
+    OR?: TagScalarWhereInput[]
+    NOT?: TagScalarWhereInput | TagScalarWhereInput[]
+    id?: StringFilter<"Tag"> | string
+    name?: StringFilter<"Tag"> | string
+    color?: StringNullableFilter<"Tag"> | string | null
+    userId?: StringFilter<"Tag"> | string
+    createdAt?: DateTimeFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeFilter<"Tag"> | Date | string
+  }
+
+  export type NoteUpsertWithWhereUniqueWithoutUserInput = {
+    where: NoteWhereUniqueInput
+    update: XOR<NoteUpdateWithoutUserInput, NoteUncheckedUpdateWithoutUserInput>
+    create: XOR<NoteCreateWithoutUserInput, NoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type NoteUpdateWithWhereUniqueWithoutUserInput = {
+    where: NoteWhereUniqueInput
+    data: XOR<NoteUpdateWithoutUserInput, NoteUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NoteUpdateManyWithWhereWithoutUserInput = {
+    where: NoteScalarWhereInput
+    data: XOR<NoteUpdateManyMutationInput, NoteUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NoteScalarWhereInput = {
+    AND?: NoteScalarWhereInput | NoteScalarWhereInput[]
+    OR?: NoteScalarWhereInput[]
+    NOT?: NoteScalarWhereInput | NoteScalarWhereInput[]
+    id?: StringFilter<"Note"> | string
+    title?: StringFilter<"Note"> | string
+    content?: StringNullableFilter<"Note"> | string | null
+    isPublic?: BoolFilter<"Note"> | boolean
+    folderId?: StringNullableFilter<"Note"> | string | null
+    userId?: StringFilter<"Note"> | string
+    createdAt?: DateTimeFilter<"Note"> | Date | string
+    updatedAt?: DateTimeFilter<"Note"> | Date | string
+  }
+
+  export type TaskUpsertWithWhereUniqueWithoutUserInput = {
+    where: TaskWhereUniqueInput
+    update: XOR<TaskUpdateWithoutUserInput, TaskUncheckedUpdateWithoutUserInput>
+    create: XOR<TaskCreateWithoutUserInput, TaskUncheckedCreateWithoutUserInput>
+  }
+
+  export type TaskUpdateWithWhereUniqueWithoutUserInput = {
+    where: TaskWhereUniqueInput
+    data: XOR<TaskUpdateWithoutUserInput, TaskUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TaskUpdateManyWithWhereWithoutUserInput = {
+    where: TaskScalarWhereInput
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TaskScalarWhereInput = {
+    AND?: TaskScalarWhereInput | TaskScalarWhereInput[]
+    OR?: TaskScalarWhereInput[]
+    NOT?: TaskScalarWhereInput | TaskScalarWhereInput[]
+    id?: StringFilter<"Task"> | string
+    title?: StringFilter<"Task"> | string
+    description?: StringNullableFilter<"Task"> | string | null
+    status?: StringFilter<"Task"> | string
+    priority?: StringFilter<"Task"> | string
+    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
+    order?: IntFilter<"Task"> | number
+    userId?: StringFilter<"Task"> | string
+    createdAt?: DateTimeFilter<"Task"> | Date | string
+    updatedAt?: DateTimeFilter<"Task"> | Date | string
+  }
+
+  export type WhiteboardUpsertWithWhereUniqueWithoutUserInput = {
+    where: WhiteboardWhereUniqueInput
+    update: XOR<WhiteboardUpdateWithoutUserInput, WhiteboardUncheckedUpdateWithoutUserInput>
+    create: XOR<WhiteboardCreateWithoutUserInput, WhiteboardUncheckedCreateWithoutUserInput>
+  }
+
+  export type WhiteboardUpdateWithWhereUniqueWithoutUserInput = {
+    where: WhiteboardWhereUniqueInput
+    data: XOR<WhiteboardUpdateWithoutUserInput, WhiteboardUncheckedUpdateWithoutUserInput>
+  }
+
+  export type WhiteboardUpdateManyWithWhereWithoutUserInput = {
+    where: WhiteboardScalarWhereInput
+    data: XOR<WhiteboardUpdateManyMutationInput, WhiteboardUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type WhiteboardScalarWhereInput = {
+    AND?: WhiteboardScalarWhereInput | WhiteboardScalarWhereInput[]
+    OR?: WhiteboardScalarWhereInput[]
+    NOT?: WhiteboardScalarWhereInput | WhiteboardScalarWhereInput[]
+    id?: StringFilter<"Whiteboard"> | string
+    name?: StringFilter<"Whiteboard"> | string
+    elements?: StringNullableFilter<"Whiteboard"> | string | null
+    appState?: StringNullableFilter<"Whiteboard"> | string | null
+    userId?: StringFilter<"Whiteboard"> | string
+    createdAt?: DateTimeFilter<"Whiteboard"> | Date | string
+    updatedAt?: DateTimeFilter<"Whiteboard"> | Date | string
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id: string
     name: string
@@ -10032,6 +19414,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
+    folders?: FolderCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -10043,6 +19430,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    folders?: FolderUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -10070,6 +19462,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    folders?: FolderUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -10081,6 +19478,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    folders?: FolderUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -10092,6 +19494,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
+    folders?: FolderCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -10103,6 +19510,11 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    folders?: FolderUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -10130,6 +19542,11 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    folders?: FolderUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -10141,6 +19558,700 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    folders?: FolderUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutFoldersInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutFoldersInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutFoldersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFoldersInput, UserUncheckedCreateWithoutFoldersInput>
+  }
+
+  export type NoteCreateWithoutFolderInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutNotesInput
+    tags?: NoteTagCreateNestedManyWithoutNoteInput
+  }
+
+  export type NoteUncheckedCreateWithoutFolderInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    tags?: NoteTagUncheckedCreateNestedManyWithoutNoteInput
+  }
+
+  export type NoteCreateOrConnectWithoutFolderInput = {
+    where: NoteWhereUniqueInput
+    create: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput>
+  }
+
+  export type NoteCreateManyFolderInputEnvelope = {
+    data: NoteCreateManyFolderInput | NoteCreateManyFolderInput[]
+  }
+
+  export type UserUpsertWithoutFoldersInput = {
+    update: XOR<UserUpdateWithoutFoldersInput, UserUncheckedUpdateWithoutFoldersInput>
+    create: XOR<UserCreateWithoutFoldersInput, UserUncheckedCreateWithoutFoldersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFoldersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFoldersInput, UserUncheckedUpdateWithoutFoldersInput>
+  }
+
+  export type UserUpdateWithoutFoldersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFoldersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type NoteUpsertWithWhereUniqueWithoutFolderInput = {
+    where: NoteWhereUniqueInput
+    update: XOR<NoteUpdateWithoutFolderInput, NoteUncheckedUpdateWithoutFolderInput>
+    create: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput>
+  }
+
+  export type NoteUpdateWithWhereUniqueWithoutFolderInput = {
+    where: NoteWhereUniqueInput
+    data: XOR<NoteUpdateWithoutFolderInput, NoteUncheckedUpdateWithoutFolderInput>
+  }
+
+  export type NoteUpdateManyWithWhereWithoutFolderInput = {
+    where: NoteScalarWhereInput
+    data: XOR<NoteUpdateManyMutationInput, NoteUncheckedUpdateManyWithoutFolderInput>
+  }
+
+  export type UserCreateWithoutTagsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    folders?: FolderCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTagsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    folders?: FolderUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTagsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput>
+  }
+
+  export type NoteTagCreateWithoutTagInput = {
+    note: NoteCreateNestedOneWithoutTagsInput
+  }
+
+  export type NoteTagUncheckedCreateWithoutTagInput = {
+    noteId: string
+  }
+
+  export type NoteTagCreateOrConnectWithoutTagInput = {
+    where: NoteTagWhereUniqueInput
+    create: XOR<NoteTagCreateWithoutTagInput, NoteTagUncheckedCreateWithoutTagInput>
+  }
+
+  export type NoteTagCreateManyTagInputEnvelope = {
+    data: NoteTagCreateManyTagInput | NoteTagCreateManyTagInput[]
+  }
+
+  export type UserUpsertWithoutTagsInput = {
+    update: XOR<UserUpdateWithoutTagsInput, UserUncheckedUpdateWithoutTagsInput>
+    create: XOR<UserCreateWithoutTagsInput, UserUncheckedCreateWithoutTagsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTagsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTagsInput, UserUncheckedUpdateWithoutTagsInput>
+  }
+
+  export type UserUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    folders?: FolderUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    folders?: FolderUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type NoteTagUpsertWithWhereUniqueWithoutTagInput = {
+    where: NoteTagWhereUniqueInput
+    update: XOR<NoteTagUpdateWithoutTagInput, NoteTagUncheckedUpdateWithoutTagInput>
+    create: XOR<NoteTagCreateWithoutTagInput, NoteTagUncheckedCreateWithoutTagInput>
+  }
+
+  export type NoteTagUpdateWithWhereUniqueWithoutTagInput = {
+    where: NoteTagWhereUniqueInput
+    data: XOR<NoteTagUpdateWithoutTagInput, NoteTagUncheckedUpdateWithoutTagInput>
+  }
+
+  export type NoteTagUpdateManyWithWhereWithoutTagInput = {
+    where: NoteTagScalarWhereInput
+    data: XOR<NoteTagUpdateManyMutationInput, NoteTagUncheckedUpdateManyWithoutTagInput>
+  }
+
+  export type NoteTagScalarWhereInput = {
+    AND?: NoteTagScalarWhereInput | NoteTagScalarWhereInput[]
+    OR?: NoteTagScalarWhereInput[]
+    NOT?: NoteTagScalarWhereInput | NoteTagScalarWhereInput[]
+    noteId?: StringFilter<"NoteTag"> | string
+    tagId?: StringFilter<"NoteTag"> | string
+  }
+
+  export type FolderCreateWithoutNotesInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutFoldersInput
+  }
+
+  export type FolderUncheckedCreateWithoutNotesInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FolderCreateOrConnectWithoutNotesInput = {
+    where: FolderWhereUniqueInput
+    create: XOR<FolderCreateWithoutNotesInput, FolderUncheckedCreateWithoutNotesInput>
+  }
+
+  export type UserCreateWithoutNotesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    folders?: FolderCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutNotesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    folders?: FolderUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutNotesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNotesInput, UserUncheckedCreateWithoutNotesInput>
+  }
+
+  export type NoteTagCreateWithoutNoteInput = {
+    tag: TagCreateNestedOneWithoutNotesInput
+  }
+
+  export type NoteTagUncheckedCreateWithoutNoteInput = {
+    tagId: string
+  }
+
+  export type NoteTagCreateOrConnectWithoutNoteInput = {
+    where: NoteTagWhereUniqueInput
+    create: XOR<NoteTagCreateWithoutNoteInput, NoteTagUncheckedCreateWithoutNoteInput>
+  }
+
+  export type NoteTagCreateManyNoteInputEnvelope = {
+    data: NoteTagCreateManyNoteInput | NoteTagCreateManyNoteInput[]
+  }
+
+  export type FolderUpsertWithoutNotesInput = {
+    update: XOR<FolderUpdateWithoutNotesInput, FolderUncheckedUpdateWithoutNotesInput>
+    create: XOR<FolderCreateWithoutNotesInput, FolderUncheckedCreateWithoutNotesInput>
+    where?: FolderWhereInput
+  }
+
+  export type FolderUpdateToOneWithWhereWithoutNotesInput = {
+    where?: FolderWhereInput
+    data: XOR<FolderUpdateWithoutNotesInput, FolderUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type FolderUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFoldersNestedInput
+  }
+
+  export type FolderUncheckedUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutNotesInput = {
+    update: XOR<UserUpdateWithoutNotesInput, UserUncheckedUpdateWithoutNotesInput>
+    create: XOR<UserCreateWithoutNotesInput, UserUncheckedCreateWithoutNotesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotesInput, UserUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type UserUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    folders?: FolderUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    folders?: FolderUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type NoteTagUpsertWithWhereUniqueWithoutNoteInput = {
+    where: NoteTagWhereUniqueInput
+    update: XOR<NoteTagUpdateWithoutNoteInput, NoteTagUncheckedUpdateWithoutNoteInput>
+    create: XOR<NoteTagCreateWithoutNoteInput, NoteTagUncheckedCreateWithoutNoteInput>
+  }
+
+  export type NoteTagUpdateWithWhereUniqueWithoutNoteInput = {
+    where: NoteTagWhereUniqueInput
+    data: XOR<NoteTagUpdateWithoutNoteInput, NoteTagUncheckedUpdateWithoutNoteInput>
+  }
+
+  export type NoteTagUpdateManyWithWhereWithoutNoteInput = {
+    where: NoteTagScalarWhereInput
+    data: XOR<NoteTagUpdateManyMutationInput, NoteTagUncheckedUpdateManyWithoutNoteInput>
+  }
+
+  export type NoteCreateWithoutTagsInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    folder?: FolderCreateNestedOneWithoutNotesInput
+    user: UserCreateNestedOneWithoutNotesInput
+  }
+
+  export type NoteUncheckedCreateWithoutTagsInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    folderId?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NoteCreateOrConnectWithoutTagsInput = {
+    where: NoteWhereUniqueInput
+    create: XOR<NoteCreateWithoutTagsInput, NoteUncheckedCreateWithoutTagsInput>
+  }
+
+  export type TagCreateWithoutNotesInput = {
+    id?: string
+    name: string
+    color?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTagsInput
+  }
+
+  export type TagUncheckedCreateWithoutNotesInput = {
+    id?: string
+    name: string
+    color?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TagCreateOrConnectWithoutNotesInput = {
+    where: TagWhereUniqueInput
+    create: XOR<TagCreateWithoutNotesInput, TagUncheckedCreateWithoutNotesInput>
+  }
+
+  export type NoteUpsertWithoutTagsInput = {
+    update: XOR<NoteUpdateWithoutTagsInput, NoteUncheckedUpdateWithoutTagsInput>
+    create: XOR<NoteCreateWithoutTagsInput, NoteUncheckedCreateWithoutTagsInput>
+    where?: NoteWhereInput
+  }
+
+  export type NoteUpdateToOneWithWhereWithoutTagsInput = {
+    where?: NoteWhereInput
+    data: XOR<NoteUpdateWithoutTagsInput, NoteUncheckedUpdateWithoutTagsInput>
+  }
+
+  export type NoteUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: FolderUpdateOneWithoutNotesNestedInput
+    user?: UserUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type NoteUncheckedUpdateWithoutTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TagUpsertWithoutNotesInput = {
+    update: XOR<TagUpdateWithoutNotesInput, TagUncheckedUpdateWithoutNotesInput>
+    create: XOR<TagCreateWithoutNotesInput, TagUncheckedCreateWithoutNotesInput>
+    where?: TagWhereInput
+  }
+
+  export type TagUpdateToOneWithWhereWithoutNotesInput = {
+    where?: TagWhereInput
+    data: XOR<TagUpdateWithoutNotesInput, TagUncheckedUpdateWithoutNotesInput>
+  }
+
+  export type TagUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTagsNestedInput
+  }
+
+  export type TagUncheckedUpdateWithoutNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateWithoutTasksInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    folders?: FolderCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTasksInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    folders?: FolderUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTasksInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+  }
+
+  export type UserUpsertWithoutTasksInput = {
+    update: XOR<UserUpdateWithoutTasksInput, UserUncheckedUpdateWithoutTasksInput>
+    create: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTasksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTasksInput, UserUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type UserUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    folders?: FolderUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    folders?: FolderUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutWhiteboardsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    folders?: FolderCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    notes?: NoteCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutWhiteboardsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    folders?: FolderUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    notes?: NoteUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutWhiteboardsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutWhiteboardsInput, UserUncheckedCreateWithoutWhiteboardsInput>
+  }
+
+  export type UserUpsertWithoutWhiteboardsInput = {
+    update: XOR<UserUpdateWithoutWhiteboardsInput, UserUncheckedUpdateWithoutWhiteboardsInput>
+    create: XOR<UserCreateWithoutWhiteboardsInput, UserUncheckedCreateWithoutWhiteboardsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutWhiteboardsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutWhiteboardsInput, UserUncheckedUpdateWithoutWhiteboardsInput>
+  }
+
+  export type UserUpdateWithoutWhiteboardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    folders?: FolderUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    notes?: NoteUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutWhiteboardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    folders?: FolderUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    notes?: NoteUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -10164,6 +20275,54 @@ export namespace Prisma {
     refreshTokenExpiresAt?: Date | string | null
     scope?: string | null
     password?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FolderCreateManyUserInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TagCreateManyUserInput = {
+    id?: string
+    name: string
+    color?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NoteCreateManyUserInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    folderId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskCreateManyUserInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhiteboardCreateManyUserInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10241,6 +20400,230 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FolderUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteUpdateManyWithoutFolderNestedInput
+  }
+
+  export type FolderUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteUncheckedUpdateManyWithoutFolderNestedInput
+  }
+
+  export type FolderUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TagUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteTagUpdateManyWithoutTagNestedInput
+  }
+
+  export type TagUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteTagUncheckedUpdateManyWithoutTagNestedInput
+  }
+
+  export type TagUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NoteUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: FolderUpdateOneWithoutNotesNestedInput
+    tags?: NoteTagUpdateManyWithoutNoteNestedInput
+  }
+
+  export type NoteUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tags?: NoteTagUncheckedUpdateManyWithoutNoteNestedInput
+  }
+
+  export type NoteUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NoteCreateManyFolderInput = {
+    id?: string
+    title?: string
+    content?: string | null
+    isPublic?: boolean
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NoteUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutNotesNestedInput
+    tags?: NoteTagUpdateManyWithoutNoteNestedInput
+  }
+
+  export type NoteUncheckedUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tags?: NoteTagUncheckedUpdateManyWithoutNoteNestedInput
+  }
+
+  export type NoteUncheckedUpdateManyWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NoteTagCreateManyTagInput = {
+    noteId: string
+  }
+
+  export type NoteTagUpdateWithoutTagInput = {
+    note?: NoteUpdateOneRequiredWithoutTagsNestedInput
+  }
+
+  export type NoteTagUncheckedUpdateWithoutTagInput = {
+    noteId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type NoteTagUncheckedUpdateManyWithoutTagInput = {
+    noteId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type NoteTagCreateManyNoteInput = {
+    tagId: string
+  }
+
+  export type NoteTagUpdateWithoutNoteInput = {
+    tag?: TagUpdateOneRequiredWithoutNotesNestedInput
+  }
+
+  export type NoteTagUncheckedUpdateWithoutNoteInput = {
+    tagId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type NoteTagUncheckedUpdateManyWithoutNoteInput = {
+    tagId?: StringFieldUpdateOperationsInput | string
   }
 
 

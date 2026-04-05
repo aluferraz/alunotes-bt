@@ -468,6 +468,42 @@ func (a *Adapter) DisconnectDevice(mac string) error {
 	return nil
 }
 
+// RemoveDevice unpairs and removes a Bluetooth device by MAC address.
+// It calls BlueZ Adapter1.RemoveDevice which disconnects, unpairs, and
+// removes the device object entirely.
+func (a *Adapter) RemoveDevice(mac string) error {
+	// Try both adapters — the device could be paired on either.
+	removed := false
+	for _, adapterPath := range []dbus.ObjectPath{a.sinkPath, a.sourcePath} {
+		devicePath := a.macToDevicePath(adapterPath, mac)
+		adapter := a.conn.Object(bluezBus, adapterPath)
+
+		call := adapter.Call(bluezAdapter+".RemoveDevice", 0, devicePath)
+		if call.Err == nil {
+			a.log.Info("device removed", "mac", mac, "adapter", adapterPath)
+			removed = true
+		}
+	}
+
+	if !removed {
+		return fmt.Errorf("device %s not found on any adapter", mac)
+	}
+
+	a.mu.Lock()
+	for _, adapterPath := range []dbus.ObjectPath{a.sinkPath, a.sourcePath} {
+		devicePath := a.macToDevicePath(adapterPath, mac)
+		if a.sourceDevice == devicePath {
+			a.sourceDevice = ""
+		}
+		if a.sinkDevice == devicePath {
+			a.sinkDevice = ""
+		}
+	}
+	a.mu.Unlock()
+
+	return nil
+}
+
 // DiscoveredDevice holds information about a Bluetooth device found during scanning.
 type DiscoveredDevice struct {
 	Name      string `json:"name"`

@@ -552,6 +552,9 @@ func LinkHFP(ctx context.Context, phoneMAC, headphoneMAC string, log *slog.Logge
 
 	log.Info("linking HFP call audio", "phone", phoneMAC, "headphone", headphoneMAC)
 
+	// Dump all ports for diagnostics so we can see what PipeWire actually created.
+	dumpHFPPorts(ctx, phoneEscaped, hpEscaped, log)
+
 	phoneOut, err := waitForMonoPorts(ctx, phoneEscaped, "output", log)
 	if err != nil {
 		return fmt.Errorf("phone HFP output ports: %w", err)
@@ -583,6 +586,36 @@ func LinkHFP(ctx context.Context, phoneMAC, headphoneMAC string, log *slog.Logge
 	return nil
 }
 
+// dumpHFPPorts logs all PipeWire ports for both devices so we can diagnose
+// routing issues from the logs without reproducing the call.
+func dumpHFPPorts(ctx context.Context, phoneEscaped, hpEscaped string, log *slog.Logger) {
+	for _, flag := range []string{"-o", "-i"} {
+		direction := "output"
+		if flag == "-i" {
+			direction = "input"
+		}
+		out, err := exec.CommandContext(ctx, "pw-link", flag).Output()
+		if err != nil {
+			continue
+		}
+		var phonePorts, hpPorts []string
+		for _, line := range strings.Split(string(out), "\n") {
+			line = strings.TrimSpace(line)
+			if strings.Contains(line, phoneEscaped) {
+				phonePorts = append(phonePorts, line)
+			}
+			if strings.Contains(line, hpEscaped) {
+				hpPorts = append(hpPorts, line)
+			}
+		}
+		log.Info("HFP port dump",
+			"direction", direction,
+			"phone_ports", phonePorts,
+			"hp_ports", hpPorts,
+		)
+	}
+}
+
 func pwLink(ctx context.Context, src, sink, label string, log *slog.Logger) {
 	out, err := exec.CommandContext(ctx, "pw-link", src, sink).CombinedOutput()
 	if err != nil {
@@ -603,6 +636,9 @@ func pwLink(ctx context.Context, src, sink, label string, log *slog.Logger) {
 
 // waitForMonoPorts discovers mono (HFP/SCO) PipeWire ports for a Bluetooth
 // device, retrying for up to 10 seconds while the profile switch completes.
+//
+// Monitor ports (monitor_MONO) are always excluded — they mirror speaker
+// output and linking them creates echo feedback loops.
 func waitForMonoPorts(ctx context.Context, escapedMAC, direction string, log *slog.Logger) ([]string, error) {
 	flag := "-o"
 	if direction == "input" {
@@ -625,7 +661,9 @@ func waitForMonoPorts(ctx context.Context, escapedMAC, direction string, log *sl
 		var ports []string
 		for _, line := range strings.Split(string(out), "\n") {
 			line = strings.TrimSpace(line)
-			if strings.Contains(line, escapedMAC) && strings.Contains(line, "MONO") {
+			if strings.Contains(line, escapedMAC) &&
+				strings.Contains(line, "MONO") &&
+				!strings.Contains(line, "monitor") {
 				ports = append(ports, line)
 			}
 		}

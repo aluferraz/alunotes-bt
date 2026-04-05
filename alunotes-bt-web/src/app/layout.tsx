@@ -1,33 +1,55 @@
 import "~/styles/globals.css";
 
-import { type Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { type Metadata, type Viewport } from "next";
+import { Inter, Manrope } from "next/font/google";
 
 import { ORPCReactProvider } from "~/orpc/react";
+import { ThemeProvider } from "~/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "AluNotes Bridge",
   description: "Bluetooth A2DP audio bridge control plane",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/favicon.svg" }],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "AluNotes",
+  },
 };
 
-const geist = Geist({
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-inter",
 });
 
-const geistMono = Geist_Mono({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
+  variable: "--font-manrope",
 });
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable} dark`}>
-      <body>
-        <ORPCReactProvider>{children}</ORPCReactProvider>
+    <html lang="en" className={`${inter.variable} ${manrope.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased bg-background text-foreground transition-colors duration-300">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <ORPCReactProvider>{children}</ORPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

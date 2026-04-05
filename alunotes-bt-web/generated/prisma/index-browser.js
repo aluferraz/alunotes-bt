@@ -191,6 +191,64 @@ exports.Prisma.RecordingMetaScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FolderScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color',
+  icon: 'icon',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TagScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NoteScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  isPublic: 'isPublic',
+  folderId: 'folderId',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NoteTagScalarFieldEnum = {
+  noteId: 'noteId',
+  tagId: 'tagId'
+};
+
+exports.Prisma.TaskScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  dueDate: 'dueDate',
+  order: 'order',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WhiteboardScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  elements: 'elements',
+  appState: 'appState',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -208,7 +266,13 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Device: 'Device',
-  RecordingMeta: 'RecordingMeta'
+  RecordingMeta: 'RecordingMeta',
+  Folder: 'Folder',
+  Tag: 'Tag',
+  Note: 'Note',
+  NoteTag: 'NoteTag',
+  Task: 'Task',
+  Whiteboard: 'Whiteboard'
 };
 
 /**

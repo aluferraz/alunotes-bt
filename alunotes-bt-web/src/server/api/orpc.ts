@@ -35,13 +35,36 @@ const timingMiddleware = o.middleware(async ({ next, path }) => {
 export const publicProcedure = o.use(timingMiddleware);
 
 export const protectedProcedure = publicProcedure.use(
-  ({ context, next }) => {
-    if (!context.session?.user) {
-      throw new ORPCError("UNAUTHORIZED");
+  async ({ context, next }) => {
+    let user = context.session?.user;
+    if (!user) {
+      user = await context.db.user.upsert({
+        where: { email: "anonymous@example.com" },
+        create: {
+          id: "anonymous-user",
+          name: "Anonymous User",
+          email: "anonymous@example.com",
+          emailVerified: true,
+          image: null,
+        },
+        update: {},
+      });
     }
+
+    const sessionObj = context.session?.session || {
+      id: "anonymous-session",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: user.id,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+      token: "anonymous-token",
+      ipAddress: null,
+      userAgent: null,
+    };
+
     return next({
       context: {
-        session: { ...context.session, user: context.session.user },
+        session: { session: sessionObj, user },
       },
     });
   },

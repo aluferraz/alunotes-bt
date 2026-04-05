@@ -39,6 +39,7 @@ func NewServer(cfg config.Config, adapter *bt.Adapter, sessMgr *session.Manager,
 	mux.HandleFunc("GET /api/v1/bluetooth/devices", s.handleDevices)
 	mux.HandleFunc("POST /api/v1/bluetooth/connect", s.handleConnect)
 	mux.HandleFunc("POST /api/v1/bluetooth/disconnect", s.handleDisconnect)
+	mux.HandleFunc("POST /api/v1/bluetooth/remove", s.handleRemoveDevice)
 	mux.HandleFunc("GET /api/v1/bluetooth/scan", s.handleScan)
 	mux.HandleFunc("GET /api/v1/config", s.handleGetConfig)
 	mux.HandleFunc("GET /health", s.handleHealth)
@@ -179,6 +180,34 @@ func (s *Server) handleDisconnect(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]interface{}{
 		"success": true,
 		"message": fmt.Sprintf("disconnected from %s", req.MACAddress),
+	})
+}
+
+// POST /api/v1/bluetooth/remove
+func (s *Server) handleRemoveDevice(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		MACAddress string `json:"mac_address"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	if req.MACAddress == "" {
+		writeError(w, http.StatusBadRequest, "mac_address is required")
+		return
+	}
+
+	if err := s.adapter.RemoveDevice(req.MACAddress); err != nil {
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"success": false,
+			"message": fmt.Sprintf("remove failed: %v", err),
+		})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"success": true,
+		"message": fmt.Sprintf("removed %s", req.MACAddress),
 	})
 }
 

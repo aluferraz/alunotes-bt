@@ -1,0 +1,192 @@
+/* Simple Editor — Obsidian Glow Overrides
+   Resets the template's full-viewport layout so it fits inside GlassCard
+   and inherits the app's glassmorphic design language.
+*/
+
+.tiptap.ProseMirror {
+  font-family: var(--font-inter), "Inter", sans-serif;
+  color: var(--foreground);
+  caret-color: var(--primary);
+  outline: none;
+
+  .dark & {
+    font-family: var(--font-inter), "Inter", sans-serif;
+  }
+}
+
+/* Reset full-page layout — embed mode */
+.simple-editor-wrapper {
+  width: 100%;
+  height: auto;
+  min-height: 400px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.simple-editor-content {
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  flex: 1;
+  padding: 0.25rem 0;
+  padding-bottom: 4rem;
+  min-height: 360px;
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+/* ─── Toolbar: Glassmorphic Pill ─────────────────────────────────────── */
+.tiptap-toolbar {
+  /* Static — flows naturally at the top of its parent card */
+  position: static;
+  z-index: 10;
+
+  /* Glass pill */
+  background: color-mix(in srgb, var(--glass-bg) 80%, transparent) !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+  border: 0.5px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow-sm) !important;
+  border-radius: 9999px !important;
+
+  /* Dark mode glow accent */
+  .dark & {
+    box-shadow: 0 0 0 0.5px rgba(0, 229, 255, 0.08),
+                0 4px 20px rgba(0, 229, 255, 0.05) !important;
+  }
+
+  /* Layout */
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.125rem;
+  padding: 0.3rem 0.6rem;
+  overflow-x: auto;
+
+  /* Buttons */
+  button {
+    border-radius: 9999px !important;
+    color: var(--muted-foreground);
+    background: transparent;
+    border: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    padding: 0.3rem 0.45rem;
+
+    &:hover {
+      background: color-mix(in srgb, var(--primary) 10%, transparent) !important;
+      color: var(--foreground) !important;
+    }
+
+    &[data-active-state="on"],
+    &[data-state="on"],
+    &.is-active {
+      background: color-mix(in srgb, var(--primary) 18%, transparent) !important;
+      color: var(--primary) !important;
+    }
+  }
+
+  /* Separators */
+  [role="separator"],
+  .tiptap-toolbar-separator {
+    width: 1px;
+    height: 1.1rem;
+    background: var(--glass-border);
+    margin: 0 0.2rem;
+    flex-shrink: 0;
+    border: none !important;
+  }
+}
+
+/* Mobile: fixed above bottom nav */
+@media screen and (max-width: 640px) {
+  .tiptap-toolbar {
+    position: fixed;
+    bottom: 5.5rem;
+    left: 1rem;
+    right: 1rem;
+    border-radius: 1.5rem !important;
+    justify-content: center;
+    z-index: 40;
+  }
+}
+
+/* ─── Prose Content Styles ───────────────────────────────────────────── */
+.tiptap.ProseMirror {
+  h1, h2, h3, h4 {
+    font-family: var(--font-manrope), "Manrope", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+
+  p {
+    margin: 0.5rem 0;
+    color: var(--foreground);
+  }
+
+  a {
+    color: var(--primary);
+    text-underline-offset: 3px;
+  }
+
+  code {
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    color: var(--primary);
+    padding: 0.1em 0.4em;
+    border-radius: 0.5rem;
+    font-size: 0.875em;
+  }
+
+  pre {
+    background: var(--muted);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    code {
+      background: transparent;
+      color: var(--foreground);
+      padding: 0;
+    }
+  }
+
+  blockquote {
+    border-left: 3px solid var(--primary);
+    margin-left: 0;
+    padding-left: 1rem;
+    color: var(--muted-foreground);
+    font-style: italic;
+  }
+
+  ul, ol {
+    padding-left: 1.5rem;
+  }
+
+  li + li {
+    margin-top: 0.25rem;
+  }
+
+  /* Placeholder */
+  p.is-empty::before {
+    content: attr(data-placeholder);
+    color: var(--muted-foreground);
+    opacity: 0.5;
+    pointer-events: none;
+    float: left;
+    height: 0;
+  }
+}
+
