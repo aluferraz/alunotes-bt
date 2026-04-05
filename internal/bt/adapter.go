@@ -832,9 +832,10 @@ func (a *Adapter) handleSignal(sig *dbus.Signal, onAcquire func(TransportInfo), 
 				onAcquire(TransportInfo{Path: sig.Path, Role: role})
 			} else if state == "idle" {
 				a.ClearTransport(role)
-				if role == "sink" {
-					a.clearSinkDevice()
-				}
+				// NOTE: do NOT clear sinkDevice here. The transport going
+				// idle (e.g. music paused) does not mean the phone
+				// disconnected. The device is only cleared when the
+				// transport interface is fully removed (InterfacesRemoved).
 				onRelease()
 			}
 		}

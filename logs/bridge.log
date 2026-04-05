@@ -7264,3 +7264,36 @@
 {"time":"2026-04-04T17:12:50.0719154-07:00","level":"INFO","msg":"dbus interfaces removed","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","interfaces":["org.bluez.Battery1"]}
 {"time":"2026-04-04T17:12:50.072244103-07:00","level":"INFO","msg":"dbus interfaces removed","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","interfaces":["org.bluez.Battery1"]}
 {"time":"2026-04-04T17:12:50.072268825-07:00","level":"INFO","msg":"dbus interfaces removed","component":"bt.adapter","path":"/org/bluez/hci0/dev_58_79_E0_DF_2A_A5","interfaces":["org.bluez.Battery1"]}
+{"time":"2026-04-04T17:13:18.898931648-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":30000000000}
+{"time":"2026-04-04T17:13:18.899004888-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":70000000000}
+{"time":"2026-04-04T17:13:18.899014222-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:18.927832219-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":30000000000}
+{"time":"2026-04-04T17:13:18.927883608-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":70000000000}
+{"time":"2026-04-04T17:13:18.92789246-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.146225824-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.14629338-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.146302657-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.423862901-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.423931456-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.423940937-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.542313398-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.542382009-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.542392491-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.548163616-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.548337801-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.548348393-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.554127593-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.554175204-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.554184019-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.557348876-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.557452561-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.557467172-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.563559574-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.563594093-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.563601889-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.569231904-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.56926433-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.569271644-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}
+{"time":"2026-04-04T17:13:19.573128777-07:00","level":"INFO","msg":"session idle timeout","component":"session","id":"2026-04-04/17-12-08","idle":31000000000}
+{"time":"2026-04-04T17:13:19.573161981-07:00","level":"INFO","msg":"session ended","component":"session","id":"2026-04-04/17-12-08","duration":71000000000}
+{"time":"2026-04-04T17:13:19.573169685-07:00","level":"INFO","msg":"recording session completed","id":"2026-04-04/17-12-08","dir":"alunotes-bt-web/public/recordings/2026-04-04/17-12-08"}

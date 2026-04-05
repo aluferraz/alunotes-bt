@@ -13,24 +13,25 @@ export default function DevicesPage() {
     refetchInterval: 3000,
   });
 
+  const invalidateBluetooth = () => {
+    void queryClient.invalidateQueries({
+      queryKey: orpc.bluetooth.devices.queryOptions().queryKey,
+    });
+    void queryClient.invalidateQueries({
+      queryKey: orpc.bluetooth.status.queryOptions().queryKey,
+    });
+  };
+
   const connectMutation = useMutation({
     mutationFn: (macAddress: string) =>
       client.bluetooth.connect({ macAddress }),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: orpc.bluetooth.devices.queryOptions().queryKey,
-      });
-    },
+    onSuccess: invalidateBluetooth,
   });
 
   const disconnectMutation = useMutation({
     mutationFn: (macAddress: string) =>
       client.bluetooth.disconnect({ macAddress }),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: orpc.bluetooth.devices.queryOptions().queryKey,
-      });
-    },
+    onSuccess: invalidateBluetooth,
   });
 
   const removeMutation = useMutation({

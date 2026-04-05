@@ -4,7 +4,7 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ## What This Is
 
-AluNotes Bridge — a Bluetooth A2DP audio proxy for Raspberry Pi 5. It appears as a Bluetooth headphone (A2DP sink) to phones, forwards audio to real headphones (A2DP source), and saves recordings as WAV files. Requires dual Bluetooth adapters (onboard + USB dongle) since one radio can't handle sink + source simultaneously.
+AluNotes Bridge — a transparent Bluetooth audio proxy for Raspberry Pi 5. Bridges A2DP music and HFP phone calls between a phone and headphones using dual Bluetooth adapters (onboard + USB dongle). All audio is recorded as WAV for LLM transcription. The Go daemon is a control plane only — PipeWire routes audio natively at full codec quality.
 
 ## Build & Dev Commands
 
@@ -27,29 +27,51 @@ Run `make setup-permissions` once to install the D-Bus policy (`deploy/dbus-alun
 
 ## Dependencies
 
-- Go 1.24+, BlueZ 5.x, libdbus-1-dev
+- Go 1.24+, BlueZ 5.x, libdbus-1-dev, pulseaudio-utils (pactl), PipeWire with Bluetooth (pipewire-pulse, libspa-0.2-bluetooth)
 - Go modules: `github.com/godbus/dbus/v5` (D-Bus IPC), `gopkg.in/yaml.v3` (config)
-- No test framework beyond stdlib
+- PipeWire CLI tools: `pw-link`, `pw-cat`, `pw-cli`, `pactl` (all used by the Go daemon for audio routing and recording)
+- No test framework beyond stdlib; `scripts/test-hfp.sh` validates the HFP pipeline using PipeWire null-sinks
 
 ## Architecture
 
-Four-stage concurrent audio pipeline, each stage a goroutine connected by Go channels:
+The Go daemon is a **control plane only** — it manages BlueZ D-Bus connections, PipeWire routing commands (`pw-link`, `pactl`), and recording lifecycle. Audio data never flows through Go code; PipeWire routes it natively between Bluetooth adapters at full codec quality.
 
-1. **Capture** (`internal/audio/capture.go`) — reads PCM from BlueZ media transport FD
-2. **Route** (`internal/audio/route.go`) — fans out to forward (blocking) and disk (best-effort, drops if slow)
-3. **Forward** (`internal/audio/forward.go`) — writes PCM to outbound transport FD (real headphones)
-4. **Write** (`internal/audio/writer.go`) — saves WAV via session manager
+### A2DP music pipeline
 
-Pipeline is started dynamically when a BlueZ transport is acquired (D-Bus signal), not at startup. The `done` channel coordinates goroutine shutdown.
+Started dynamically when a BlueZ `MediaTransport1` D-Bus signal fires (phone connected):
 
-**Bluetooth layer** (`internal/bt/`) uses BlueZ via D-Bus (`godbus/dbus`). `Adapter` manages dual HCI adapters — sink adapter is discoverable, source adapter only makes outbound connections. `A2DPProfile` registers with BlueZ's ProfileManager. Transport acquisition/release is event-driven via D-Bus signal matching.
+- `AVRCPSync` (`internal/bt/mediasync.go`) — bidirectional volume sync via `MediaTransport1.Volume` D-Bus properties + MPRIS player on session bus for media control forwarding (Play/Pause/Next/Previous)
+- `PipeWireCapture` (`internal/audio/pwcapture.go`) — runs `pw-cat --record` targeting the phone's PipeWire node, writes WAV to session directory
+- PipeWire/WirePlumber handles actual audio routing between phone and headphone nodes
 
-**Session management** (`internal/session/`) tracks recording sessions. A session starts on first audio buffer, ends after configurable silence timeout. WAV headers use placeholder sizes, finalized on session end. Silence detection uses peak PCM amplitude.
+### HFP call pipeline
+
+Runs on the **main context** (not the A2DP pipeline context) so it survives A2DP transport teardowns during profile switches:
+
+- `HFPRouter` (`internal/pw/hfp.go`) — monitors `pactl subscribe` for PipeWire events, checks the phone's card active profile via `pactl list cards`. When profile is `headset-head-unit*`, a call is active. Detection uses the card profile (not MONO port presence) because BlueZ keeps idle HFP nodes alongside A2DP even without a call.
+- On call start: switches headphone to HFP (`pactl set-card-profile`, tries mSBC then CVSD), links SCO audio bidirectionally via `pw-link`, creates a PipeWire null-sink mixer, links both call directions into it, records from the mixer's monitor via `pw-cat` (16kHz mono WAV with both sides mixed)
+- On call end: cancels recording, unloads mixer module, restores headphone to A2DP
+- `HFPCallControl` (`internal/bt/hfp.go`) — persistent MPRIS player on session bus (`org.mpris.MediaPlayer2.alunotes_call`) that forwards headphone AVRCP button presses as call controls during active calls
+
+### Bluetooth layer
+
+`internal/bt/` uses BlueZ via D-Bus (`godbus/dbus`). `Adapter` manages dual HCI adapters — sink adapter (hci0) is discoverable, source adapter (hci1) only makes outbound connections. Transport acquisition/release is event-driven via D-Bus signal matching. `Agent` auto-accepts pairing (Just Works).
+
+### Session management
+
+`internal/session/` tracks recording sessions. A session starts on first `Touch()`, ends after configurable silence timeout. Music recordings: 44.1kHz stereo. Call recordings: 16kHz mono (both sides mixed, optimized for LLM transcription).
+
+### Legacy pipeline stages (unused, replaced by PipeWire)
+
+The original pipeline (`capture.go`, `route.go`, `forward.go`, `writer.go`) read/wrote BlueZ transport FDs directly. Now unused — PipeWire handles all codec negotiation and audio routing natively.
 
 ## Key Design Decisions
 
 - Dual-adapter mode is the primary use case; single-adapter is a fallback (record-only, no forwarding)
-- Forward channel uses blocking sends (latency-critical); disk channel drops buffers if writer falls behind
+- Go daemon is control plane only — audio never passes through Go code, preserving full codec quality
+- HFP detection uses phone's card profile (not MONO port detection) to avoid false positives from idle HFP nodes
+- HFP router runs on main context, not pipeline context, to survive A2DP↔HFP transitions
+- Full-duplex call recording via PipeWire null-sink mixer (both directions summed into single WAV)
 - Config uses `EffectiveSourceAdapter()` to resolve single vs dual adapter mode
 - Runs unprivileged with Linux capabilities (`cap_net_raw,cap_net_admin`) + D-Bus policy — no root required
 - HTTP API server on `:8090` (configurable via `-api-addr` flag) serves bridge status, device connect/disconnect, and config endpoints for the web control plane
