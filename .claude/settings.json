@@ -8,7 +8,19 @@
       "Bash(pactl set-card-profile:*)",
       "Bash(pw-link -o)",
       "Bash(pw-link -i)",
-      "Bash(./scripts/test-hfp.sh all:*)"
+      "Bash(./scripts/test-hfp.sh all:*)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot",
+      "Bash(ls /Users/alu/Documents/dev/alunotes-bt/alunotes-bt-web/node_modules/@excalidraw/excalidraw/dist/*.css)",
+      "Bash(ls /Users/alu/Documents/dev/alunotes-bt/alunotes-bt-web/node_modules/@excalidraw/excalidraw/*.css)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__wait_for",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__click",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__fill",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_network_requests",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__get_network_request",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page"
     ]
   }
 }

@@ -17,6 +17,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <div className="relative min-h-screen z-0 selection:bg-primary/30">
       <AmbientStream />
       
+      {/* Fade-out gradient above the navigation bar */}
+      <div className="fixed bottom-0 w-full z-40 pointer-events-none h-40 sm:h-48" aria-hidden="true">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent backdrop-blur-sm [mask-image:linear-gradient(to_top,black_40%,transparent)]" />
+      </div>
+
       {/* Mobile-first bottom navigation, desktop side rail could also be derived here */}
       <nav className="fixed bottom-0 sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 w-full sm:w-auto z-50 p-2 sm:p-4 pb-safe">
         <div className="flex items-center justify-around sm:justify-center gap-2 sm:gap-6 px-6 py-4 glass-bg sm:rounded-full rounded-t-3xl border-t sm:border border-glass-border">

@@ -1,7 +1,8 @@
 "use client";
 
-import { use, useEffect, useState, useCallback, useMemo } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { use, useEffect, useCallback, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAsyncDebouncer } from "@tanstack/react-pacer";
 import { orpc } from "~/orpc/react";
 import {
   useSimpleEditor,
@@ -12,47 +13,105 @@ import { EditorContext } from "@tiptap/react";
 import { GlassCard } from "~/components/ui/glass-card";
 import { Save, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { debounce } from "lodash";
 import { useUIPreferences } from "~/stores/ui-preferences";
+import { useNoteEditorStore } from "~/stores/note-editor";
 
 export default function NotePage(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params);
   const noteId = params.id;
 
+  const queryClient = useQueryClient();
   const { data: note, isLoading } = useQuery(orpc.notes.get.queryOptions({ input: { id: noteId } }));
-  const { mutate: updateNote, isPending: isSaving } = useMutation(orpc.notes.update.mutationOptions());
+  const { mutateAsync: updateNote } = useMutation(orpc.notes.update.mutationOptions());
+  const updateNoteRef = useRef(updateNote);
+  useEffect(() => { updateNoteRef.current = updateNote; }, [updateNote]);
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState<string | null>(null);
+  const { title, content, initialized } = useNoteEditorStore();
+  const initialize = useNoteEditorStore((s) => s.initialize);
+  const setTitle = useNoteEditorStore((s) => s.setTitle);
+  const setContent = useNoteEditorStore((s) => s.setContent);
+  const reset = useNoteEditorStore((s) => s.reset);
 
+  // Sync initial data from server
   useEffect(() => {
-    if (note && title === "" && content === null) {
-      setTitle(note.title);
-      setContent(note.content ?? "");
+    if (note) {
+      initialize({ id: noteId, title: note.title, content: note.content ?? "" });
     }
-  }, [note, title, content]);
+  }, [note, noteId, initialize]);
 
-  const debouncedSave = useMemo(
-    () =>
-      debounce((newTitle: string, newContent: string) => {
-        updateNote({ id: noteId, title: newTitle, content: newContent });
-      }, 1000),
-    [noteId, updateNote]
+  // Reset store on unmount so next note starts fresh
+  useEffect(() => () => reset(), [reset]);
+
+  // Stable save function — invalidates query cache after success
+  const saveFn = useCallback(
+    async (newTitle: string, newContent: string) => {
+      await updateNoteRef.current({ id: noteId, title: newTitle, content: newContent });
+      void queryClient.invalidateQueries({ queryKey: orpc.notes.get.queryOptions({ input: { id: noteId } }).queryKey });
+      void queryClient.invalidateQueries({ queryKey: orpc.notes.list.queryKey() });
+    },
+    [noteId, queryClient]
+  );
+
+  const saveDebouncer = useAsyncDebouncer(
+    saveFn,
+    {
+      wait: 1500,
+      onUnmount: (d) => d.flush(),
+      asyncRetryerOptions: {
+        maxAttempts: 3,
+        backoff: 'exponential',
+        baseWait: 1000,
+        maxWait: 10000,
+        jitter: 0.3,
+      },
+    },
+  );
+
+  // Keep latest content in ref so saves always use freshest data
+  const latestContentRef = useRef<string>("");
+  useEffect(() => {
+    if (content !== null) latestContentRef.current = content;
+  }, [content]);
+
+  // Flush pending saves when the page becomes hidden
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        saveDebouncer.flush();
+      }
+    };
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (saveDebouncer.store.state.isPending) {
+        e.preventDefault();
+        saveDebouncer.flush();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [saveDebouncer]);
+
+  const handleUpdateTitle = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newTitle = e.target.value;
+      setTitle(newTitle);
+      saveDebouncer.maybeExecute(newTitle, latestContentRef.current);
+    },
+    [setTitle, saveDebouncer]
   );
 
   const handleUpdateContent = useCallback(
     (newContent: string) => {
       setContent(newContent);
-      debouncedSave(title, newContent);
+      latestContentRef.current = newContent;
+      const currentTitle = useNoteEditorStore.getState().title;
+      saveDebouncer.maybeExecute(currentTitle, newContent);
     },
-    [debouncedSave, title]
+    [setContent, saveDebouncer]
   );
-
-  const handleUpdateTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTitle = e.target.value;
-    setTitle(newTitle);
-    debouncedSave(newTitle, content ?? "");
-  };
 
   const editorState = useSimpleEditor({
     initialContent: content ?? undefined,
@@ -88,16 +147,18 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
           </Link>
 
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-glass-bg border border-glass-border backdrop-blur-md text-xs font-medium text-muted-foreground">
-            {isSaving ? (
-              <><Loader2 className="w-3 h-3 animate-spin" /> Saving...</>
-            ) : (
-              <><Save className="w-3 h-3" /> Saved</>
-            )}
+            <saveDebouncer.Subscribe selector={(state) => ({ isSaving: state.isPending || state.isExecuting })}>
+              {({ isSaving }) => isSaving ? (
+                <><Loader2 className="w-3 h-3 animate-spin" /> Saving...</>
+              ) : (
+                <><Save className="w-3 h-3" /> Saved</>
+              )}
+            </saveDebouncer.Subscribe>
           </div>
         </div>
 
         {/* Editor card */}
-        <GlassCard 
+        <GlassCard
           className={`transition-all duration-500 ease-out hover:shadow-glass-lg overflow-hidden editor-theme-${editorTheme}`}
         >
           {/* Internal layout - p-6/p-10 and flex column */}

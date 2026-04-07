@@ -15,6 +15,9 @@ const link = new RPCLink({
   headers: () => ({
     "x-orpc-source": "nextjs-react",
   }),
+  // keepalive lets the browser finish in-flight requests after page unload
+  fetch: (request, init) =>
+    globalThis.fetch(request, { ...init, keepalive: true }),
 });
 
 export const client: RouterClient<typeof appRouter> =
