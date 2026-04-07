@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
-import { Headphones, Smartphone, Loader2, Bluetooth, Plus, Check } from "lucide-react";
+import { Headphones, Smartphone, Loader2, Bluetooth, Plus, Check, Zap } from "lucide-react";
 import { useState } from "react";
 
 export function OnboardingFlow() {
@@ -19,6 +19,8 @@ export function OnboardingFlow() {
     enabled: isScanning,
   }));
   
+  const { data: savedDevices } = useQuery(orpc.bluetooth.devices.queryOptions());
+
   const { mutate: connectDevice, isPending } = useMutation(
     orpc.bluetooth.connect.mutationOptions({
       onSuccess: () => {
@@ -85,6 +87,43 @@ export function OnboardingFlow() {
            <p className="text-lg text-muted-foreground mb-12">
              Ensure your Bluetooth headphones are in pairing mode to begin the Audio Bridge sync.
            </p>
+
+           <div className="w-full text-left">
+             {(() => {
+               const lastHeadphone = savedDevices?.find((d) => d.type === "headphone");
+               if (!lastHeadphone) return null;
+               return (
+                 <div className="mb-8">
+                   <span className="font-semibold text-lg flex items-center gap-2 mb-4">
+                     <Zap className="w-5 h-5 text-yellow-400" />
+                     Quick Connect
+                   </span>
+                   <GlassCard className="p-4 flex items-center justify-between hover:bg-glass-border/40 transition-colors border-secondary/30">
+                     <div className="flex items-center gap-4">
+                       <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+                         <Headphones className="w-4 h-4 text-secondary" />
+                       </div>
+                       <div className="flex flex-col text-left">
+                         <span className="font-semibold">{lastHeadphone.name}</span>
+                         <span className="text-xs text-muted-foreground uppercase">{lastHeadphone.macAddress}</span>
+                       </div>
+                     </div>
+                     <button
+                       onClick={() => handleConnect(lastHeadphone.macAddress)}
+                       disabled={isPending}
+                       className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium flex items-center gap-2 hover:bg-secondary-dim transition-colors disabled:opacity-50"
+                     >
+                       {connectingMac === lastHeadphone.macAddress ? (
+                         <Loader2 className="w-4 h-4 animate-spin" />
+                       ) : (
+                         "Connect"
+                       )}
+                     </button>
+                   </GlassCard>
+                 </div>
+               );
+             })()}
+           </div>
 
            <div className="w-full text-left">
              <div className="flex items-center justify-between mb-4">

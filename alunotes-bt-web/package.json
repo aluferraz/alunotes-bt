@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
-    "@ducanh2912/next-pwa": "^10.2.9",
     "@excalidraw/excalidraw": "^0.18.0",
     "@floating-ui/react": "^0.27.19",
     "@hookform/resolvers": "^5.2.2",

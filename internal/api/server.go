@@ -42,6 +42,9 @@ func NewServer(cfg config.Config, adapter *bt.Adapter, sessMgr *session.Manager,
 	mux.HandleFunc("POST /api/v1/bluetooth/remove", s.handleRemoveDevice)
 	mux.HandleFunc("GET /api/v1/bluetooth/scan", s.handleScan)
 	mux.HandleFunc("GET /api/v1/config", s.handleGetConfig)
+	mux.HandleFunc("POST /api/v1/recording/stop", s.handleStopRecording)
+	mux.HandleFunc("GET /api/v1/recording/auto-record", s.handleGetAutoRecord)
+	mux.HandleFunc("POST /api/v1/recording/auto-record", s.handleSetAutoRecord)
 	mux.HandleFunc("GET /health", s.handleHealth)
 
 	s.mux = mux
@@ -107,6 +110,7 @@ func (s *Server) handleStatus(w http.ResponseWriter, _ *http.Request) {
 		"connectedSource":    status.ConnectedSource,
 		"connectedHeadphone": status.ConnectedHeadphone,
 		"pipelineActive":     status.PipelineActive,
+		"autoRecord":         s.sessMgr.AutoRecord(),
 		"activeSession":      nil,
 	}
 
@@ -231,4 +235,36 @@ func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("ok"))
+}
+
+// POST /api/v1/recording/stop
+func (s *Server) handleStopRecording(w http.ResponseWriter, _ *http.Request) {
+	s.sessMgr.Stop()
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"success": true,
+		"message": "recording stopped",
+	})
+}
+
+// GET /api/v1/recording/auto-record
+func (s *Server) handleGetAutoRecord(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"enabled": s.sessMgr.AutoRecord(),
+	})
+}
+
+// POST /api/v1/recording/auto-record
+func (s *Server) handleSetAutoRecord(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Enabled bool `json:"enabled"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	s.sessMgr.SetAutoRecord(req.Enabled)
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"success": true,
+		"enabled": req.Enabled,
+	})
 }

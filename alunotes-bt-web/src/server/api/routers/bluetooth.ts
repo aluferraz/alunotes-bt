@@ -24,6 +24,7 @@ interface BridgeStatus {
     duration: number;
   } | null;
   pipelineActive: boolean;
+  autoRecord: boolean;
 }
 
 async function bridgeApiCall<T>(
@@ -75,6 +76,7 @@ export const bluetoothRouter = {
         connectedHeadphone: null,
         activeSession: null,
         pipelineActive: false,
+        autoRecord: true,
       };
     }
 
@@ -127,7 +129,7 @@ export const bluetoothRouter = {
   // Trigger headphone connection via Go daemon
   connect: publicProcedure
     .input(z.object({ macAddress: z.string() }))
-    .handler(async ({ input }) => {
+    .handler(async ({ input, context }) => {
       const result = await bridgeApiCall<{ success: boolean; message: string }>(
         "/api/v1/bluetooth/connect",
         {
@@ -135,6 +137,15 @@ export const bluetoothRouter = {
           body: JSON.stringify({ mac_address: input.macAddress }),
         },
       );
+
+      // Update lastSeen so Quick Connect shows the most recently used device
+      if (result.success) {
+        await context.db.device.updateMany({
+          where: { macAddress: input.macAddress },
+          data: { lastSeen: new Date() },
+        });
+      }
+
       return result;
     }),
 
@@ -209,5 +220,36 @@ export const bluetoothRouter = {
       }
 
       await context.db.device.delete({ where: { id: input.id } });
+    }),
+
+  // Stop the active recording session on the Go daemon
+  stopRecording: publicProcedure.handler(async () => {
+    const result = await bridgeApiCallSafe<{ success: boolean; message: string }>(
+      "/api/v1/recording/stop",
+      { method: "POST" },
+    );
+    return {
+      success: result.reachable && (result.data?.success ?? false),
+      message: result.reachable
+        ? (result.data?.message ?? "stopped")
+        : "Bridge unreachable",
+    };
+  }),
+
+  // Set auto-record on/off on the Go daemon
+  setAutoRecord: publicProcedure
+    .input(z.object({ enabled: z.boolean() }))
+    .handler(async ({ input }) => {
+      const result = await bridgeApiCallSafe<{ success: boolean; enabled: boolean }>(
+        "/api/v1/recording/auto-record",
+        {
+          method: "POST",
+          body: JSON.stringify({ enabled: input.enabled }),
+        },
+      );
+      return {
+        success: result.reachable && (result.data?.success ?? false),
+        enabled: result.data?.enabled ?? input.enabled,
+      };
     }),
 };

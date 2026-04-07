@@ -20,7 +20,14 @@
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_network_requests",
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages",
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__get_network_request",
-      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page"
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page",
+      "mcp__stitch__list_projects",
+      "mcp__stitch__get_screen",
+      "mcp__stitch__list_design_systems",
+      "WebFetch(domain:lh3.googleusercontent.com)",
+      "WebFetch(domain:contribution.usercontent.google.com)",
+      "mcp__stitch__generate_screen_from_text",
+      "Bash(npx tsc:*)"
     ]
   }
 }

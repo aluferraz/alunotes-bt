@@ -184,10 +184,11 @@ const MobileToolbarContent = ({
 interface SimpleEditorProps {
   initialContent?: string | null
   onUpdate?: (content: string) => void
+  extraExtensions?: import("@tiptap/core").Extension[]
 }
 
 /** Hook — creates the editor instance and returns all state needed for toolbar + content */
-export function useSimpleEditor({ initialContent, onUpdate }: SimpleEditorProps = {}) {
+export function useSimpleEditor({ initialContent, onUpdate, extraExtensions }: SimpleEditorProps = {}) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">("main")
@@ -229,6 +230,7 @@ export function useSimpleEditor({ initialContent, onUpdate }: SimpleEditorProps 
         upload: handleImageUpload,
         onError: (error) => console.error("Upload failed:", error),
       }),
+      ...(extraExtensions ?? []),
     ],
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     content: initialContent ? JSON.parse(initialContent) : undefined,

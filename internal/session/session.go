@@ -32,18 +32,42 @@ type Manager struct {
 	storage config.StorageConfig
 	log     *slog.Logger
 
-	mu      sync.Mutex
-	current *Session
-	onEnd   func(*Session) // callback when session ends
+	mu         sync.Mutex
+	current    *Session
+	autoRecord bool           // when false, Touch() won't start new sessions
+	onEnd      func(*Session) // callback when session ends
 }
 
 // NewManager creates a new session Manager.
 func NewManager(sessionCfg config.SessionConfig, storageCfg config.StorageConfig, logger *slog.Logger) *Manager {
 	return &Manager{
-		cfg:     sessionCfg,
-		storage: storageCfg,
-		log:     logger.With("component", "session"),
+		cfg:        sessionCfg,
+		storage:    storageCfg,
+		log:        logger.With("component", "session"),
+		autoRecord: true,
 	}
+}
+
+// AutoRecord returns whether auto-recording is enabled.
+func (m *Manager) AutoRecord() bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.autoRecord
+}
+
+// SetAutoRecord enables or disables automatic session creation on audio arrival.
+// When disabled, Touch() will not start new sessions (but existing ones continue).
+func (m *Manager) SetAutoRecord(enabled bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.autoRecord = enabled
+	m.log.Info("auto-record toggled", "enabled", enabled)
+}
+
+// Stop immediately ends the current session (if any), flushing the recording to disk.
+// This is the same as an idle timeout firing but triggered manually.
+func (m *Manager) Stop() {
+	m.endCurrentSession()
 }
 
 // OnSessionEnd sets a callback invoked when a session ends due to idle timeout.
@@ -61,7 +85,7 @@ func (m *Manager) Current() *Session {
 }
 
 // Touch signals that audio activity occurred, starting a new session if needed.
-// Returns the current session.
+// Returns the current session, or nil if auto-record is disabled and no session is active.
 func (m *Manager) Touch() (*Session, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -73,6 +97,11 @@ func (m *Manager) Touch() (*Session, error) {
 		m.current.lastAudio = now
 		m.current.mu.Unlock()
 		return m.current, nil
+	}
+
+	// Don't start a new session if auto-record is off.
+	if !m.autoRecord {
+		return nil, nil
 	}
 
 	// Start a new session.

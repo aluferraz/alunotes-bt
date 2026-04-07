@@ -7,6 +7,7 @@ import { ORPCReactProvider } from "~/orpc/react";
 import { ThemeProvider } from "~/components/theme-provider";
 import { ThemeApplier } from "~/components/theme-applier";
 import { RecordingOverlay } from "~/components/recording-overlay";
+import { ServiceWorkerRegister } from "~/components/sw-register";
 
 export const metadata: Metadata = {
   title: "AluNotes Bridge",
@@ -52,6 +53,7 @@ export default function RootLayout({
         >
           <ORPCReactProvider>
             <ThemeApplier />
+            <ServiceWorkerRegister />
             <RecordingOverlay />
             {children}
           </ORPCReactProvider>
