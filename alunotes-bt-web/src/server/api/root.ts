@@ -5,6 +5,7 @@ import { profileRouter } from "~/server/api/routers/profile";
 import { notesRouter } from "~/server/api/routers/notes";
 import { tasksRouter } from "~/server/api/routers/tasks";
 import { whiteboardRouter } from "~/server/api/routers/whiteboard";
+import { foldersRouter } from "~/server/api/routers/folders";
 
 export const appRouter = {
   bluetooth: bluetoothRouter,
@@ -14,4 +15,5 @@ export const appRouter = {
   notes: notesRouter,
   tasks: tasksRouter,
   whiteboard: whiteboardRouter,
+  folders: foldersRouter,
 };

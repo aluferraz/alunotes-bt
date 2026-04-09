@@ -108,15 +108,17 @@ model RecordingMeta {
 }
 
 model Folder {
-  id        String   @id @default(cuid())
-  name      String
-  color     String?
-  icon      String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  notes     Note[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String       @id @default(cuid())
+  name        String
+  color       String?
+  icon        String?
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes       Note[]
+  tasks       Task[]
+  whiteboards Whiteboard[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@map("folder")
 }
@@ -169,6 +171,8 @@ model Task {
   priority    String    @default("MEDIUM") // "LOW" | "MEDIUM" | "HIGH"
   dueDate     DateTime?
   order       Int       @default(0)
+  folderId    String?
+  folder      Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
   userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
@@ -182,6 +186,8 @@ model Whiteboard {
   name      String   @default("Untitled Canvas")
   elements  String?  // JSON string of Excalidraw elements
   appState  String?  // JSON string of Excalidraw appState
+  folderId  String?
+  folder    Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())

@@ -1948,10 +1948,14 @@ export namespace Prisma {
 
   export type FolderCountOutputType = {
     notes: number
+    tasks: number
+    whiteboards: number
   }
 
   export type FolderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     notes?: boolean | FolderCountOutputTypeCountNotesArgs
+    tasks?: boolean | FolderCountOutputTypeCountTasksArgs
+    whiteboards?: boolean | FolderCountOutputTypeCountWhiteboardsArgs
   }
 
   // Custom InputTypes
@@ -1970,6 +1974,20 @@ export namespace Prisma {
    */
   export type FolderCountOutputTypeCountNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NoteWhereInput
+  }
+
+  /**
+   * FolderCountOutputType without action
+   */
+  export type FolderCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskWhereInput
+  }
+
+  /**
+   * FolderCountOutputType without action
+   */
+  export type FolderCountOutputTypeCountWhiteboardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WhiteboardWhereInput
   }
 
 
@@ -8923,6 +8941,8 @@ export namespace Prisma {
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     notes?: boolean | Folder$notesArgs<ExtArgs>
+    tasks?: boolean | Folder$tasksArgs<ExtArgs>
+    whiteboards?: boolean | Folder$whiteboardsArgs<ExtArgs>
     _count?: boolean | FolderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["folder"]>
 
@@ -8962,6 +8982,8 @@ export namespace Prisma {
   export type FolderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     notes?: boolean | Folder$notesArgs<ExtArgs>
+    tasks?: boolean | Folder$tasksArgs<ExtArgs>
+    whiteboards?: boolean | Folder$whiteboardsArgs<ExtArgs>
     _count?: boolean | FolderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FolderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8976,6 +8998,8 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       notes: Prisma.$NotePayload<ExtArgs>[]
+      tasks: Prisma.$TaskPayload<ExtArgs>[]
+      whiteboards: Prisma.$WhiteboardPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9381,6 +9405,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     notes<T extends Folder$notesArgs<ExtArgs> = {}>(args?: Subset<T, Folder$notesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tasks<T extends Folder$tasksArgs<ExtArgs> = {}>(args?: Subset<T, Folder$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    whiteboards<T extends Folder$whiteboardsArgs<ExtArgs> = {}>(args?: Subset<T, Folder$whiteboardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WhiteboardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9832,6 +9858,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: NoteScalarFieldEnum | NoteScalarFieldEnum[]
+  }
+
+  /**
+   * Folder.tasks
+   */
+  export type Folder$tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    where?: TaskWhereInput
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    cursor?: TaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
+  }
+
+  /**
+   * Folder.whiteboards
+   */
+  export type Folder$whiteboardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Whiteboard
+     */
+    select?: WhiteboardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Whiteboard
+     */
+    omit?: WhiteboardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WhiteboardInclude<ExtArgs> | null
+    where?: WhiteboardWhereInput
+    orderBy?: WhiteboardOrderByWithRelationInput | WhiteboardOrderByWithRelationInput[]
+    cursor?: WhiteboardWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WhiteboardScalarFieldEnum | WhiteboardScalarFieldEnum[]
   }
 
   /**
@@ -13157,6 +13231,7 @@ export namespace Prisma {
     priority: string | null
     dueDate: Date | null
     order: number | null
+    folderId: string | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13170,6 +13245,7 @@ export namespace Prisma {
     priority: string | null
     dueDate: Date | null
     order: number | null
+    folderId: string | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -13183,6 +13259,7 @@ export namespace Prisma {
     priority: number
     dueDate: number
     order: number
+    folderId: number
     userId: number
     createdAt: number
     updatedAt: number
@@ -13206,6 +13283,7 @@ export namespace Prisma {
     priority?: true
     dueDate?: true
     order?: true
+    folderId?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -13219,6 +13297,7 @@ export namespace Prisma {
     priority?: true
     dueDate?: true
     order?: true
+    folderId?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -13232,6 +13311,7 @@ export namespace Prisma {
     priority?: true
     dueDate?: true
     order?: true
+    folderId?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -13332,6 +13412,7 @@ export namespace Prisma {
     priority: string
     dueDate: Date | null
     order: number
+    folderId: string | null
     userId: string
     createdAt: Date
     updatedAt: Date
@@ -13364,9 +13445,11 @@ export namespace Prisma {
     priority?: boolean
     dueDate?: boolean
     order?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    folder?: boolean | Task$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
@@ -13378,9 +13461,11 @@ export namespace Prisma {
     priority?: boolean
     dueDate?: boolean
     order?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    folder?: boolean | Task$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
@@ -13392,9 +13477,11 @@ export namespace Prisma {
     priority?: boolean
     dueDate?: boolean
     order?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    folder?: boolean | Task$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
@@ -13406,25 +13493,30 @@ export namespace Prisma {
     priority?: boolean
     dueDate?: boolean
     order?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "priority" | "dueDate" | "order" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "status" | "priority" | "dueDate" | "order" | "folderId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Task$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Task$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Task$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Task"
     objects: {
+      folder: Prisma.$FolderPayload<ExtArgs> | null
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -13435,6 +13527,7 @@ export namespace Prisma {
       priority: string
       dueDate: Date | null
       order: number
+      folderId: string | null
       userId: string
       createdAt: Date
       updatedAt: Date
@@ -13832,6 +13925,7 @@ export namespace Prisma {
    */
   export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    folder<T extends Task$folderArgs<ExtArgs> = {}>(args?: Subset<T, Task$folderArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -13869,6 +13963,7 @@ export namespace Prisma {
     readonly priority: FieldRef<"Task", 'String'>
     readonly dueDate: FieldRef<"Task", 'DateTime'>
     readonly order: FieldRef<"Task", 'Int'>
+    readonly folderId: FieldRef<"Task", 'String'>
     readonly userId: FieldRef<"Task", 'String'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
@@ -14266,6 +14361,25 @@ export namespace Prisma {
   }
 
   /**
+   * Task.folder
+   */
+  export type Task$folderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    where?: FolderWhereInput
+  }
+
+  /**
    * Task without action
    */
   export type TaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14299,6 +14413,7 @@ export namespace Prisma {
     name: string | null
     elements: string | null
     appState: string | null
+    folderId: string | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -14309,6 +14424,7 @@ export namespace Prisma {
     name: string | null
     elements: string | null
     appState: string | null
+    folderId: string | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -14319,6 +14435,7 @@ export namespace Prisma {
     name: number
     elements: number
     appState: number
+    folderId: number
     userId: number
     createdAt: number
     updatedAt: number
@@ -14331,6 +14448,7 @@ export namespace Prisma {
     name?: true
     elements?: true
     appState?: true
+    folderId?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -14341,6 +14459,7 @@ export namespace Prisma {
     name?: true
     elements?: true
     appState?: true
+    folderId?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -14351,6 +14470,7 @@ export namespace Prisma {
     name?: true
     elements?: true
     appState?: true
+    folderId?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
@@ -14434,6 +14554,7 @@ export namespace Prisma {
     name: string
     elements: string | null
     appState: string | null
+    folderId: string | null
     userId: string
     createdAt: Date
     updatedAt: Date
@@ -14461,9 +14582,11 @@ export namespace Prisma {
     name?: boolean
     elements?: boolean
     appState?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    folder?: boolean | Whiteboard$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["whiteboard"]>
 
@@ -14472,9 +14595,11 @@ export namespace Prisma {
     name?: boolean
     elements?: boolean
     appState?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    folder?: boolean | Whiteboard$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["whiteboard"]>
 
@@ -14483,9 +14608,11 @@ export namespace Prisma {
     name?: boolean
     elements?: boolean
     appState?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    folder?: boolean | Whiteboard$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["whiteboard"]>
 
@@ -14494,25 +14621,30 @@ export namespace Prisma {
     name?: boolean
     elements?: boolean
     appState?: boolean
+    folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WhiteboardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "elements" | "appState" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["whiteboard"]>
+  export type WhiteboardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "elements" | "appState" | "folderId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["whiteboard"]>
   export type WhiteboardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Whiteboard$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type WhiteboardIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Whiteboard$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type WhiteboardIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    folder?: boolean | Whiteboard$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $WhiteboardPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Whiteboard"
     objects: {
+      folder: Prisma.$FolderPayload<ExtArgs> | null
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -14520,6 +14652,7 @@ export namespace Prisma {
       name: string
       elements: string | null
       appState: string | null
+      folderId: string | null
       userId: string
       createdAt: Date
       updatedAt: Date
@@ -14917,6 +15050,7 @@ export namespace Prisma {
    */
   export interface Prisma__WhiteboardClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    folder<T extends Whiteboard$folderArgs<ExtArgs> = {}>(args?: Subset<T, Whiteboard$folderArgs<ExtArgs>>): Prisma__FolderClient<$Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -14951,6 +15085,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Whiteboard", 'String'>
     readonly elements: FieldRef<"Whiteboard", 'String'>
     readonly appState: FieldRef<"Whiteboard", 'String'>
+    readonly folderId: FieldRef<"Whiteboard", 'String'>
     readonly userId: FieldRef<"Whiteboard", 'String'>
     readonly createdAt: FieldRef<"Whiteboard", 'DateTime'>
     readonly updatedAt: FieldRef<"Whiteboard", 'DateTime'>
@@ -15348,6 +15483,25 @@ export namespace Prisma {
   }
 
   /**
+   * Whiteboard.folder
+   */
+  export type Whiteboard$folderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Folder
+     */
+    select?: FolderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Folder
+     */
+    omit?: FolderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FolderInclude<ExtArgs> | null
+    where?: FolderWhereInput
+  }
+
+  /**
    * Whiteboard without action
    */
   export type WhiteboardDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15523,6 +15677,7 @@ export namespace Prisma {
     priority: 'priority',
     dueDate: 'dueDate',
     order: 'order',
+    folderId: 'folderId',
     userId: 'userId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -15536,6 +15691,7 @@ export namespace Prisma {
     name: 'name',
     elements: 'elements',
     appState: 'appState',
+    folderId: 'folderId',
     userId: 'userId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -16082,6 +16238,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Folder"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     notes?: NoteListRelationFilter
+    tasks?: TaskListRelationFilter
+    whiteboards?: WhiteboardListRelationFilter
   }
 
   export type FolderOrderByWithRelationInput = {
@@ -16094,6 +16252,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     notes?: NoteOrderByRelationAggregateInput
+    tasks?: TaskOrderByRelationAggregateInput
+    whiteboards?: WhiteboardOrderByRelationAggregateInput
   }
 
   export type FolderWhereUniqueInput = Prisma.AtLeast<{
@@ -16109,6 +16269,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Folder"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     notes?: NoteListRelationFilter
+    tasks?: TaskListRelationFilter
+    whiteboards?: WhiteboardListRelationFilter
   }, "id">
 
   export type FolderOrderByWithAggregationInput = {
@@ -16332,9 +16494,11 @@ export namespace Prisma {
     priority?: StringFilter<"Task"> | string
     dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     order?: IntFilter<"Task"> | number
+    folderId?: StringNullableFilter<"Task"> | string | null
     userId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    folder?: XOR<FolderNullableScalarRelationFilter, FolderWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -16346,9 +16510,11 @@ export namespace Prisma {
     priority?: SortOrder
     dueDate?: SortOrderInput | SortOrder
     order?: SortOrder
+    folderId?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    folder?: FolderOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
 
@@ -16363,9 +16529,11 @@ export namespace Prisma {
     priority?: StringFilter<"Task"> | string
     dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     order?: IntFilter<"Task"> | number
+    folderId?: StringNullableFilter<"Task"> | string | null
     userId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    folder?: XOR<FolderNullableScalarRelationFilter, FolderWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -16377,6 +16545,7 @@ export namespace Prisma {
     priority?: SortOrder
     dueDate?: SortOrderInput | SortOrder
     order?: SortOrder
+    folderId?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -16398,6 +16567,7 @@ export namespace Prisma {
     priority?: StringWithAggregatesFilter<"Task"> | string
     dueDate?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     order?: IntWithAggregatesFilter<"Task"> | number
+    folderId?: StringNullableWithAggregatesFilter<"Task"> | string | null
     userId?: StringWithAggregatesFilter<"Task"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
@@ -16411,9 +16581,11 @@ export namespace Prisma {
     name?: StringFilter<"Whiteboard"> | string
     elements?: StringNullableFilter<"Whiteboard"> | string | null
     appState?: StringNullableFilter<"Whiteboard"> | string | null
+    folderId?: StringNullableFilter<"Whiteboard"> | string | null
     userId?: StringFilter<"Whiteboard"> | string
     createdAt?: DateTimeFilter<"Whiteboard"> | Date | string
     updatedAt?: DateTimeFilter<"Whiteboard"> | Date | string
+    folder?: XOR<FolderNullableScalarRelationFilter, FolderWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -16422,9 +16594,11 @@ export namespace Prisma {
     name?: SortOrder
     elements?: SortOrderInput | SortOrder
     appState?: SortOrderInput | SortOrder
+    folderId?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    folder?: FolderOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
 
@@ -16436,9 +16610,11 @@ export namespace Prisma {
     name?: StringFilter<"Whiteboard"> | string
     elements?: StringNullableFilter<"Whiteboard"> | string | null
     appState?: StringNullableFilter<"Whiteboard"> | string | null
+    folderId?: StringNullableFilter<"Whiteboard"> | string | null
     userId?: StringFilter<"Whiteboard"> | string
     createdAt?: DateTimeFilter<"Whiteboard"> | Date | string
     updatedAt?: DateTimeFilter<"Whiteboard"> | Date | string
+    folder?: XOR<FolderNullableScalarRelationFilter, FolderWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
@@ -16447,6 +16623,7 @@ export namespace Prisma {
     name?: SortOrder
     elements?: SortOrderInput | SortOrder
     appState?: SortOrderInput | SortOrder
+    folderId?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -16463,6 +16640,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Whiteboard"> | string
     elements?: StringNullableWithAggregatesFilter<"Whiteboard"> | string | null
     appState?: StringNullableWithAggregatesFilter<"Whiteboard"> | string | null
+    folderId?: StringNullableWithAggregatesFilter<"Whiteboard"> | string | null
     userId?: StringWithAggregatesFilter<"Whiteboard"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Whiteboard"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Whiteboard"> | Date | string
@@ -17014,6 +17192,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFoldersInput
     notes?: NoteCreateNestedManyWithoutFolderInput
+    tasks?: TaskCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutFolderInput
   }
 
   export type FolderUncheckedCreateInput = {
@@ -17025,6 +17205,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     notes?: NoteUncheckedCreateNestedManyWithoutFolderInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutFolderInput
   }
 
   export type FolderUpdateInput = {
@@ -17036,6 +17218,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFoldersNestedInput
     notes?: NoteUpdateManyWithoutFolderNestedInput
+    tasks?: TaskUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutFolderNestedInput
   }
 
   export type FolderUncheckedUpdateInput = {
@@ -17047,6 +17231,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NoteUncheckedUpdateManyWithoutFolderNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutFolderNestedInput
   }
 
   export type FolderCreateManyInput = {
@@ -17267,6 +17453,7 @@ export namespace Prisma {
     order?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    folder?: FolderCreateNestedOneWithoutTasksInput
     user: UserCreateNestedOneWithoutTasksInput
   }
 
@@ -17278,6 +17465,7 @@ export namespace Prisma {
     priority?: string
     dueDate?: Date | string | null
     order?: number
+    folderId?: string | null
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17293,6 +17481,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: FolderUpdateOneWithoutTasksNestedInput
     user?: UserUpdateOneRequiredWithoutTasksNestedInput
   }
 
@@ -17304,6 +17493,7 @@ export namespace Prisma {
     priority?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     order?: IntFieldUpdateOperationsInput | number
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17317,6 +17507,7 @@ export namespace Prisma {
     priority?: string
     dueDate?: Date | string | null
     order?: number
+    folderId?: string | null
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17342,6 +17533,7 @@ export namespace Prisma {
     priority?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     order?: IntFieldUpdateOperationsInput | number
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17354,6 +17546,7 @@ export namespace Prisma {
     appState?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    folder?: FolderCreateNestedOneWithoutWhiteboardsInput
     user: UserCreateNestedOneWithoutWhiteboardsInput
   }
 
@@ -17362,6 +17555,7 @@ export namespace Prisma {
     name?: string
     elements?: string | null
     appState?: string | null
+    folderId?: string | null
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17374,6 +17568,7 @@ export namespace Prisma {
     appState?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: FolderUpdateOneWithoutWhiteboardsNestedInput
     user?: UserUpdateOneRequiredWithoutWhiteboardsNestedInput
   }
 
@@ -17382,6 +17577,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     elements?: NullableStringFieldUpdateOperationsInput | string | null
     appState?: NullableStringFieldUpdateOperationsInput | string | null
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17392,6 +17588,7 @@ export namespace Prisma {
     name?: string
     elements?: string | null
     appState?: string | null
+    folderId?: string | null
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17411,6 +17608,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     elements?: NullableStringFieldUpdateOperationsInput | string | null
     appState?: NullableStringFieldUpdateOperationsInput | string | null
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18085,6 +18283,7 @@ export namespace Prisma {
     priority?: SortOrder
     dueDate?: SortOrder
     order?: SortOrder
+    folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -18102,6 +18301,7 @@ export namespace Prisma {
     priority?: SortOrder
     dueDate?: SortOrder
     order?: SortOrder
+    folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -18115,6 +18315,7 @@ export namespace Prisma {
     priority?: SortOrder
     dueDate?: SortOrder
     order?: SortOrder
+    folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -18129,6 +18330,7 @@ export namespace Prisma {
     name?: SortOrder
     elements?: SortOrder
     appState?: SortOrder
+    folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -18139,6 +18341,7 @@ export namespace Prisma {
     name?: SortOrder
     elements?: SortOrder
     appState?: SortOrder
+    folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -18149,6 +18352,7 @@ export namespace Prisma {
     name?: SortOrder
     elements?: SortOrder
     appState?: SortOrder
+    folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -18533,11 +18737,39 @@ export namespace Prisma {
     connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
   }
 
+  export type TaskCreateNestedManyWithoutFolderInput = {
+    create?: XOR<TaskCreateWithoutFolderInput, TaskUncheckedCreateWithoutFolderInput> | TaskCreateWithoutFolderInput[] | TaskUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutFolderInput | TaskCreateOrConnectWithoutFolderInput[]
+    createMany?: TaskCreateManyFolderInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type WhiteboardCreateNestedManyWithoutFolderInput = {
+    create?: XOR<WhiteboardCreateWithoutFolderInput, WhiteboardUncheckedCreateWithoutFolderInput> | WhiteboardCreateWithoutFolderInput[] | WhiteboardUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutFolderInput | WhiteboardCreateOrConnectWithoutFolderInput[]
+    createMany?: WhiteboardCreateManyFolderInputEnvelope
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+  }
+
   export type NoteUncheckedCreateNestedManyWithoutFolderInput = {
     create?: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput> | NoteCreateWithoutFolderInput[] | NoteUncheckedCreateWithoutFolderInput[]
     connectOrCreate?: NoteCreateOrConnectWithoutFolderInput | NoteCreateOrConnectWithoutFolderInput[]
     createMany?: NoteCreateManyFolderInputEnvelope
     connect?: NoteWhereUniqueInput | NoteWhereUniqueInput[]
+  }
+
+  export type TaskUncheckedCreateNestedManyWithoutFolderInput = {
+    create?: XOR<TaskCreateWithoutFolderInput, TaskUncheckedCreateWithoutFolderInput> | TaskCreateWithoutFolderInput[] | TaskUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutFolderInput | TaskCreateOrConnectWithoutFolderInput[]
+    createMany?: TaskCreateManyFolderInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type WhiteboardUncheckedCreateNestedManyWithoutFolderInput = {
+    create?: XOR<WhiteboardCreateWithoutFolderInput, WhiteboardUncheckedCreateWithoutFolderInput> | WhiteboardCreateWithoutFolderInput[] | WhiteboardUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutFolderInput | WhiteboardCreateOrConnectWithoutFolderInput[]
+    createMany?: WhiteboardCreateManyFolderInputEnvelope
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutFoldersNestedInput = {
@@ -18562,6 +18794,34 @@ export namespace Prisma {
     deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
   }
 
+  export type TaskUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<TaskCreateWithoutFolderInput, TaskUncheckedCreateWithoutFolderInput> | TaskCreateWithoutFolderInput[] | TaskUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutFolderInput | TaskCreateOrConnectWithoutFolderInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutFolderInput | TaskUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: TaskCreateManyFolderInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutFolderInput | TaskUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutFolderInput | TaskUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type WhiteboardUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<WhiteboardCreateWithoutFolderInput, WhiteboardUncheckedCreateWithoutFolderInput> | WhiteboardCreateWithoutFolderInput[] | WhiteboardUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutFolderInput | WhiteboardCreateOrConnectWithoutFolderInput[]
+    upsert?: WhiteboardUpsertWithWhereUniqueWithoutFolderInput | WhiteboardUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: WhiteboardCreateManyFolderInputEnvelope
+    set?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    disconnect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    delete?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    update?: WhiteboardUpdateWithWhereUniqueWithoutFolderInput | WhiteboardUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: WhiteboardUpdateManyWithWhereWithoutFolderInput | WhiteboardUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: WhiteboardScalarWhereInput | WhiteboardScalarWhereInput[]
+  }
+
   export type NoteUncheckedUpdateManyWithoutFolderNestedInput = {
     create?: XOR<NoteCreateWithoutFolderInput, NoteUncheckedCreateWithoutFolderInput> | NoteCreateWithoutFolderInput[] | NoteUncheckedCreateWithoutFolderInput[]
     connectOrCreate?: NoteCreateOrConnectWithoutFolderInput | NoteCreateOrConnectWithoutFolderInput[]
@@ -18574,6 +18834,34 @@ export namespace Prisma {
     update?: NoteUpdateWithWhereUniqueWithoutFolderInput | NoteUpdateWithWhereUniqueWithoutFolderInput[]
     updateMany?: NoteUpdateManyWithWhereWithoutFolderInput | NoteUpdateManyWithWhereWithoutFolderInput[]
     deleteMany?: NoteScalarWhereInput | NoteScalarWhereInput[]
+  }
+
+  export type TaskUncheckedUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<TaskCreateWithoutFolderInput, TaskUncheckedCreateWithoutFolderInput> | TaskCreateWithoutFolderInput[] | TaskUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutFolderInput | TaskCreateOrConnectWithoutFolderInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutFolderInput | TaskUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: TaskCreateManyFolderInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutFolderInput | TaskUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutFolderInput | TaskUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type WhiteboardUncheckedUpdateManyWithoutFolderNestedInput = {
+    create?: XOR<WhiteboardCreateWithoutFolderInput, WhiteboardUncheckedCreateWithoutFolderInput> | WhiteboardCreateWithoutFolderInput[] | WhiteboardUncheckedCreateWithoutFolderInput[]
+    connectOrCreate?: WhiteboardCreateOrConnectWithoutFolderInput | WhiteboardCreateOrConnectWithoutFolderInput[]
+    upsert?: WhiteboardUpsertWithWhereUniqueWithoutFolderInput | WhiteboardUpsertWithWhereUniqueWithoutFolderInput[]
+    createMany?: WhiteboardCreateManyFolderInputEnvelope
+    set?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    disconnect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    delete?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    connect?: WhiteboardWhereUniqueInput | WhiteboardWhereUniqueInput[]
+    update?: WhiteboardUpdateWithWhereUniqueWithoutFolderInput | WhiteboardUpdateWithWhereUniqueWithoutFolderInput[]
+    updateMany?: WhiteboardUpdateManyWithWhereWithoutFolderInput | WhiteboardUpdateManyWithWhereWithoutFolderInput[]
+    deleteMany?: WhiteboardScalarWhereInput | WhiteboardScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutTagsInput = {
@@ -18732,10 +19020,26 @@ export namespace Prisma {
     update?: XOR<XOR<TagUpdateToOneWithWhereWithoutNotesInput, TagUpdateWithoutNotesInput>, TagUncheckedUpdateWithoutNotesInput>
   }
 
+  export type FolderCreateNestedOneWithoutTasksInput = {
+    create?: XOR<FolderCreateWithoutTasksInput, FolderUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: FolderCreateOrConnectWithoutTasksInput
+    connect?: FolderWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutTasksInput = {
     create?: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
     connectOrCreate?: UserCreateOrConnectWithoutTasksInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type FolderUpdateOneWithoutTasksNestedInput = {
+    create?: XOR<FolderCreateWithoutTasksInput, FolderUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: FolderCreateOrConnectWithoutTasksInput
+    upsert?: FolderUpsertWithoutTasksInput
+    disconnect?: FolderWhereInput | boolean
+    delete?: FolderWhereInput | boolean
+    connect?: FolderWhereUniqueInput
+    update?: XOR<XOR<FolderUpdateToOneWithWhereWithoutTasksInput, FolderUpdateWithoutTasksInput>, FolderUncheckedUpdateWithoutTasksInput>
   }
 
   export type UserUpdateOneRequiredWithoutTasksNestedInput = {
@@ -18746,10 +19050,26 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTasksInput, UserUpdateWithoutTasksInput>, UserUncheckedUpdateWithoutTasksInput>
   }
 
+  export type FolderCreateNestedOneWithoutWhiteboardsInput = {
+    create?: XOR<FolderCreateWithoutWhiteboardsInput, FolderUncheckedCreateWithoutWhiteboardsInput>
+    connectOrCreate?: FolderCreateOrConnectWithoutWhiteboardsInput
+    connect?: FolderWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutWhiteboardsInput = {
     create?: XOR<UserCreateWithoutWhiteboardsInput, UserUncheckedCreateWithoutWhiteboardsInput>
     connectOrCreate?: UserCreateOrConnectWithoutWhiteboardsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type FolderUpdateOneWithoutWhiteboardsNestedInput = {
+    create?: XOR<FolderCreateWithoutWhiteboardsInput, FolderUncheckedCreateWithoutWhiteboardsInput>
+    connectOrCreate?: FolderCreateOrConnectWithoutWhiteboardsInput
+    upsert?: FolderUpsertWithoutWhiteboardsInput
+    disconnect?: FolderWhereInput | boolean
+    delete?: FolderWhereInput | boolean
+    connect?: FolderWhereUniqueInput
+    update?: XOR<XOR<FolderUpdateToOneWithWhereWithoutWhiteboardsInput, FolderUpdateWithoutWhiteboardsInput>, FolderUncheckedUpdateWithoutWhiteboardsInput>
   }
 
   export type UserUpdateOneRequiredWithoutWhiteboardsNestedInput = {
@@ -19053,6 +19373,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     notes?: NoteCreateNestedManyWithoutFolderInput
+    tasks?: TaskCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutFolderInput
   }
 
   export type FolderUncheckedCreateWithoutUserInput = {
@@ -19063,6 +19385,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     notes?: NoteUncheckedCreateNestedManyWithoutFolderInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutFolderInput
   }
 
   export type FolderCreateOrConnectWithoutUserInput = {
@@ -19142,6 +19466,7 @@ export namespace Prisma {
     order?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    folder?: FolderCreateNestedOneWithoutTasksInput
   }
 
   export type TaskUncheckedCreateWithoutUserInput = {
@@ -19152,6 +19477,7 @@ export namespace Prisma {
     priority?: string
     dueDate?: Date | string | null
     order?: number
+    folderId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19172,6 +19498,7 @@ export namespace Prisma {
     appState?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    folder?: FolderCreateNestedOneWithoutWhiteboardsInput
   }
 
   export type WhiteboardUncheckedCreateWithoutUserInput = {
@@ -19179,6 +19506,7 @@ export namespace Prisma {
     name?: string
     elements?: string | null
     appState?: string | null
+    folderId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19371,6 +19699,7 @@ export namespace Prisma {
     priority?: StringFilter<"Task"> | string
     dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     order?: IntFilter<"Task"> | number
+    folderId?: StringNullableFilter<"Task"> | string | null
     userId?: StringFilter<"Task"> | string
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
@@ -19400,6 +19729,7 @@ export namespace Prisma {
     name?: StringFilter<"Whiteboard"> | string
     elements?: StringNullableFilter<"Whiteboard"> | string | null
     appState?: StringNullableFilter<"Whiteboard"> | string | null
+    folderId?: StringNullableFilter<"Whiteboard"> | string | null
     userId?: StringFilter<"Whiteboard"> | string
     createdAt?: DateTimeFilter<"Whiteboard"> | Date | string
     updatedAt?: DateTimeFilter<"Whiteboard"> | Date | string
@@ -19633,6 +19963,70 @@ export namespace Prisma {
     data: NoteCreateManyFolderInput | NoteCreateManyFolderInput[]
   }
 
+  export type TaskCreateWithoutFolderInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTasksInput
+  }
+
+  export type TaskUncheckedCreateWithoutFolderInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskCreateOrConnectWithoutFolderInput = {
+    where: TaskWhereUniqueInput
+    create: XOR<TaskCreateWithoutFolderInput, TaskUncheckedCreateWithoutFolderInput>
+  }
+
+  export type TaskCreateManyFolderInputEnvelope = {
+    data: TaskCreateManyFolderInput | TaskCreateManyFolderInput[]
+  }
+
+  export type WhiteboardCreateWithoutFolderInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutWhiteboardsInput
+  }
+
+  export type WhiteboardUncheckedCreateWithoutFolderInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhiteboardCreateOrConnectWithoutFolderInput = {
+    where: WhiteboardWhereUniqueInput
+    create: XOR<WhiteboardCreateWithoutFolderInput, WhiteboardUncheckedCreateWithoutFolderInput>
+  }
+
+  export type WhiteboardCreateManyFolderInputEnvelope = {
+    data: WhiteboardCreateManyFolderInput | WhiteboardCreateManyFolderInput[]
+  }
+
   export type UserUpsertWithoutFoldersInput = {
     update: XOR<UserUpdateWithoutFoldersInput, UserUncheckedUpdateWithoutFoldersInput>
     create: XOR<UserCreateWithoutFoldersInput, UserUncheckedCreateWithoutFoldersInput>
@@ -19690,6 +20084,38 @@ export namespace Prisma {
   export type NoteUpdateManyWithWhereWithoutFolderInput = {
     where: NoteScalarWhereInput
     data: XOR<NoteUpdateManyMutationInput, NoteUncheckedUpdateManyWithoutFolderInput>
+  }
+
+  export type TaskUpsertWithWhereUniqueWithoutFolderInput = {
+    where: TaskWhereUniqueInput
+    update: XOR<TaskUpdateWithoutFolderInput, TaskUncheckedUpdateWithoutFolderInput>
+    create: XOR<TaskCreateWithoutFolderInput, TaskUncheckedCreateWithoutFolderInput>
+  }
+
+  export type TaskUpdateWithWhereUniqueWithoutFolderInput = {
+    where: TaskWhereUniqueInput
+    data: XOR<TaskUpdateWithoutFolderInput, TaskUncheckedUpdateWithoutFolderInput>
+  }
+
+  export type TaskUpdateManyWithWhereWithoutFolderInput = {
+    where: TaskScalarWhereInput
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutFolderInput>
+  }
+
+  export type WhiteboardUpsertWithWhereUniqueWithoutFolderInput = {
+    where: WhiteboardWhereUniqueInput
+    update: XOR<WhiteboardUpdateWithoutFolderInput, WhiteboardUncheckedUpdateWithoutFolderInput>
+    create: XOR<WhiteboardCreateWithoutFolderInput, WhiteboardUncheckedCreateWithoutFolderInput>
+  }
+
+  export type WhiteboardUpdateWithWhereUniqueWithoutFolderInput = {
+    where: WhiteboardWhereUniqueInput
+    data: XOR<WhiteboardUpdateWithoutFolderInput, WhiteboardUncheckedUpdateWithoutFolderInput>
+  }
+
+  export type WhiteboardUpdateManyWithWhereWithoutFolderInput = {
+    where: WhiteboardScalarWhereInput
+    data: XOR<WhiteboardUpdateManyMutationInput, WhiteboardUncheckedUpdateManyWithoutFolderInput>
   }
 
   export type UserCreateWithoutTagsInput = {
@@ -19821,6 +20247,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFoldersInput
+    tasks?: TaskCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutFolderInput
   }
 
   export type FolderUncheckedCreateWithoutNotesInput = {
@@ -19831,6 +20259,8 @@ export namespace Prisma {
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    tasks?: TaskUncheckedCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutFolderInput
   }
 
   export type FolderCreateOrConnectWithoutNotesInput = {
@@ -19911,6 +20341,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFoldersNestedInput
+    tasks?: TaskUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutFolderNestedInput
   }
 
   export type FolderUncheckedUpdateWithoutNotesInput = {
@@ -19921,6 +20353,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    tasks?: TaskUncheckedUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutFolderNestedInput
   }
 
   export type UserUpsertWithoutNotesInput = {
@@ -20094,6 +20528,35 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FolderCreateWithoutTasksInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutFoldersInput
+    notes?: NoteCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderUncheckedCreateWithoutTasksInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteUncheckedCreateNestedManyWithoutFolderInput
+    whiteboards?: WhiteboardUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderCreateOrConnectWithoutTasksInput = {
+    where: FolderWhereUniqueInput
+    create: XOR<FolderCreateWithoutTasksInput, FolderUncheckedCreateWithoutTasksInput>
+  }
+
   export type UserCreateWithoutTasksInput = {
     id: string
     name: string
@@ -20129,6 +20592,41 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutTasksInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+  }
+
+  export type FolderUpsertWithoutTasksInput = {
+    update: XOR<FolderUpdateWithoutTasksInput, FolderUncheckedUpdateWithoutTasksInput>
+    create: XOR<FolderCreateWithoutTasksInput, FolderUncheckedCreateWithoutTasksInput>
+    where?: FolderWhereInput
+  }
+
+  export type FolderUpdateToOneWithWhereWithoutTasksInput = {
+    where?: FolderWhereInput
+    data: XOR<FolderUpdateWithoutTasksInput, FolderUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type FolderUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFoldersNestedInput
+    notes?: NoteUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutFolderNestedInput
+  }
+
+  export type FolderUncheckedUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteUncheckedUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutFolderNestedInput
   }
 
   export type UserUpsertWithoutTasksInput = {
@@ -20174,6 +20672,35 @@ export namespace Prisma {
     whiteboards?: WhiteboardUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type FolderCreateWithoutWhiteboardsInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutFoldersInput
+    notes?: NoteCreateNestedManyWithoutFolderInput
+    tasks?: TaskCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderUncheckedCreateWithoutWhiteboardsInput = {
+    id?: string
+    name: string
+    color?: string | null
+    icon?: string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    notes?: NoteUncheckedCreateNestedManyWithoutFolderInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutFolderInput
+  }
+
+  export type FolderCreateOrConnectWithoutWhiteboardsInput = {
+    where: FolderWhereUniqueInput
+    create: XOR<FolderCreateWithoutWhiteboardsInput, FolderUncheckedCreateWithoutWhiteboardsInput>
+  }
+
   export type UserCreateWithoutWhiteboardsInput = {
     id: string
     name: string
@@ -20209,6 +20736,41 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutWhiteboardsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutWhiteboardsInput, UserUncheckedCreateWithoutWhiteboardsInput>
+  }
+
+  export type FolderUpsertWithoutWhiteboardsInput = {
+    update: XOR<FolderUpdateWithoutWhiteboardsInput, FolderUncheckedUpdateWithoutWhiteboardsInput>
+    create: XOR<FolderCreateWithoutWhiteboardsInput, FolderUncheckedCreateWithoutWhiteboardsInput>
+    where?: FolderWhereInput
+  }
+
+  export type FolderUpdateToOneWithWhereWithoutWhiteboardsInput = {
+    where?: FolderWhereInput
+    data: XOR<FolderUpdateWithoutWhiteboardsInput, FolderUncheckedUpdateWithoutWhiteboardsInput>
+  }
+
+  export type FolderUpdateWithoutWhiteboardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFoldersNestedInput
+    notes?: NoteUpdateManyWithoutFolderNestedInput
+    tasks?: TaskUpdateManyWithoutFolderNestedInput
+  }
+
+  export type FolderUncheckedUpdateWithoutWhiteboardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    icon?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NoteUncheckedUpdateManyWithoutFolderNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutFolderNestedInput
   }
 
   export type UserUpsertWithoutWhiteboardsInput = {
@@ -20314,6 +20876,7 @@ export namespace Prisma {
     priority?: string
     dueDate?: Date | string | null
     order?: number
+    folderId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -20323,6 +20886,7 @@ export namespace Prisma {
     name?: string
     elements?: string | null
     appState?: string | null
+    folderId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -20410,6 +20974,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NoteUpdateManyWithoutFolderNestedInput
+    tasks?: TaskUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUpdateManyWithoutFolderNestedInput
   }
 
   export type FolderUncheckedUpdateWithoutUserInput = {
@@ -20420,6 +20986,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notes?: NoteUncheckedUpdateManyWithoutFolderNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutFolderNestedInput
+    whiteboards?: WhiteboardUncheckedUpdateManyWithoutFolderNestedInput
   }
 
   export type FolderUncheckedUpdateManyWithoutUserInput = {
@@ -20499,6 +21067,7 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: FolderUpdateOneWithoutTasksNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutUserInput = {
@@ -20509,6 +21078,7 @@ export namespace Prisma {
     priority?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     order?: IntFieldUpdateOperationsInput | number
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20521,6 +21091,7 @@ export namespace Prisma {
     priority?: StringFieldUpdateOperationsInput | string
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     order?: IntFieldUpdateOperationsInput | number
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20532,6 +21103,7 @@ export namespace Prisma {
     appState?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    folder?: FolderUpdateOneWithoutWhiteboardsNestedInput
   }
 
   export type WhiteboardUncheckedUpdateWithoutUserInput = {
@@ -20539,6 +21111,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     elements?: NullableStringFieldUpdateOperationsInput | string | null
     appState?: NullableStringFieldUpdateOperationsInput | string | null
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20548,6 +21121,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     elements?: NullableStringFieldUpdateOperationsInput | string | null
     appState?: NullableStringFieldUpdateOperationsInput | string | null
+    folderId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20557,6 +21131,29 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaskCreateManyFolderInput = {
+    id?: string
+    title: string
+    description?: string | null
+    status?: string
+    priority?: string
+    dueDate?: Date | string | null
+    order?: number
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WhiteboardCreateManyFolderInput = {
+    id?: string
+    name?: string
+    elements?: string | null
+    appState?: string | null
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20589,6 +21186,75 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+  }
+
+  export type TaskUncheckedUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaskUncheckedUpdateManyWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    priority?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutWhiteboardsNestedInput
+  }
+
+  export type WhiteboardUncheckedUpdateWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WhiteboardUncheckedUpdateManyWithoutFolderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    elements?: NullableStringFieldUpdateOperationsInput | string | null
+    appState?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -30,6 +30,7 @@ import {
 import { EditorContext } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useUIPreferences } from "~/stores/ui-preferences";
+import { FolderPicker } from "~/components/folder-picker";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -40,6 +41,7 @@ type Task = {
   status: string;
   priority: string;
   dueDate: Date | null;
+  folderId: string | null;
   order: number;
   createdAt: Date;
   updatedAt: Date;
@@ -349,8 +351,10 @@ function TaskRow({ task }: { task: Task }) {
   const queryClient = useQueryClient();
   const [expanded, setExpanded] = useState(false);
 
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: orpc.tasks.list.queryKey() });
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey: orpc.tasks.list.queryKey() });
+    void queryClient.invalidateQueries({ queryKey: orpc.folders.list.queryKey() });
+  };
 
   const { mutate: updateTask } = useMutation({
     ...orpc.tasks.update.mutationOptions(),
@@ -423,6 +427,12 @@ function TaskRow({ task }: { task: Task }) {
           {/* Properties: badges + date + delete */}
           <div className="flex items-center gap-2 shrink-0">
             <div className="hidden sm:flex items-center gap-2">
+              <FolderPicker
+                value={task.folderId}
+                onChange={(folderId) =>
+                  updateTask({ id: task.id, folderId })
+                }
+              />
               <PriorityBadge
                 priority={task.priority}
                 onChange={(priority) =>
@@ -453,7 +463,13 @@ function TaskRow({ task }: { task: Task }) {
         </div>
 
         {/* Mobile badges row */}
-        <div className="flex sm:hidden items-center gap-2 px-4 pb-3 pl-[4.25rem]">
+        <div className="flex sm:hidden items-center gap-2 px-4 pb-3 pl-[4.25rem] flex-wrap">
+          <FolderPicker
+            value={task.folderId}
+            onChange={(folderId) =>
+              updateTask({ id: task.id, folderId })
+            }
+          />
           <PriorityBadge
             priority={task.priority}
             onChange={(priority) =>

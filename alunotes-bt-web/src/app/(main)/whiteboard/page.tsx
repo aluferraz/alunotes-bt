@@ -6,6 +6,7 @@ import { GlassCard } from "~/components/ui/glass-card";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FolderPicker } from "~/components/folder-picker";
 
 export default function WhiteboardIndexPage() {
   const router = useRouter();
@@ -17,6 +18,13 @@ export default function WhiteboardIndexPage() {
       router.push(`/whiteboard/${data.id}`);
     },
   }));
+  const { mutate: updateBoard } = useMutation({
+    ...orpc.whiteboard.update.mutationOptions(),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: orpc.whiteboard.list.queryKey() });
+      void queryClient.invalidateQueries({ queryKey: orpc.folders.list.queryKey() });
+    },
+  });
 
   return (
     <div className="flex flex-col gap-8 max-w-4xl mx-auto">
@@ -48,8 +56,18 @@ export default function WhiteboardIndexPage() {
                 <h2 className="text-xl font-semibold group-hover:text-primary transition-colors">
                   {board.name || "Untitled Canvas"}
                 </h2>
-                <div className="text-xs text-muted-foreground">
-                  Updated {new Date(board.updatedAt).toLocaleDateString()}
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-muted-foreground">
+                    Updated {new Date(board.updatedAt).toLocaleDateString()}
+                  </div>
+                  <div onClick={(e) => e.preventDefault()}>
+                    <FolderPicker
+                      value={board.folderId}
+                      onChange={(folderId) =>
+                        updateBoard({ id: board.id, folderId })
+                      }
+                    />
+                  </div>
                 </div>
               </GlassCard>
             </Link>

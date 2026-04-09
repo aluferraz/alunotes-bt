@@ -1,88 +1,267 @@
 "use client";
 
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
-import { Folder, Briefcase, Archive, Tag, Lightbulb, FolderOpen } from "lucide-react";
+import { ColorDot, FOLDER_COLORS } from "~/components/folder-picker";
+import Link from "next/link";
+import {
+  Plus,
+  FolderOpen,
+  Edit3,
+  CheckSquare,
+  PenTool,
+  Loader2,
+  Trash2,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
+
+const COLOR_OPTIONS = [
+  "#7CB9E8",
+  "#9D85FF",
+  "#F87171",
+  "#FB923C",
+  "#FBBF24",
+  "#34D399",
+  "#60A5FA",
+  "#A78BFA",
+  "#F472B6",
+];
 
 export default function FoldersPage() {
-  const categories = [
-    { name: "Personal", icon: Folder, color: "text-blue-400", bg: "bg-blue-400/10" },
-    { name: "Work", icon: Briefcase, color: "text-orange-400", bg: "bg-orange-400/10" },
-    { name: "Archived", icon: Archive, color: "text-gray-400", bg: "bg-gray-400/10" },
-    { name: "Priority", icon: Tag, color: "text-red-400", bg: "bg-red-400/10" },
-    { name: "Idea", icon: Lightbulb, color: "text-yellow-400", bg: "bg-yellow-400/10" },
-  ];
+  const queryClient = useQueryClient();
+  const { data: folders, isLoading } = useQuery(orpc.folders.list.queryOptions());
 
-  const activeFolders = [
-    { title: "Personal", desc: "Private journals, travel plans, and life goals." },
-    { title: "Work", desc: "Meeting minutes, project specs, and roadmap." },
-    { title: "Ideas", desc: "Late night sparks and future side projects." },
-  ];
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingFolder, setEditingFolder] = useState<{ id: string; name: string; color: string | null } | null>(null);
+  const [name, setName] = useState("");
+  const [color, setColor] = useState(COLOR_OPTIONS[0]!);
+
+  const { mutate: createFolder, isPending: isCreating } = useMutation(
+    orpc.folders.create.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: orpc.folders.list.queryKey() });
+        closeDialog();
+      },
+    })
+  );
+
+  const { mutate: updateFolder, isPending: isUpdating } = useMutation(
+    orpc.folders.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: orpc.folders.list.queryKey() });
+        closeDialog();
+      },
+    })
+  );
+
+  const { mutate: deleteFolder } = useMutation(
+    orpc.folders.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: orpc.folders.list.queryKey() });
+      },
+    })
+  );
+
+  function closeDialog() {
+    setDialogOpen(false);
+    setEditingFolder(null);
+    setName("");
+    setColor(COLOR_OPTIONS[0]!);
+  }
+
+  function openCreate() {
+    setEditingFolder(null);
+    setName("");
+    setColor(COLOR_OPTIONS[0]!);
+    setDialogOpen(true);
+  }
+
+  function openEdit(folder: { id: string; name: string; color: string | null }) {
+    setEditingFolder(folder);
+    setName(folder.name);
+    setColor(folder.color ?? COLOR_OPTIONS[0]!);
+    setDialogOpen(true);
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) return;
+    if (editingFolder) {
+      updateFolder({ id: editingFolder.id, name: name.trim(), color });
+    } else {
+      createFolder({ name: name.trim(), color });
+    }
+  }
 
   return (
     <div className="flex flex-col gap-8 max-w-4xl mx-auto">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-extrabold text-foreground tracking-tight">Folders & Tags</h1>
-        <p className="text-muted-foreground text-lg">Manage your organizational structure</p>
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-4xl font-manrope font-bold text-foreground tracking-tight">
+            Folders
+          </h1>
+          <p className="text-muted-foreground">
+            Organize your notes, tasks and whiteboards
+          </p>
+        </div>
+        <button
+          onClick={openCreate}
+          className="flex items-center gap-2 px-6 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all font-medium shadow-glass"
+        >
+          <Plus className="w-5 h-5" />
+          New Folder
+        </button>
       </div>
 
-      {/* Horizontal Nav / Shortcuts */}
-      <div className="flex items-center space-x-4 overflow-x-auto pb-4 scrollbar-none">
-        {categories.map((c) => (
-          <button 
-            key={c.name}
-            className="flex flex-col items-center gap-2 p-4 rounded-3xl hover:bg-glass-bg/50 border border-transparent hover:border-glass-border transition-all min-w-[80px]"
-          >
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center ${c.bg}`}>
-              <c.icon className={`w-6 h-6 ${c.color}`} />
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : folders?.length === 0 ? (
+        <GlassCard className="p-12 text-center text-muted-foreground flex flex-col items-center gap-4">
+          <FolderOpen className="w-12 h-12 text-muted-foreground/40" />
+          <p>No folders yet. Create one to start organizing.</p>
+        </GlassCard>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {folders?.map((folder) => {
+            const total =
+              folder._count.notes + folder._count.tasks + folder._count.whiteboards;
+            return (
+              <Link key={folder.id} href={`/folders/${folder.id}`}>
+                <GlassCard className="p-6 hover:bg-glass-border transition-colors cursor-pointer group flex flex-col gap-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: `${folder.color ?? "#7CB9E8"}20` }}
+                      >
+                        <FolderOpen
+                          className="w-5 h-5"
+                          style={{ color: folder.color ?? "#7CB9E8" }}
+                        />
+                      </div>
+                      <div>
+                        <h2 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                          {folder.name}
+                        </h2>
+                        <p className="text-xs text-muted-foreground">
+                          {total} {total === 1 ? "item" : "items"}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openEdit(folder);
+                      }}
+                      className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-glass-bg/50 opacity-0 group-hover:opacity-100 transition-all"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    {folder._count.notes > 0 && (
+                      <span className="flex items-center gap-1">
+                        <Edit3 className="w-3 h-3" />
+                        {folder._count.notes}
+                      </span>
+                    )}
+                    {folder._count.tasks > 0 && (
+                      <span className="flex items-center gap-1">
+                        <CheckSquare className="w-3 h-3" />
+                        {folder._count.tasks}
+                      </span>
+                    )}
+                    {folder._count.whiteboards > 0 && (
+                      <span className="flex items-center gap-1">
+                        <PenTool className="w-3 h-3" />
+                        {folder._count.whiteboards}
+                      </span>
+                    )}
+                  </div>
+                </GlassCard>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Create / Edit Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={(open) => !open && closeDialog()}>
+        <DialogContent className="sm:max-w-sm">
+          <form onSubmit={handleSubmit}>
+            <DialogHeader>
+              <DialogTitle>
+                {editingFolder ? "Edit Folder" : "New Folder"}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4 py-4">
+              <Input
+                placeholder="Folder name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+              />
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-medium text-muted-foreground">Color</span>
+                <div className="flex flex-wrap gap-2">
+                  {COLOR_OPTIONS.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setColor(c)}
+                      className={cn(
+                        "w-7 h-7 rounded-full transition-all",
+                        color === c
+                          ? "ring-2 ring-offset-2 ring-offset-popover ring-foreground/30 scale-110"
+                          : "hover:scale-110"
+                      )}
+                      style={{ backgroundColor: c }}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-            <span className="text-xs font-semibold">{c.name}</span>
-          </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        {/* Active Folders Section */}
-        <GlassCard className="p-6 md:p-8 flex flex-col gap-6">
-          <h2 className="text-2xl font-bold flex items-center gap-3">
-             <FolderOpen className="w-5 h-5 text-secondary" />
-             Active Folders
-          </h2>
-          <div className="flex flex-col gap-4">
-             {activeFolders.map(folder => (
-               <div key={folder.title} className="p-4 rounded-xl bg-background/40 hover:bg-background/60 border border-glass-border cursor-pointer transition-colors group">
-                 <h3 className="font-semibold text-lg flex items-center gap-2 group-hover:text-secondary transition-colors">
-                   <Folder className="w-4 h-4 text-muted-foreground group-hover:text-secondary" />
-                   {folder.title}
-                 </h3>
-                 <p className="text-sm text-muted-foreground mt-1">{folder.desc}</p>
-               </div>
-             ))}
-          </div>
-        </GlassCard>
-
-        {/* Global Tags Section */}
-        <GlassCard className="p-6 md:p-8 flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-2xl font-bold flex items-center gap-3">
-              <Tag className="w-5 h-5 text-primary" />
-              Global Tags
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              A high-level view of your classification system. Drill down into specific contexts across all folders.
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap gap-2 mt-4">
-             {["#urgent", "#read-later", "#meeting-notes", "#drafts", "#planning", "#reference"].map((tag) => (
-               <span key={tag} className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold font-mono hover:bg-primary/20 cursor-pointer transition-colors">
-                 {tag}
-               </span>
-             ))}
-          </div>
-        </GlassCard>
-
-      </div>
+            <DialogFooter>
+              {editingFolder && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="mr-auto text-destructive hover:text-destructive"
+                  onClick={() => {
+                    deleteFolder({ id: editingFolder.id });
+                    closeDialog();
+                  }}
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Delete
+                </Button>
+              )}
+              <Button
+                type="submit"
+                disabled={!name.trim() || isCreating || isUpdating}
+              >
+                {isCreating || isUpdating ? "Saving..." : editingFolder ? "Save" : "Create"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

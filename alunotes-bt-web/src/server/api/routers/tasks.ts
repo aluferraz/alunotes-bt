@@ -23,6 +23,7 @@ export const tasksRouter = {
         priority: z.string().optional(),
         status: z.string().optional(),
         dueDate: z.string().optional(),
+        folderId: z.string().nullable().optional(),
       })
     )
     .handler(async ({ input, context }) => {
@@ -37,6 +38,7 @@ export const tasksRouter = {
           priority: input.priority ?? "MEDIUM",
           status: input.status ?? "TODO",
           dueDate: input.dueDate ? new Date(input.dueDate) : undefined,
+          folderId: input.folderId ?? undefined,
           order: (maxOrder._max.order ?? -1) + 1,
           userId: context.session.user.id,
         },
@@ -52,6 +54,7 @@ export const tasksRouter = {
         priority: z.string().optional(),
         dueDate: z.string().nullable().optional(),
         order: z.number().optional(),
+        folderId: z.string().nullable().optional(),
       })
     )
     .handler(async ({ input, context }) => {
@@ -68,6 +71,7 @@ export const tasksRouter = {
             dueDate: input.dueDate ? new Date(input.dueDate) : null,
           }),
           ...(input.order !== undefined && { order: input.order }),
+          ...(input.folderId !== undefined && { folderId: input.folderId }),
         },
       });
     }),

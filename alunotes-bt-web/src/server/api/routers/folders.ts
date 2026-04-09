@@ -1,29 +1,44 @@
 import { z } from "zod";
 import { protectedProcedure } from "~/server/api/orpc";
 
-export const whiteboardRouter = {
+export const foldersRouter = {
   list: protectedProcedure.handler(async ({ context }) => {
-    return context.db.whiteboard.findMany({
+    return context.db.folder.findMany({
       where: { userId: context.session.user.id },
       orderBy: { updatedAt: "desc" },
+      include: {
+        _count: { select: { notes: true, tasks: true, whiteboards: true } },
+      },
     });
   }),
   get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .handler(async ({ input, context }) => {
-      const board = await context.db.whiteboard.findUnique({
+      const folder = await context.db.folder.findUnique({
         where: { id: input.id, userId: context.session.user.id },
+        include: {
+          notes: { orderBy: { updatedAt: "desc" } },
+          tasks: { orderBy: { order: "asc" } },
+          whiteboards: { orderBy: { updatedAt: "desc" } },
+        },
       });
-      if (!board) throw new Error("Not found");
-      return board;
+      if (!folder) throw new Error("Not found");
+      return folder;
     }),
   create: protectedProcedure
-    .input(z.object({ name: z.string().optional(), folderId: z.string().nullable().optional() }))
+    .input(
+      z.object({
+        name: z.string().min(1),
+        color: z.string().optional(),
+        icon: z.string().optional(),
+      })
+    )
     .handler(async ({ input, context }) => {
-      return context.db.whiteboard.create({
+      return context.db.folder.create({
         data: {
-          name: input.name ?? "Untitled Canvas",
-          folderId: input.folderId ?? undefined,
+          name: input.name,
+          color: input.color,
+          icon: input.icon,
           userId: context.session.user.id,
         },
       });
@@ -32,27 +47,25 @@ export const whiteboardRouter = {
     .input(
       z.object({
         id: z.string(),
-        name: z.string().optional(),
-        elements: z.string().optional(),
-        appState: z.string().optional(),
-        folderId: z.string().nullable().optional(),
+        name: z.string().min(1).optional(),
+        color: z.string().nullable().optional(),
+        icon: z.string().nullable().optional(),
       })
     )
     .handler(async ({ input, context }) => {
-      return context.db.whiteboard.update({
+      return context.db.folder.update({
         where: { id: input.id, userId: context.session.user.id },
         data: {
           ...(input.name !== undefined && { name: input.name }),
-          ...(input.elements !== undefined && { elements: input.elements }),
-          ...(input.appState !== undefined && { appState: input.appState }),
-          ...(input.folderId !== undefined && { folderId: input.folderId }),
+          ...(input.color !== undefined && { color: input.color }),
+          ...(input.icon !== undefined && { icon: input.icon }),
         },
       });
     }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .handler(async ({ input, context }) => {
-      await context.db.whiteboard.delete({
+      await context.db.folder.delete({
         where: { id: input.id, userId: context.session.user.id },
       });
       return { success: true };

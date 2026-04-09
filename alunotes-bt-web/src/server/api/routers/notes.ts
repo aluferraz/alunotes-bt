@@ -18,11 +18,12 @@ export const notesRouter = {
       return note;
     }),
   create: protectedProcedure
-    .input(z.object({ title: z.string().optional() }))
+    .input(z.object({ title: z.string().optional(), folderId: z.string().nullable().optional() }))
     .handler(async ({ input, context }) => {
       return context.db.note.create({
         data: {
           title: input.title ?? "Untitled",
+          folderId: input.folderId ?? undefined,
           userId: context.session.user.id,
         },
       });
@@ -33,6 +34,7 @@ export const notesRouter = {
         id: z.string(),
         title: z.string().optional(),
         content: z.string().optional(),
+        folderId: z.string().nullable().optional(),
       })
     )
     .handler(async ({ input, context }) => {
@@ -41,6 +43,7 @@ export const notesRouter = {
         data: {
           ...(input.title !== undefined && { title: input.title }),
           ...(input.content !== undefined && { content: input.content }),
+          ...(input.folderId !== undefined && { folderId: input.folderId }),
         },
       });
     }),

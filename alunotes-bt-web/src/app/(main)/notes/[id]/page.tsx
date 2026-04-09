@@ -15,6 +15,7 @@ import { Save, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useUIPreferences } from "~/stores/ui-preferences";
 import { useNoteEditorStore } from "~/stores/note-editor";
+import { FolderPicker } from "~/components/folder-picker";
 
 export default function NotePage(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params);
@@ -137,7 +138,7 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
       <div className="flex flex-col gap-6 max-w-4xl mx-auto min-h-screen pb-20">
 
         {/* Minimal sticky header — back button + save status only */}
-        <div className="flex items-center justify-between sticky top-0 z-20 py-3 -mx-4 px-4 sm:mx-0 sm:px-0 bg-background/60 backdrop-blur-xl border-b border-glass-border">
+        <div className="flex items-center justify-between sticky top-0 z-20 py-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:mt-2 bg-glass-bg/60 backdrop-blur-xl rounded-full sm:px-4">
           <Link
             href="/notes"
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 -ml-2 rounded-full hover:bg-glass-border"
@@ -146,14 +147,25 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
             <span className="hidden sm:inline font-medium text-sm">Notes</span>
           </Link>
 
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-glass-bg border border-glass-border backdrop-blur-md text-xs font-medium text-muted-foreground">
-            <saveDebouncer.Subscribe selector={(state) => ({ isSaving: state.isPending || state.isExecuting })}>
-              {({ isSaving }) => isSaving ? (
-                <><Loader2 className="w-3 h-3 animate-spin" /> Saving...</>
-              ) : (
-                <><Save className="w-3 h-3" /> Saved</>
-              )}
-            </saveDebouncer.Subscribe>
+          <div className="flex items-center gap-2">
+            <FolderPicker
+              value={note.folderId}
+              onChange={(folderId) => {
+                void updateNote({ id: noteId, folderId }).then(() => {
+                  void queryClient.invalidateQueries({ queryKey: orpc.notes.get.queryOptions({ input: { id: noteId } }).queryKey });
+                  void queryClient.invalidateQueries({ queryKey: orpc.folders.list.queryKey() });
+                });
+              }}
+            />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-glass-bg border border-glass-border backdrop-blur-md text-xs font-medium text-muted-foreground">
+              <saveDebouncer.Subscribe selector={(state) => ({ isSaving: state.isPending || state.isExecuting })}>
+                {({ isSaving }) => isSaving ? (
+                  <><Loader2 className="w-3 h-3 animate-spin" /> Saving...</>
+                ) : (
+                  <><Save className="w-3 h-3" /> Saved</>
+                )}
+              </saveDebouncer.Subscribe>
+            </div>
           </div>
         </div>
 

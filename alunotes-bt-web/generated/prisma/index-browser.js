@@ -234,6 +234,7 @@ exports.Prisma.TaskScalarFieldEnum = {
   priority: 'priority',
   dueDate: 'dueDate',
   order: 'order',
+  folderId: 'folderId',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -244,6 +245,7 @@ exports.Prisma.WhiteboardScalarFieldEnum = {
   name: 'name',
   elements: 'elements',
   appState: 'appState',
+  folderId: 'folderId',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
