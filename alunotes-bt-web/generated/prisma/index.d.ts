@@ -7664,6 +7664,7 @@ export namespace Prisma {
     bitDepth: number | null
     favorite: boolean | null
     label: string | null
+    trashedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7679,6 +7680,7 @@ export namespace Prisma {
     bitDepth: number | null
     favorite: boolean | null
     label: string | null
+    trashedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7694,6 +7696,7 @@ export namespace Prisma {
     bitDepth: number
     favorite: number
     label: number
+    trashedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7727,6 +7730,7 @@ export namespace Prisma {
     bitDepth?: true
     favorite?: true
     label?: true
+    trashedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7742,6 +7746,7 @@ export namespace Prisma {
     bitDepth?: true
     favorite?: true
     label?: true
+    trashedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7757,6 +7762,7 @@ export namespace Prisma {
     bitDepth?: true
     favorite?: true
     label?: true
+    trashedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7859,6 +7865,7 @@ export namespace Prisma {
     bitDepth: number
     favorite: boolean
     label: string | null
+    trashedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: RecordingMetaCountAggregateOutputType | null
@@ -7893,6 +7900,7 @@ export namespace Prisma {
     bitDepth?: boolean
     favorite?: boolean
     label?: boolean
+    trashedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["recordingMeta"]>
@@ -7908,6 +7916,7 @@ export namespace Prisma {
     bitDepth?: boolean
     favorite?: boolean
     label?: boolean
+    trashedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["recordingMeta"]>
@@ -7923,6 +7932,7 @@ export namespace Prisma {
     bitDepth?: boolean
     favorite?: boolean
     label?: boolean
+    trashedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["recordingMeta"]>
@@ -7938,11 +7948,12 @@ export namespace Prisma {
     bitDepth?: boolean
     favorite?: boolean
     label?: boolean
+    trashedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type RecordingMetaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "filePath" | "fileSize" | "duration" | "sampleRate" | "channels" | "bitDepth" | "favorite" | "label" | "createdAt" | "updatedAt", ExtArgs["result"]["recordingMeta"]>
+  export type RecordingMetaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "filePath" | "fileSize" | "duration" | "sampleRate" | "channels" | "bitDepth" | "favorite" | "label" | "trashedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["recordingMeta"]>
 
   export type $RecordingMetaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RecordingMeta"
@@ -7958,6 +7969,7 @@ export namespace Prisma {
       bitDepth: number
       favorite: boolean
       label: string | null
+      trashedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["recordingMeta"]>
@@ -8393,6 +8405,7 @@ export namespace Prisma {
     readonly bitDepth: FieldRef<"RecordingMeta", 'Int'>
     readonly favorite: FieldRef<"RecordingMeta", 'Boolean'>
     readonly label: FieldRef<"RecordingMeta", 'String'>
+    readonly trashedAt: FieldRef<"RecordingMeta", 'DateTime'>
     readonly createdAt: FieldRef<"RecordingMeta", 'DateTime'>
     readonly updatedAt: FieldRef<"RecordingMeta", 'DateTime'>
   }
@@ -15615,6 +15628,7 @@ export namespace Prisma {
     bitDepth: 'bitDepth',
     favorite: 'favorite',
     label: 'label',
+    trashedAt: 'trashedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -16150,6 +16164,7 @@ export namespace Prisma {
     bitDepth?: IntFilter<"RecordingMeta"> | number
     favorite?: BoolFilter<"RecordingMeta"> | boolean
     label?: StringNullableFilter<"RecordingMeta"> | string | null
+    trashedAt?: DateTimeNullableFilter<"RecordingMeta"> | Date | string | null
     createdAt?: DateTimeFilter<"RecordingMeta"> | Date | string
     updatedAt?: DateTimeFilter<"RecordingMeta"> | Date | string
   }
@@ -16165,6 +16180,7 @@ export namespace Prisma {
     bitDepth?: SortOrder
     favorite?: SortOrder
     label?: SortOrderInput | SortOrder
+    trashedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -16183,6 +16199,7 @@ export namespace Prisma {
     bitDepth?: IntFilter<"RecordingMeta"> | number
     favorite?: BoolFilter<"RecordingMeta"> | boolean
     label?: StringNullableFilter<"RecordingMeta"> | string | null
+    trashedAt?: DateTimeNullableFilter<"RecordingMeta"> | Date | string | null
     createdAt?: DateTimeFilter<"RecordingMeta"> | Date | string
     updatedAt?: DateTimeFilter<"RecordingMeta"> | Date | string
   }, "id" | "sessionId">
@@ -16198,6 +16215,7 @@ export namespace Prisma {
     bitDepth?: SortOrder
     favorite?: SortOrder
     label?: SortOrderInput | SortOrder
+    trashedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: RecordingMetaCountOrderByAggregateInput
@@ -16221,6 +16239,7 @@ export namespace Prisma {
     bitDepth?: IntWithAggregatesFilter<"RecordingMeta"> | number
     favorite?: BoolWithAggregatesFilter<"RecordingMeta"> | boolean
     label?: StringNullableWithAggregatesFilter<"RecordingMeta"> | string | null
+    trashedAt?: DateTimeNullableWithAggregatesFilter<"RecordingMeta"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"RecordingMeta"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"RecordingMeta"> | Date | string
   }
@@ -17089,6 +17108,7 @@ export namespace Prisma {
     bitDepth?: number
     favorite?: boolean
     label?: string | null
+    trashedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17104,6 +17124,7 @@ export namespace Prisma {
     bitDepth?: number
     favorite?: boolean
     label?: string | null
+    trashedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17119,6 +17140,7 @@ export namespace Prisma {
     bitDepth?: IntFieldUpdateOperationsInput | number
     favorite?: BoolFieldUpdateOperationsInput | boolean
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    trashedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17134,6 +17156,7 @@ export namespace Prisma {
     bitDepth?: IntFieldUpdateOperationsInput | number
     favorite?: BoolFieldUpdateOperationsInput | boolean
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    trashedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17149,6 +17172,7 @@ export namespace Prisma {
     bitDepth?: number
     favorite?: boolean
     label?: string | null
+    trashedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17164,6 +17188,7 @@ export namespace Prisma {
     bitDepth?: IntFieldUpdateOperationsInput | number
     favorite?: BoolFieldUpdateOperationsInput | boolean
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    trashedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17179,6 +17204,7 @@ export namespace Prisma {
     bitDepth?: IntFieldUpdateOperationsInput | number
     favorite?: BoolFieldUpdateOperationsInput | boolean
     label?: NullableStringFieldUpdateOperationsInput | string | null
+    trashedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18037,6 +18063,7 @@ export namespace Prisma {
     bitDepth?: SortOrder
     favorite?: SortOrder
     label?: SortOrder
+    trashedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18060,6 +18087,7 @@ export namespace Prisma {
     bitDepth?: SortOrder
     favorite?: SortOrder
     label?: SortOrder
+    trashedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -18075,6 +18103,7 @@ export namespace Prisma {
     bitDepth?: SortOrder
     favorite?: SortOrder
     label?: SortOrder
+    trashedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }

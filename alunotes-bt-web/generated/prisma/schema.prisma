@@ -90,18 +90,19 @@ model Device {
 }
 
 model RecordingMeta {
-  id         String   @id @default(cuid())
-  sessionId  String   @unique // "YYYY-MM-DD/HH-MM-SS" from Go daemon
+  id         String    @id @default(cuid())
+  sessionId  String    @unique // "YYYY-MM-DD/HH-MM-SS" from Go daemon
   filePath   String
   fileSize   Int?
   duration   Float? // seconds
-  sampleRate Int      @default(44100)
-  channels   Int      @default(2)
-  bitDepth   Int      @default(16)
-  favorite   Boolean  @default(false)
+  sampleRate Int       @default(44100)
+  channels   Int       @default(2)
+  bitDepth   Int       @default(16)
+  favorite   Boolean   @default(false)
   label      String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  trashedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([sessionId])
   @@map("recording_meta")

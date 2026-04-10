@@ -31,6 +31,9 @@ import { EditorContext } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useUIPreferences } from "~/stores/ui-preferences";
 import { FolderPicker } from "~/components/folder-picker";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import type { EventInput } from "@fullcalendar/core";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -47,7 +50,7 @@ type Task = {
   updatedAt: Date;
 };
 
-type ViewTab = "all" | "by-status" | "completed";
+type ViewTab = "all" | "by-status" | "completed" | "calendar";
 type StatusFilter = "TODO" | "IN_PROGRESS" | "DONE";
 type PriorityFilter = "HIGH" | "MEDIUM" | "LOW";
 
@@ -566,6 +569,108 @@ function NewTaskInput() {
   );
 }
 
+// ─── Calendar View ──────────────────────────────────────────────────────────
+
+const PRIORITY_COLORS: Record<string, string> = {
+  HIGH: "#ef4444",
+  MEDIUM: "#f59e0b",
+  LOW: "#22c55e",
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  DONE: "#6b7280",
+};
+
+type Recording = {
+  sessionId: string;
+  date: string;
+  time: string;
+  label: string | null;
+};
+
+function CalendarView({ tasks, recordings }: { tasks: Task[]; recordings: Recording[] }) {
+  const taskEvents: EventInput[] = tasks
+    .filter((t) => t.dueDate)
+    .map((t) => ({
+      id: t.id,
+      title: t.title,
+      date: new Date(t.dueDate!).toISOString().split("T")[0],
+      color:
+        STATUS_COLORS[t.status] ?? PRIORITY_COLORS[t.priority] ?? "#6366f1",
+    }));
+
+  const recordingEvents: EventInput[] = recordings.map((r) => ({
+    id: `rec-${r.sessionId}`,
+    title: r.label || `Recording ${r.time.replace(/-/g, ":")}`,
+    date: r.date,
+    color: "#a855f7",
+  }));
+
+  const events = [...taskEvents, ...recordingEvents];
+
+  return (
+    <div className="glass-bg rounded-2xl p-4 sm:p-6 shadow-glass-sm backdrop-blur-md [--fc-border-color:theme(--color-glass-border)] [--fc-today-bg-color:theme(--color-primary/0.08)] [--fc-page-bg-color:transparent] [--fc-neutral-bg-color:transparent]">
+      <style>{`
+        .fc {
+          --fc-small-font-size: 0.85em;
+        }
+        .fc .fc-toolbar-title {
+          font-family: var(--font-manrope), system-ui, sans-serif;
+          font-weight: 700;
+          color: hsl(var(--foreground));
+        }
+        .fc .fc-col-header-cell-cushion,
+        .fc .fc-daygrid-day-number {
+          color: hsl(var(--foreground));
+          text-decoration: none;
+        }
+        .fc .fc-button {
+          background: hsl(var(--muted));
+          border: 1px solid hsl(var(--border));
+          color: hsl(var(--foreground));
+          font-weight: 500;
+          border-radius: 0.5rem;
+          padding: 0.35rem 0.75rem;
+          text-transform: capitalize;
+        }
+        .fc .fc-button:hover {
+          background: hsl(var(--accent));
+        }
+        .fc .fc-button-active,
+        .fc .fc-button:active {
+          background: hsl(var(--primary)) !important;
+          color: hsl(var(--primary-foreground)) !important;
+        }
+        .fc .fc-event {
+          border: none;
+          border-radius: 0.375rem;
+          padding: 1px 4px;
+          font-size: 0.8rem;
+          cursor: pointer;
+        }
+        .fc .fc-daygrid-day.fc-day-today {
+          border-radius: 0.5rem;
+        }
+        .fc td, .fc th {
+          border-color: hsl(var(--border) / 0.3);
+        }
+      `}</style>
+      <FullCalendar
+        plugins={[dayGridPlugin]}
+        initialView="dayGridMonth"
+        events={events}
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,dayGridWeek",
+        }}
+        height="auto"
+        dayMaxEvents={3}
+      />
+    </div>
+  );
+}
+
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function TasksPage() {
@@ -575,6 +680,7 @@ export default function TasksPage() {
   const { data: tasks, isLoading } = useQuery(
     orpc.tasks.list.queryOptions()
   );
+  const { data: recordings } = useQuery(orpc.recordings.list.queryOptions());
 
   // Filter tasks based on active tab and search
   const filteredTasks = (tasks ?? []).filter((task) => {
@@ -607,6 +713,7 @@ export default function TasksPage() {
     { key: "all", label: "All" },
     { key: "by-status", label: "By Status" },
     { key: "completed", label: "Completed" },
+    { key: "calendar", label: "Calendar" },
   ];
 
   const taskCount = filteredTasks.length;
@@ -669,7 +776,11 @@ export default function TasksPage() {
       {/* New task input */}
       <NewTaskInput />
 
-      {/* Task list */}
+      {/* Calendar view */}
+      {activeTab === "calendar" ? (
+        <CalendarView tasks={(tasks ?? []) as Task[]} recordings={(recordings?.items ?? []) as Recording[]} />
+      ) : (
+      /* Task list */
       <div className="flex flex-col gap-3">
         {isLoading ? (
           <>
@@ -732,6 +843,7 @@ export default function TasksPage() {
           </AnimatePresence>
         )}
       </div>
+      )}
     </div>
   );
 }

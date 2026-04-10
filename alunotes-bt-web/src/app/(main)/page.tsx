@@ -1,15 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
 import Link from "next/link";
-import { CheckSquare, Edit3, PenTool, LayoutDashboard, Calendar, Search } from "lucide-react";
+import { CheckSquare, Edit3, PenTool, Mic, LayoutDashboard, Calendar, Search, ArrowRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 export default function TimelinePage() {
+  const [searchQuery, setSearchQuery] = useState("");
   const { data: notes } = useQuery(orpc.notes.list.queryOptions());
   const { data: tasks } = useQuery(orpc.tasks.list.queryOptions());
   const { data: boards } = useQuery(orpc.whiteboard.list.queryOptions());
+  const { data: recordings } = useQuery(orpc.recordings.list.queryOptions());
 
   // Combine feeds into one timeline
   const feed = [
@@ -37,7 +40,21 @@ export default function TimelinePage() {
       url: `/whiteboard/${b.id}`,
       icon: PenTool,
     })),
+    ...(recordings?.items || []).map((r) => ({
+      id: r.sessionId,
+      type: "recording",
+      title: r.label || `Recording ${r.date} ${r.time.replace(/-/g, ":")}`,
+      date: new Date(`${r.date}T${r.time.replace(/-/g, ":")}`),
+      url: `/audio`,
+      icon: Mic,
+    })),
   ].sort((a, b) => b.date.getTime() - a.date.getTime());
+
+  const filteredFeed = searchQuery
+    ? feed.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : feed;
 
   return (
     <div className="flex flex-col gap-8 max-w-4xl mx-auto mt-4">
@@ -52,6 +69,8 @@ export default function TimelinePage() {
         </div>
         <input
           type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="block w-full rounded-2xl border-none bg-glass-bg py-4 pl-12 pr-4 text-foreground shadow-glass-sm outline-none backdrop-blur-md placeholder:text-muted-foreground"
           placeholder="Search your notes, tasks, and canvas..."
         />
@@ -63,13 +82,13 @@ export default function TimelinePage() {
             <LayoutDashboard className="w-5 h-5 text-primary" />
             Recent Activity
           </h2>
-          {feed.length === 0 ? (
+          {filteredFeed.length === 0 ? (
             <GlassCard className="p-12 text-center text-muted-foreground">
-              No recent activity. Start exploring!
+              {searchQuery ? "No results found." : "No recent activity. Start exploring!"}
             </GlassCard>
           ) : (
             <div className="flex flex-col gap-3">
-              {feed.slice(0, 10).map((item) => (
+              {filteredFeed.slice(0, 10).map((item) => (
                 <Link key={`${item.type}-${item.id}`} href={item.url}>
                   <GlassCard className="p-4 sm:p-5 flex items-center gap-4 hover:shadow-glass hover:bg-glass-border/50 transition-all group">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
@@ -90,10 +109,13 @@ export default function TimelinePage() {
         </div>
 
         <div className="md:col-span-4 flex flex-col gap-6">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-secondary" />
-            Agenda
-          </h2>
+          <Link href="/tasks" className="flex items-center gap-2 group">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-secondary" />
+              Agenda
+            </h2>
+            <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+          </Link>
           <GlassCard className="p-6 h-[400px] flex flex-col gap-4">
              {tasks?.filter(t => t.status !== "DONE").slice(0, 5).map(task => (
                 <div key={task.id} className="flex items-center gap-3">

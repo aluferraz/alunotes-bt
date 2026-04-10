@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
-import { Shield, KeyRound, Headphones, User, Trash2, Link as LinkIcon, Unlink, Sun, Moon } from "lucide-react";
+import { Shield, KeyRound, Headphones, User, Trash2, Link as LinkIcon, Unlink, Sun, Moon, RotateCcw, Music } from "lucide-react";
 import { AddDeviceDialog } from "~/components/add-device-dialog";
 import { Button } from "~/components/ui/button";
 import { useUIPreferences } from "~/stores/ui-preferences";
@@ -12,6 +12,27 @@ export default function SettingsPage() {
   const queryClient = useQueryClient();
   const { data: user } = useQuery(orpc.profile.get.queryOptions());
   const { data: devices, isLoading: isDevicesLoading } = useQuery(orpc.bluetooth.devices.queryOptions());
+  const { data: trashedRecordings } = useQuery(orpc.recordings.listTrashed.queryOptions());
+
+  const invalidateTrash = () => {
+    void queryClient.invalidateQueries({ queryKey: orpc.recordings.listTrashed.queryOptions().queryKey });
+    void queryClient.invalidateQueries({ queryKey: orpc.recordings.list.queryOptions().queryKey });
+  };
+
+  const restoreMut = useMutation({
+    ...orpc.recordings.restore.mutationOptions(),
+    onSuccess: invalidateTrash,
+  });
+
+  const deletePermanentMut = useMutation({
+    ...orpc.recordings.deletePermanent.mutationOptions(),
+    onSuccess: invalidateTrash,
+  });
+
+  const emptyTrashMut = useMutation({
+    ...orpc.recordings.emptyTrash.mutationOptions(),
+    onSuccess: invalidateTrash,
+  });
 
   const invalidateBluetooth = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.bluetooth.devices.queryOptions().queryKey });
@@ -163,11 +184,29 @@ export default function SettingsPage() {
          </GlassCard>
 
          <GlassCard className="p-8">
-            <h2 className="text-2xl font-bold flex items-center gap-3 mb-6">
-              <Shield className="w-5 h-5 text-tertiary" />
-              Private Vault
-            </h2>
-            <div className="flex items-center justify-between p-4 bg-background/50 rounded-xl border border-glass-border">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold flex items-center gap-3">
+                <Shield className="w-5 h-5 text-tertiary" />
+                Private Vault
+              </h2>
+              {(trashedRecordings?.length ?? 0) > 0 && (
+                <Button
+                  variant="outline"
+                  className="rounded-full shadow-glass-sm text-destructive border-destructive/30 hover:bg-destructive/10"
+                  onClick={() => {
+                    if (confirm(`Permanently delete all ${trashedRecordings!.length} trashed recording(s)? This cannot be undone.`)) {
+                      emptyTrashMut.mutate({});
+                    }
+                  }}
+                  disabled={emptyTrashMut.isPending}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Empty Trash
+                </Button>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-background/50 rounded-xl border border-glass-border mb-4">
                <div className="flex flex-col">
                   <span className="font-semibold">Offline Mode Active</span>
                   <span className="text-xs text-muted-foreground">AluNotes Vault relies on local storage for metadata when offline.</span>
@@ -176,6 +215,55 @@ export default function SettingsPage() {
                  <KeyRound className="w-5 h-5" />
                </div>
             </div>
+
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+              Trash ({trashedRecordings?.length ?? 0})
+            </h3>
+
+            {!trashedRecordings?.length ? (
+              <div className="text-muted-foreground text-sm p-4 text-center">Trash is empty.</div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {trashedRecordings.map((rec) => (
+                  <div key={rec.sessionId} className="flex items-center justify-between p-4 bg-background/50 rounded-xl border border-glass-border group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-glass-bg border border-glass-border flex items-center justify-center text-muted-foreground">
+                        <Music className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-foreground">{rec.label || rec.sessionId}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {rec.date} {rec.time}
+                          {rec.duration ? ` \u2022 ${Math.floor(rec.duration / 60)}:${Math.floor(rec.duration % 60).toString().padStart(2, "0")}` : ""}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => restoreMut.mutate({ sessionId: rec.sessionId })}
+                        disabled={restoreMut.isPending}
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-primary/70 hover:text-primary hover:bg-primary/10 transition-colors"
+                        title="Restore"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm("Permanently delete this recording? This cannot be undone.")) {
+                            deletePermanentMut.mutate({ sessionId: rec.sessionId });
+                          }
+                        }}
+                        disabled={deletePermanentMut.isPending}
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-destructive/60 hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        title="Delete permanently"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
          </GlassCard>
        </div>
     </div>

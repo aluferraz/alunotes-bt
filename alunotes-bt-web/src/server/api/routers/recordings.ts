@@ -140,20 +140,27 @@ export const recordingsRouter = {
       });
       const metaMap = new Map(metas.map((m) => [m.sessionId, m]));
 
-      const items = paginated.map((s) => {
-        const meta = metaMap.get(s.sessionId);
-        return {
-          sessionId: s.sessionId,
-          date: s.date,
-          time: s.time,
-          fileSize: s.fileSize,
-          duration: meta?.duration ?? s.duration,
-          favorite: meta?.favorite ?? false,
-          label: meta?.label ?? null,
-        };
-      });
+      // Filter out trashed recordings
+      const trashedIds = new Set(
+        metas.filter((m) => m.trashedAt !== null).map((m) => m.sessionId),
+      );
 
-      return { items, total, page, limit };
+      const items = paginated
+        .filter((s) => !trashedIds.has(s.sessionId))
+        .map((s) => {
+          const meta = metaMap.get(s.sessionId);
+          return {
+            sessionId: s.sessionId,
+            date: s.date,
+            time: s.time,
+            fileSize: s.fileSize,
+            duration: meta?.duration ?? s.duration,
+            favorite: meta?.favorite ?? false,
+            label: meta?.label ?? null,
+          };
+        });
+
+      return { items, total: total - trashedIds.size, page, limit };
     }),
 
   // Get details for a single recording session
@@ -254,6 +261,101 @@ export const recordingsRouter = {
     }
 
     return { scanned: sessions.length, new: newCount };
+  }),
+
+  // Move a recording to trash (soft delete)
+  trash: publicProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .handler(async ({ input, context }) => {
+      return context.db.recordingMeta.upsert({
+        where: { sessionId: input.sessionId },
+        create: {
+          sessionId: input.sessionId,
+          filePath: findWavPath(input.sessionId),
+          trashedAt: new Date(),
+        },
+        update: { trashedAt: new Date() },
+      });
+    }),
+
+  // Restore a recording from trash
+  restore: publicProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .handler(async ({ input, context }) => {
+      return context.db.recordingMeta.update({
+        where: { sessionId: input.sessionId },
+        data: { trashedAt: null },
+      });
+    }),
+
+  // List trashed recordings
+  listTrashed: publicProcedure.handler(async ({ context }) => {
+    const trashedMetas = await context.db.recordingMeta.findMany({
+      where: { trashedAt: { not: null } },
+      orderBy: { trashedAt: "desc" },
+    });
+
+    return trashedMetas.map((m) => ({
+      sessionId: m.sessionId,
+      label: m.label,
+      duration: m.duration,
+      fileSize: m.fileSize,
+      trashedAt: m.trashedAt,
+      date: m.sessionId.split("/")[0] ?? "",
+      time: m.sessionId.split("/")[1] ?? "",
+    }));
+  }),
+
+  // Permanently delete a single trashed recording
+  deletePermanent: publicProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .handler(async ({ input, context }) => {
+      const [date, time] = input.sessionId.split("/");
+      if (!date || !time) throw new Error("Invalid sessionId format");
+
+      const baseDir = getRecordingsDir();
+      const sessionDir = path.join(baseDir, date, time);
+
+      if (fs.existsSync(sessionDir)) {
+        fs.rmSync(sessionDir, { recursive: true });
+      }
+
+      await context.db.recordingMeta
+        .delete({ where: { sessionId: input.sessionId } })
+        .catch(() => {});
+
+      const dateDir = path.join(baseDir, date);
+      if (fs.existsSync(dateDir)) {
+        const remaining = fs.readdirSync(dateDir);
+        if (remaining.length === 0) fs.rmdirSync(dateDir);
+      }
+    }),
+
+  // Empty entire trash
+  emptyTrash: publicProcedure.handler(async ({ context }) => {
+    const trashed = await context.db.recordingMeta.findMany({
+      where: { trashedAt: { not: null } },
+    });
+
+    const baseDir = getRecordingsDir();
+    for (const m of trashed) {
+      const [date, time] = m.sessionId.split("/");
+      if (!date || !time) continue;
+      const sessionDir = path.join(baseDir, date, time);
+      if (fs.existsSync(sessionDir)) {
+        fs.rmSync(sessionDir, { recursive: true });
+      }
+      const dateDir = path.join(baseDir, date);
+      if (fs.existsSync(dateDir) && fs.readdirSync(dateDir).length === 0) {
+        fs.rmdirSync(dateDir);
+      }
+    }
+
+    await context.db.recordingMeta.deleteMany({
+      where: { trashedAt: { not: null } },
+    });
+
+    return { deleted: trashed.length };
   }),
 
   // Delete a recording session

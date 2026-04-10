@@ -187,6 +187,7 @@ exports.Prisma.RecordingMetaScalarFieldEnum = {
   bitDepth: 'bitDepth',
   favorite: 'favorite',
   label: 'label',
+  trashedAt: 'trashedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

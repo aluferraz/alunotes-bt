@@ -3,8 +3,100 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
-import { Headphones, Smartphone, Play, Loader2, Music, Phone } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Headphones, Smartphone, Play, Loader2, Music, Trash2, Pencil, Check, X } from "lucide-react";
 import { OnboardingFlow } from "~/components/onboarding-flow";
+
+type RecordingItem = {
+  sessionId: string;
+  label: string | null;
+  date: string;
+  time: string;
+  duration: number | null;
+};
+
+function RecordingCard({
+  rec,
+  onLabel,
+  onTrash,
+}: {
+  rec: RecordingItem;
+  onLabel: (label: string | null) => void;
+  onTrash: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(rec.label ?? "");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editing) inputRef.current?.focus();
+  }, [editing]);
+
+  const commitLabel = () => {
+    setEditing(false);
+    const trimmed = draft.trim();
+    onLabel(trimmed || null);
+  };
+
+  return (
+    <GlassCard className="p-6 flex items-center justify-between group hover:bg-glass-border/50 transition-colors">
+      <div className="flex items-center gap-6">
+        <div className="w-12 h-12 rounded-full bg-glass-bg border border-glass-border flex items-center justify-center relative overflow-hidden group-hover:bg-primary/20 transition-colors cursor-pointer text-primary">
+          <Play className="w-5 h-5 ml-1" />
+        </div>
+        <div className="flex flex-col">
+          {editing ? (
+            <div className="flex items-center gap-2">
+              <input
+                ref={inputRef}
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitLabel();
+                  if (e.key === "Escape") { setDraft(rec.label ?? ""); setEditing(false); }
+                }}
+                placeholder="Add a label..."
+                className="bg-transparent font-semibold text-lg text-foreground outline-none border-b border-primary/40 pb-0.5"
+              />
+              <button onClick={commitLabel} className="text-primary hover:text-primary/80">
+                <Check className="w-4 h-4" />
+              </button>
+              <button onClick={() => { setDraft(rec.label ?? ""); setEditing(false); }} className="text-muted-foreground hover:text-foreground">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <h3 className="font-semibold text-lg">{rec.label || rec.sessionId}</h3>
+          )}
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Music className="w-3 h-3" />
+              Audio Session
+            </span>
+            <span>{rec.date} {rec.time}</span>
+            <span>{rec.duration ? `${Math.floor(rec.duration / 60)}:${Math.floor(rec.duration % 60).toString().padStart(2, '0')}` : "Unknown length"}</span>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={() => { setDraft(rec.label ?? ""); setEditing(true); }}
+          className="w-9 h-9 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-glass-border/50 transition-colors"
+          title="Rename"
+        >
+          <Pencil className="w-4 h-4" />
+        </button>
+        <button
+          onClick={onTrash}
+          className="w-9 h-9 rounded-full flex items-center justify-center text-destructive/60 hover:text-destructive hover:bg-destructive/10 transition-colors"
+          title="Move to trash"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+    </GlassCard>
+  );
+}
 
 export default function AudioBridgePage() {
   const queryClient = useQueryClient();
@@ -16,6 +108,20 @@ export default function AudioBridgePage() {
   }));
 
   const { data: recordings, isLoading: loadingRecordings } = useQuery(orpc.recordings.list.queryOptions());
+
+  const invalidateRecordings = () => {
+    void queryClient.invalidateQueries({ queryKey: orpc.recordings.list.queryOptions().queryKey });
+  };
+
+  const labelMut = useMutation({
+    ...orpc.recordings.label.mutationOptions(),
+    onSuccess: invalidateRecordings,
+  });
+
+  const trashMut = useMutation({
+    ...orpc.recordings.trash.mutationOptions(),
+    onSuccess: invalidateRecordings,
+  });
 
   const isFullyConnected = status?.connectedHeadphone?.connected && status?.connectedSource?.connected;
 
@@ -98,24 +204,12 @@ export default function AudioBridgePage() {
          ) : (
             <div className="flex flex-col gap-4">
               {recordings?.items?.map((rec) => (
-                <GlassCard key={rec.sessionId} className="p-6 flex items-center justify-between group hover:bg-glass-border/50 transition-colors">
-                  <div className="flex items-center gap-6">
-                    <div className="w-12 h-12 rounded-full bg-glass-bg border border-glass-border flex items-center justify-center relative overflow-hidden group-hover:bg-primary/20 transition-colors cursor-pointer text-primary">
-                      <Play className="w-5 h-5 ml-1" />
-                    </div>
-                    <div className="flex flex-col">
-                      <h3 className="font-semibold text-lg">{rec.label || rec.sessionId}</h3>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Music className="w-3 h-3" />
-                          Audio Session
-                        </span>
-                        <span>{rec.date} {rec.time}</span>
-                        <span>{rec.duration ? `${Math.floor(rec.duration / 60)}:${Math.floor(rec.duration % 60).toString().padStart(2, '0')}` : "Unknown length"}</span>
-                      </div>
-                    </div>
-                  </div>
-                </GlassCard>
+                <RecordingCard
+                  key={rec.sessionId}
+                  rec={rec}
+                  onLabel={(label) => labelMut.mutate({ sessionId: rec.sessionId, label })}
+                  onTrash={() => trashMut.mutate({ sessionId: rec.sessionId })}
+                />
               ))}
             </div>
          )}
