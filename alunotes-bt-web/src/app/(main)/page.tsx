@@ -6,10 +6,7 @@ import { GlassCard } from "~/components/ui/glass-card";
 import Link from "next/link";
 import { CheckSquare, Edit3, PenTool, LayoutDashboard, Calendar, Search } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { OnboardingFlow } from "~/components/onboarding-flow";
-
 export default function TimelinePage() {
-  const { data: status, isLoading: isStatusLoading } = useQuery(orpc.bluetooth.status.queryOptions());
   const { data: notes } = useQuery(orpc.notes.list.queryOptions());
   const { data: tasks } = useQuery(orpc.tasks.list.queryOptions());
   const { data: boards } = useQuery(orpc.whiteboard.list.queryOptions());
@@ -41,18 +38,6 @@ export default function TimelinePage() {
       icon: PenTool,
     })),
   ].sort((a, b) => b.date.getTime() - a.date.getTime());
-
-  const isSetup = 
-    status?.connectedHeadphone?.connected && 
-    status?.connectedSource?.connected;
-
-  if (isStatusLoading) {
-    return <div className="h-[70vh] flex items-center justify-center text-muted-foreground animate-pulse">Checking status...</div>;
-  }
-
-  if (!isSetup) {
-    return <OnboardingFlow />;
-  }
 
   return (
     <div className="flex flex-col gap-8 max-w-4xl mx-auto mt-4">
