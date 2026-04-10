@@ -65,8 +65,8 @@ export const IframeNode = Node.create<IframeNodeOptions>({
       setIframe:
         (options) =>
         ({ commands }) => {
-          // Only allow relative paths (same-site embeds)
-          if (!options.src.startsWith("/")) return false
+          // Block dangerous protocols
+          if (/^(javascript|data):/i.test(options.src)) return false
           return commands.insertContent({
             type: this.name,
             attrs: options,

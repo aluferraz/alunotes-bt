@@ -118,12 +118,13 @@
 
 /* ─── Toolbar: Glassmorphic Pill ─────────────────────────────────────── */
 .tiptap-toolbar {
-  /* Static — flows naturally at the top of its parent card */
-  position: static;
-  z-index: 10;
+  /* Sticky — stays visible when scrolling */
+  position: sticky;
+  top: 0;
+  z-index: 45;
 
   /* Glass pill */
-  background: color-mix(in srgb, var(--glass-bg) 80%, transparent) !important;
+  background: color-mix(in srgb, var(--glass-bg) 95%, transparent) !important;
   backdrop-filter: blur(16px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
   border: 0.5px solid var(--glass-border) !important;
@@ -137,7 +138,7 @@
   /* Layout */
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.125rem;
   padding: 0.3rem 0.6rem;
   overflow-x: auto;
@@ -176,16 +177,11 @@
   }
 }
 
-/* Mobile: fixed above bottom nav */
+/* Mobile */
 @media screen and (max-width: 640px) {
   .tiptap-toolbar {
-    position: fixed;
-    bottom: 5.5rem;
-    left: 1rem;
-    right: 1rem;
     border-radius: 1.5rem !important;
     justify-content: center;
-    z-index: 40;
   }
 }
 

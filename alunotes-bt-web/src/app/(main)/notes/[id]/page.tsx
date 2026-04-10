@@ -168,17 +168,17 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
             </div>
           </div>
         </div>
+        {/* Toolbar — outside card so sticky works; sticks below the top navbar */}
+        <div className="sticky top-[3.5rem] sm:top-[3.75rem] z-[45] py-2">
+          <SimpleEditorToolbar {...editorState} />
+        </div>
+
         {/* Editor card */}
         <GlassCard
           className={`transition-all duration-500 ease-out hover:shadow-glass-lg overflow-hidden editor-theme-${editorTheme}`}
         >
           {/* Internal layout - p-6/p-10 and flex column */}
           <div className="simple-editor-wrapper flex flex-col p-6 sm:p-10 min-h-[70vh]">
-            {/* Toolbar at top of card */}
-            <div className="pb-5 border-b border-white/10">
-              <SimpleEditorToolbar {...editorState} />
-            </div>
-
             {/* Title */}
             <input
               type="text"

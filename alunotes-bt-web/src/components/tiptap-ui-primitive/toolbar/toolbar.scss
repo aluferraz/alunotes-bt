@@ -50,11 +50,11 @@
     }
 
     @media (max-width: 480px) {
-      position: absolute;
-      top: auto;
+      position: sticky;
+      top: 0;
       height: calc(var(--tt-toolbar-height) + var(--tt-safe-area-bottom));
-      border-top: 1px solid var(--tt-toolbar-border-color);
-      border-bottom: none;
+      border-bottom: 1px solid var(--tt-toolbar-border-color);
+      border-top: none;
       padding: 0 0.5rem var(--tt-safe-area-bottom);
       flex-wrap: nowrap;
       justify-content: flex-start;

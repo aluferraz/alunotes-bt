@@ -5,6 +5,7 @@ import type { SuggestionOptions, SuggestionProps, SuggestionKeyDownProps } from 
 import type { SlashCommandItem } from "./slash-command-extension"
 import { SlashCommandList, type SlashCommandListRef } from "./slash-command-list"
 import { WhiteboardPicker, type WhiteboardPickerRef } from "./whiteboard-picker"
+import { IframeUrlInput, type IframeUrlInputRef } from "./iframe-url-input"
 import { ORPCReactProvider } from "~/orpc/react"
 import {
   Heading1,
@@ -18,6 +19,7 @@ import {
   Minus,
   ImagePlus,
   PenTool,
+  Globe,
   Bold,
   Italic,
   Strikethrough,
@@ -133,7 +135,16 @@ function getSlashCommandItems({ query }: { query: string }): SlashCommandItem[] 
       title: "Whiteboard",
       description: "Embed a whiteboard",
       icon: PenTool,
-      hasSubmenu: true,
+      submenuId: "whiteboard",
+      command: () => {
+        // handled by submenu
+      },
+    },
+    {
+      title: "Iframe",
+      description: "Embed any website",
+      icon: Globe,
+      submenuId: "iframe-url",
       command: () => {
         // handled by submenu
       },
@@ -155,7 +166,8 @@ export function createSlashCommandSuggestion(): Partial<SuggestionOptions<SlashC
       let root: ReturnType<typeof createRoot> | null = null
       let listRef: SlashCommandListRef | null = null
       let pickerRef: WhiteboardPickerRef | null = null
-      let mode: "commands" | "whiteboard" = "commands"
+      let iframeInputRef: IframeUrlInputRef | null = null
+      let mode: "commands" | "whiteboard" | "iframe-url" = "commands"
       let currentProps: SuggestionProps<SlashCommandItem> | null = null
 
       function createPopup(editor: import("@tiptap/core").Editor) {
@@ -187,9 +199,14 @@ export function createSlashCommandSuggestion(): Partial<SuggestionOptions<SlashC
           <SlashCommandList
             {...props}
             ref={(r) => { listRef = r }}
-            onWhiteboardSubmenu={(suggestionProps) => {
-              mode = "whiteboard"
-              renderWhiteboardPicker(suggestionProps)
+            onSubmenu={(submenuId, suggestionProps) => {
+              if (submenuId === "whiteboard") {
+                mode = "whiteboard"
+                renderWhiteboardPicker(suggestionProps)
+              } else if (submenuId === "iframe-url") {
+                mode = "iframe-url"
+                renderIframeUrlInput(suggestionProps)
+              }
             }}
           />
         )
@@ -211,6 +228,20 @@ export function createSlashCommandSuggestion(): Partial<SuggestionOptions<SlashC
         )
       }
 
+      function renderIframeUrlInput(props: SuggestionProps<SlashCommandItem>) {
+        iframeInputRef = null
+        root?.render(
+          <IframeUrlInput
+            ref={(r) => { iframeInputRef = r }}
+            editor={props.editor}
+            range={props.range}
+            onClose={() => {
+              destroy()
+            }}
+          />
+        )
+      }
+
       function destroy() {
         root?.unmount()
         popup?.remove()
@@ -218,6 +249,7 @@ export function createSlashCommandSuggestion(): Partial<SuggestionOptions<SlashC
         root = null
         listRef = null
         pickerRef = null
+        iframeInputRef = null
         mode = "commands"
         currentProps = null
       }
@@ -248,12 +280,15 @@ export function createSlashCommandSuggestion(): Partial<SuggestionOptions<SlashC
           if (mode === "whiteboard") {
             return pickerRef?.onKeyDown(props) ?? false
           }
+          if (mode === "iframe-url") {
+            return iframeInputRef?.onKeyDown(props) ?? false
+          }
           return listRef?.onKeyDown(props) ?? false
         },
 
         onExit: () => {
-          // Only destroy if we're not in whiteboard submenu mode
-          if (mode !== "whiteboard") {
+          // Only destroy if we're not in a submenu mode
+          if (mode === "commands") {
             destroy()
           }
         },

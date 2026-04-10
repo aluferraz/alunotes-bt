@@ -60,6 +60,8 @@ export const IframeNodeComponent: React.FC<NodeViewProps> = (props) => {
     [currentHeight, props]
   )
 
+  const sameOrigin = isSameOriginSrc(src)
+
   // Extract board ID from embed src like /embed/whiteboard/{id}?locked
   const editHref = src.match(/\/embed\/whiteboard\/([^?]+)/)?.[1]
     ? `/whiteboard/${src.match(/\/embed\/whiteboard\/([^?]+)/)![1]}`
@@ -67,7 +69,7 @@ export const IframeNodeComponent: React.FC<NodeViewProps> = (props) => {
 
   return (
     <NodeViewWrapper className="tiptap-iframe-wrapper" data-drag-handle>
-      {editHref && (
+      {editHref ? (
         <a
           href={editHref}
           className="tiptap-iframe-edit-link"
@@ -77,47 +79,56 @@ export const IframeNodeComponent: React.FC<NodeViewProps> = (props) => {
           Edit Whiteboard
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
+      ) : !sameOrigin && (
+        <a
+          href={src}
+          className="tiptap-iframe-edit-link"
+          contentEditable={false}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open in new tab
+          <ExternalLink className="w-3.5 h-3.5" />
+        </a>
       )}
       <div
         className={`tiptap-iframe-container ${isResizing ? "is-resizing" : ""}`}
         style={{ width, height: `${currentHeight}px` }}
       >
-        {isSameOriginSrc(src) ? (
-          <>
-            {!isLoaded && (
-              <div className="absolute inset-0 flex flex-col gap-4 p-4 rounded-[inherit]">
-                <div className="flex gap-2">
-                  <Skeleton className="h-7 w-[120px]" />
-                  <Skeleton className="h-7 w-16" />
-                </div>
-                <div className="flex-1 flex items-center justify-center gap-6">
-                  <Skeleton className="h-20 w-[100px] rounded-lg" />
-                  <Skeleton className="h-[72px] w-[72px] rounded-full" />
-                </div>
+        <>
+          {!isLoaded && (
+            <div className="absolute inset-0 flex flex-col gap-4 p-4 rounded-[inherit]">
+              <div className="flex gap-2">
+                <Skeleton className="h-7 w-[120px]" />
+                <Skeleton className="h-7 w-16" />
               </div>
-            )}
-            <iframe
-              src={src}
-              width="100%"
-              height="100%"
-              style={{
-                border: "none",
-                borderRadius: "inherit",
-                background: "transparent",
-                opacity: isLoaded ? 1 : 0,
-                position: isLoaded ? "static" : "absolute",
-              }}
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-              referrerPolicy="same-origin"
-              allow="clipboard-write"
-              onLoad={() => setIsLoaded(true)}
-            />
-          </>
-        ) : (
-          <div className="tiptap-iframe-blocked">
-            Blocked: only same-site embeds are allowed
-          </div>
-        )}
+              <div className="flex-1 flex items-center justify-center gap-6">
+                <Skeleton className="h-20 w-[100px] rounded-lg" />
+                <Skeleton className="h-[72px] w-[72px] rounded-full" />
+              </div>
+            </div>
+          )}
+          <iframe
+            src={src}
+            width="100%"
+            height="100%"
+            style={{
+              border: "none",
+              borderRadius: "inherit",
+              background: sameOrigin ? "transparent" : undefined,
+              opacity: isLoaded ? 1 : 0,
+              position: isLoaded ? "static" : "absolute",
+            }}
+            sandbox={
+              sameOrigin
+                ? "allow-same-origin allow-scripts allow-forms allow-popups"
+                : "allow-scripts allow-same-origin allow-popups"
+            }
+            referrerPolicy={sameOrigin ? "same-origin" : "no-referrer"}
+            allow={sameOrigin ? "clipboard-write" : ""}
+            onLoad={() => setIsLoaded(true)}
+          />
+        </>
         {isResizing && <div className="tiptap-iframe-overlay" />}
       </div>
       <div className="tiptap-iframe-resize-handle" onMouseDown={handleResizeStart}>

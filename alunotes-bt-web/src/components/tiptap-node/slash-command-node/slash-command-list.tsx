@@ -17,7 +17,7 @@ export interface SlashCommandListRef {
 }
 
 export interface SlashCommandListProps extends SuggestionProps<SlashCommandItem> {
-  onWhiteboardSubmenu?: (props: SuggestionProps<SlashCommandItem>) => void
+  onSubmenu?: (submenuId: string, props: SuggestionProps<SlashCommandItem>) => void
 }
 
 export const SlashCommandList = forwardRef<SlashCommandListRef, SlashCommandListProps>(
@@ -41,8 +41,8 @@ export const SlashCommandList = forwardRef<SlashCommandListRef, SlashCommandList
         const item = items[index]
         if (!item) return
 
-        if (item.hasSubmenu && props.onWhiteboardSubmenu) {
-          props.onWhiteboardSubmenu(props)
+        if (item.submenuId && props.onSubmenu) {
+          props.onSubmenu(item.submenuId, props)
           return
         }
 

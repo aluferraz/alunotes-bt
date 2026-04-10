@@ -333,7 +333,7 @@ function TaskDescription({
 
   return (
     <EditorContext.Provider value={{ editor: editorState.editor }}>
-      <div className={`simple-editor-wrapper flex flex-col editor-theme-${editorTheme} rounded-2xl overflow-hidden p-4`}>
+      <div className={`simple-editor-wrapper flex flex-col editor-theme-${editorTheme} rounded-2xl overflow-clip p-4`}>
         <div className="pb-3 mb-3">
           <SimpleEditorToolbar {...editorState} />
         </div>

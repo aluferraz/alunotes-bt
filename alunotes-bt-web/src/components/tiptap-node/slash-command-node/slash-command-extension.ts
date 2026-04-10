@@ -10,8 +10,8 @@ export interface SlashCommandItem {
   description: string
   icon: React.ComponentType<{ className?: string }>
   command: (props: { editor: import("@tiptap/core").Editor; range: import("@tiptap/core").Range }) => void
-  /** If true, this item opens a sub-menu (e.g. whiteboard picker) instead of running immediately */
-  hasSubmenu?: boolean
+  /** If set, opens a sub-menu instead of running command immediately */
+  submenuId?: "whiteboard" | "iframe-url"
 }
 
 export const SlashCommand = Extension.create<{

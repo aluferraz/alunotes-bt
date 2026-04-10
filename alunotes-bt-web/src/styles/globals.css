@@ -206,6 +206,18 @@
   max-width: none !important;
 }
 
+/* Hide Excalidraw branding links (see github.com/excalidraw/excalidraw/issues/6149) */
+.excalidraw-container .excalidraw-link,
+.excalidraw-container .excalidraw a[href*="excalidraw"],
+.excalidraw-container .excalidraw a[href*="plus.excalidraw"],
+.excalidraw-container .encrypted-icon,
+/* Hide the "Excalidraw links" group and its surrounding separators */
+.excalidraw-container .dropdown-menu-group:has(a[href*="github.com/excalidraw"]),
+.excalidraw-container .dropdown-menu-group:has(a[href*="github.com/excalidraw"]) + div[style],
+.excalidraw-container :has(+ .dropdown-menu-group:has(a[href*="github.com/excalidraw"])):not(.dropdown-menu-item-base) {
+  display: none !important;
+}
+
 /* Sonner Toast Glass Overrides */
 [data-sonner-toast] {
   background: var(--glass-bg) !important;
