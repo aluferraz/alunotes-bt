@@ -150,16 +150,23 @@ export function FolderPicker({
           <>
             <ColorDot color={selected.color} />
             <span className="max-w-[100px] truncate">{selected.name}</span>
-            <button
-              type="button"
+            <span
+              role="button"
+              tabIndex={0}
               onClick={(e) => {
                 e.stopPropagation();
                 onChange(null);
               }}
-              className="ml-0.5 p-0.5 rounded-full hover:bg-white/10 transition-colors"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.stopPropagation();
+                  onChange(null);
+                }
+              }}
+              className="ml-0.5 p-0.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
             >
               <X className="w-3 h-3" />
-            </button>
+            </span>
           </>
         ) : (
           <>

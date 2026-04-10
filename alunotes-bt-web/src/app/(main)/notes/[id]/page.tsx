@@ -135,10 +135,10 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
 
   return (
     <EditorContext.Provider value={{ editor: editorState.editor }}>
-      <div className="flex flex-col gap-6 max-w-4xl mx-auto min-h-screen pb-20">
+      <div className="flex flex-col max-w-5xl mx-auto min-h-screen pb-20">
 
-        {/* Minimal sticky header — back button + save status only */}
-        <div className="flex items-center justify-between sticky top-0 z-20 py-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:mt-2 bg-glass-bg/60 backdrop-blur-xl rounded-full sm:px-4">
+        {/* Sticky header — aligned with top navbar */}
+        <div className="flex items-center justify-between sticky top-0 z-20 py-3 px-1 sm:px-0">
           <Link
             href="/notes"
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 -ml-2 rounded-full hover:bg-glass-border"
@@ -168,7 +168,6 @@ export default function NotePage(props: { params: Promise<{ id: string }> }) {
             </div>
           </div>
         </div>
-
         {/* Editor card */}
         <GlassCard
           className={`transition-all duration-500 ease-out hover:shadow-glass-lg overflow-hidden editor-theme-${editorTheme}`}

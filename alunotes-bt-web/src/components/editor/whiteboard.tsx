@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { Sun, Moon, Maximize2, Minimize2 } from "lucide-react";
+import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useUIPreferences } from "~/stores/ui-preferences";
 import { useWhiteboardStore } from "~/stores/whiteboard";
 import "@excalidraw/excalidraw/index.css";
@@ -18,10 +19,12 @@ interface WhiteboardProps {
   initialElements?: ExcalidrawElement[];
   initialAppState?: AppState;
   onChange?: (elements: readonly ExcalidrawElement[], appState: AppState) => void;
+  viewMode?: boolean;
 }
 
-export function WhiteboardEditor({ initialElements, initialAppState, onChange }: WhiteboardProps) {
+export function WhiteboardEditor({ initialElements, initialAppState, onChange, viewMode = false }: WhiteboardProps) {
   const [mounted, setMounted] = useState(false);
+  const [api, setAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const boardTheme = useUIPreferences((s) => s.whiteboardTheme);
   const toggleBoardTheme = useUIPreferences((s) => s.toggleWhiteboardTheme);
   const isFullscreen = useWhiteboardStore((s) => s.isFullscreen);
@@ -30,6 +33,15 @@ export function WhiteboardEditor({ initialElements, initialAppState, onChange }:
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Auto-fit content in view mode once the API is ready
+  useEffect(() => {
+    if (!viewMode || !api) return;
+    const elements = api.getSceneElements();
+    if (elements.length > 0) {
+      api.scrollToContent(elements, { fitToContent: true });
+    }
+  }, [viewMode, api]);
 
   useEffect(() => {
     if (!isFullscreen) return;
@@ -47,19 +59,21 @@ export function WhiteboardEditor({ initialElements, initialAppState, onChange }:
       className={`excalidraw-container w-full h-full rounded-2xl overflow-hidden glass-border shadow-glass-lg ${
         isFullscreen ? "rounded-3xl" : ""
       }`}
-      style={{ height: isFullscreen ? "100%" : "70vh" }}
+      style={{ height: isFullscreen || viewMode ? "100%" : "70vh" }}
     >
       <Excalidraw
+        excalidrawAPI={setAPI}
         initialData={{
           elements: initialElements,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
           appState: { ...initialAppState, collaborators: new Map() } as any,
         }}
+        viewModeEnabled={viewMode}
         theme={boardTheme}
         onChange={(elements, appState) => {
-          onChange?.(elements, appState);
+          if (!viewMode) onChange?.(elements, appState);
         }}
-        renderTopRightUI={() => (
+        renderTopRightUI={viewMode ? undefined : () => (
           <div className="flex items-center gap-1">
             <button
               onClick={toggleBoardTheme}
@@ -80,7 +94,7 @@ export function WhiteboardEditor({ initialElements, initialAppState, onChange }:
         UIOptions={{
           canvasActions: {
             changeViewBackgroundColor: false,
-            clearCanvas: true,
+            clearCanvas: !viewMode,
             loadScene: false,
             toggleTheme: false,
           },

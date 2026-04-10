@@ -1,0 +1,4 @@
+/* Override root layout background for embed routes so iframes are transparent */
+body {
+  background: transparent !important;
+}

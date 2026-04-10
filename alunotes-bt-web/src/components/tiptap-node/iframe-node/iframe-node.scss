@@ -1,0 +1,89 @@
+.tiptap-iframe-wrapper {
+  margin: 1rem 0;
+  position: relative;
+
+  &.ProseMirror-selectednode .tiptap-iframe-container {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+.tiptap-iframe-edit-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--primary);
+  }
+}
+
+.tiptap-iframe-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent;
+  border: 1px solid var(--glass-border, rgba(124, 185, 232, 0.15));
+  transition: outline 0.15s ease;
+
+  &.is-resizing {
+    user-select: none;
+  }
+
+  iframe {
+    display: block;
+  }
+}
+
+.tiptap-iframe-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  cursor: ns-resize;
+}
+
+.tiptap-iframe-blocked {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 13px;
+  color: var(--destructive);
+  background: color-mix(in srgb, var(--destructive) 5%, transparent);
+}
+
+.tiptap-iframe-resize-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  cursor: ns-resize;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+
+  .tiptap-iframe-wrapper:hover & {
+    opacity: 1;
+  }
+}
+
+.tiptap-iframe-resize-bar {
+  width: 48px;
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--muted-foreground) 30%, transparent);
+  transition: background 0.15s ease;
+
+  .tiptap-iframe-resize-handle:hover & {
+    background: color-mix(in srgb, var(--muted-foreground) 60%, transparent);
+  }
+}
+

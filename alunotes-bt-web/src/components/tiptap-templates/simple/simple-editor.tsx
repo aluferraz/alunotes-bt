@@ -26,6 +26,9 @@ import {
 // --- Tiptap Node ---
 import { ImageUploadNode } from "~/components/tiptap-node/image-upload-node/image-upload-node-extension"
 import { HorizontalRule } from "~/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension"
+import { IframeNode } from "~/components/tiptap-node/iframe-node/iframe-node-extension"
+import { SlashCommand } from "~/components/tiptap-node/slash-command-node/slash-command-extension"
+import { createSlashCommandSuggestion } from "~/components/tiptap-node/slash-command-node/slash-command-suggestion"
 import "~/components/tiptap-node/blockquote-node/blockquote-node.scss"
 import "~/components/tiptap-node/code-block-node/code-block-node.scss"
 import "~/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss"
@@ -33,10 +36,12 @@ import "~/components/tiptap-node/list-node/list-node.scss"
 import "~/components/tiptap-node/image-node/image-node.scss"
 import "~/components/tiptap-node/heading-node/heading-node.scss"
 import "~/components/tiptap-node/paragraph-node/paragraph-node.scss"
+import "~/components/tiptap-node/iframe-node/iframe-node.scss"
 
 // --- Tiptap UI ---
 import { HeadingDropdownMenu } from "~/components/tiptap-ui/heading-dropdown-menu"
 import { ImageUploadButton } from "~/components/tiptap-ui/image-upload-button"
+import { WhiteboardEmbedButton } from "~/components/tiptap-ui/whiteboard-embed-button"
 import { ListDropdownMenu } from "~/components/tiptap-ui/list-dropdown-menu"
 import { BlockquoteButton } from "~/components/tiptap-ui/blockquote-button"
 import { CodeBlockButton } from "~/components/tiptap-ui/code-block-button"
@@ -139,6 +144,7 @@ const MainToolbarContent = ({
 
       <ToolbarGroup>
         <ImageUploadButton text="Add" />
+        <WhiteboardEmbedButton />
       </ToolbarGroup>
 
       <Spacer />
@@ -187,6 +193,7 @@ interface SimpleEditorProps {
   extraExtensions?: import("@tiptap/core").Extension[]
 }
 
+
 /** Hook — creates the editor instance and returns all state needed for toolbar + content */
 export function useSimpleEditor({ initialContent, onUpdate, extraExtensions }: SimpleEditorProps = {}) {
   const isMobile = useIsBreakpoint()
@@ -230,6 +237,10 @@ export function useSimpleEditor({ initialContent, onUpdate, extraExtensions }: S
         upload: handleImageUpload,
         onError: (error) => console.error("Upload failed:", error),
       }),
+      IframeNode,
+      SlashCommand.configure({
+        suggestion: createSlashCommandSuggestion(),
+      }),
       ...(extraExtensions ?? []),
     ],
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -237,7 +248,10 @@ export function useSimpleEditor({ initialContent, onUpdate, extraExtensions }: S
     onUpdate: ({ editor }) => {
       onUpdate?.(JSON.stringify(editor.getJSON()))
     },
-  })
+    // Re-create editor when initialContent transitions from empty to loaded
+    // (prevents stale empty editor when content arrives after first render)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!initialContent])
 
   const rect = useCursorVisibility({
     editor,

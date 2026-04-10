@@ -27,7 +27,8 @@
       "WebFetch(domain:lh3.googleusercontent.com)",
       "WebFetch(domain:contribution.usercontent.google.com)",
       "mcp__stitch__generate_screen_from_text",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(sqlite3 /home/alu/Documents/dev/alunotes-bt/alunotes-bt-web/prisma/db.sqlite \"SELECT content FROM note ORDER BY updatedAt DESC LIMIT 1\")"
     ]
   }
 }

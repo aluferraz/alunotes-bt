@@ -1,4 +1,4 @@
-.PHONY: build build-web run run-all lint clean tidy setup-permissions deps
+.PHONY: build build-web run run-all kill lint clean tidy setup-permissions deps
 
 BINARY := alunotes-bridge
 BUILD_DIR := ./bin
@@ -21,9 +21,15 @@ build-web:
 run: build
 	$(BUILD_DIR)/$(BINARY) -config config.yaml
 
+# Kill any running bridge or web dev server instances.
+kill:
+	@-pkill -f '$(BUILD_DIR)/$(BINARY)' 2>/dev/null || true
+	@-pkill -f 'next dev' 2>/dev/null || true
+	@sleep 0.5
+
 # Run both the bridge (with watch mode) and web app.
 # Output is color-prefixed: [bridge]=cyan, [watch]=gray, [web]=magenta.
-run-all: build
+run-all: kill build
 	@echo "Starting bridge (watch mode) + web app..."
 	@PIDFILE=$$(mktemp); \
 	CYAN='\x1b[36m'; GRAY='\x1b[90m'; MAGENTA='\x1b[35m'; RESET='\x1b[0m'; \
