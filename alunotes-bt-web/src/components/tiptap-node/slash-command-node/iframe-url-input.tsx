@@ -23,9 +23,30 @@ interface IframeUrlInputProps {
   onClose: () => void
 }
 
+/** Parse an <iframe> HTML string into src/width/height */
+function parseIframeTag(input: string): { src: string; width?: string; height?: string } | null {
+  const match = input.match(/<iframe\s[^>]*>/i)
+  if (!match) return null
+
+  const tag = match[0]
+  const srcMatch = tag.match(/src=["']([^"']+)["']/i)
+  if (!srcMatch?.[1]) return null
+
+  const widthMatch = tag.match(/width=["']([^"']+)["']/i)
+  const heightMatch = tag.match(/height=["']([^"']+)["']/i)
+  const w = widthMatch?.[1]
+  const h = heightMatch?.[1]
+
+  return {
+    src: srcMatch[1],
+    width: w ? (/^\d+$/.test(w) ? `${w}px` : w) : undefined,
+    height: h ? (/^\d+$/.test(h) ? `${h}px` : h) : undefined,
+  }
+}
+
 export const IframeUrlInput = forwardRef<IframeUrlInputRef, IframeUrlInputProps>(
   ({ editor, range, onClose }, ref) => {
-    const [url, setUrl] = useState("")
+    const [value, setValue] = useState("")
     const inputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
@@ -33,10 +54,28 @@ export const IframeUrlInput = forwardRef<IframeUrlInputRef, IframeUrlInputProps>
     }, [])
 
     const submit = useCallback(() => {
-      let src = url.trim()
-      if (!src) return
+      const trimmed = value.trim()
+      if (!trimmed) return
 
-      // Auto-add https:// if no protocol
+      // Try parsing as <iframe> tag first
+      const parsed = parseIframeTag(trimmed)
+      if (parsed) {
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .setIframe({
+            src: parsed.src,
+            width: parsed.width ?? "100%",
+            height: parsed.height ?? "400px",
+          })
+          .run()
+        onClose()
+        return
+      }
+
+      // Otherwise treat as a plain URL
+      let src = trimmed
       if (!/^https?:\/\//i.test(src)) {
         src = `https://${src}`
       }
@@ -48,7 +87,26 @@ export const IframeUrlInput = forwardRef<IframeUrlInputRef, IframeUrlInputProps>
         .setIframe({ src, width: "100%", height: "400px" })
         .run()
       onClose()
-    }, [url, editor, range, onClose])
+    }, [value, editor, range, onClose])
+
+    // Handle Enter directly on the input — don't rely on the suggestion keyDown chain
+    const handleInputKeyDown = useCallback(
+      (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+          e.preventDefault()
+          e.stopPropagation()
+          submit()
+        } else if (e.key === "Escape") {
+          e.preventDefault()
+          e.stopPropagation()
+          onClose()
+        } else {
+          // Prevent editor from capturing typing
+          e.stopPropagation()
+        }
+      },
+      [submit, onClose]
+    )
 
     useImperativeHandle(ref, () => ({
       onKeyDown: ({ event }: SuggestionKeyDownProps) => {
@@ -72,14 +130,11 @@ export const IframeUrlInput = forwardRef<IframeUrlInputRef, IframeUrlInputProps>
           <input
             ref={inputRef}
             type="text"
-            placeholder="Paste URL and press Enter..."
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            placeholder="Paste URL or <iframe> tag..."
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
             className="slash-command-filter-input"
-            onKeyDown={(e) => {
-              if (["Enter", "Escape"].includes(e.key)) return
-              e.stopPropagation()
-            }}
+            onKeyDown={handleInputKeyDown}
           />
         </div>
       </div>

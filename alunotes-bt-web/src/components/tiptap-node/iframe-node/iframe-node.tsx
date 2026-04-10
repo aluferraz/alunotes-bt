@@ -122,10 +122,15 @@ export const IframeNodeComponent: React.FC<NodeViewProps> = (props) => {
             sandbox={
               sameOrigin
                 ? "allow-same-origin allow-scripts allow-forms allow-popups"
-                : "allow-scripts allow-same-origin allow-popups"
+                : "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-presentation"
             }
-            referrerPolicy={sameOrigin ? "same-origin" : "no-referrer"}
-            allow={sameOrigin ? "clipboard-write" : ""}
+            referrerPolicy={sameOrigin ? "same-origin" : "strict-origin-when-cross-origin"}
+            allow={
+              sameOrigin
+                ? "clipboard-write"
+                : "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            }
+            allowFullScreen
             onLoad={() => setIsLoaded(true)}
           />
         </>
