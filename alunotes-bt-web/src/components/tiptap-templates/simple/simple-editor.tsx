@@ -190,7 +190,7 @@ const MobileToolbarContent = ({
 interface SimpleEditorProps {
   initialContent?: string | null
   onUpdate?: (content: string) => void
-  extraExtensions?: import("@tiptap/core").Extension[]
+  extraExtensions?: import("@tiptap/core").AnyExtension[]
 }
 
 

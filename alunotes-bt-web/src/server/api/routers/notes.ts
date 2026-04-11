@@ -55,4 +55,43 @@ export const notesRouter = {
       });
       return { success: true };
     }),
+
+  getOrCreateForRecording: protectedProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .handler(async ({ input, context }) => {
+      const userId = context.session.user.id;
+
+      // Check if a note already exists for this recording
+      const existing = await context.db.note.findUnique({
+        where: { recordingSessionId: input.sessionId },
+      });
+      if (existing) {
+        // Sync title with recording label
+        const meta = await context.db.recordingMeta.findUnique({
+          where: { sessionId: input.sessionId },
+        });
+        if (meta?.label && meta.label !== existing.title) {
+          await context.db.note.update({
+            where: { id: existing.id },
+            data: { title: meta.label },
+          });
+          return { ...existing, title: meta.label };
+        }
+        return existing;
+      }
+
+      // Derive title from recording label or sessionId
+      const meta = await context.db.recordingMeta.findUnique({
+        where: { sessionId: input.sessionId },
+      });
+      const title = meta?.label || `Recording ${input.sessionId.replace("/", " ")}`;
+
+      return context.db.note.create({
+        data: {
+          title,
+          recordingSessionId: input.sessionId,
+          userId,
+        },
+      });
+    }),
 };

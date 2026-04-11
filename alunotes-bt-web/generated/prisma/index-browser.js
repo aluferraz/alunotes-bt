@@ -216,6 +216,8 @@ exports.Prisma.NoteScalarFieldEnum = {
   title: 'title',
   content: 'content',
   isPublic: 'isPublic',
+  recordingSessionId: 'recordingSessionId',
+  alunoteGenerated: 'alunoteGenerated',
   folderId: 'folderId',
   userId: 'userId',
   createdAt: 'createdAt',

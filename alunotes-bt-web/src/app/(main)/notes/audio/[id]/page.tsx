@@ -1,0 +1,322 @@
+"use client";
+
+import { use, useEffect, useCallback, useRef, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAsyncDebouncer } from "@tanstack/react-pacer";
+import { orpc } from "~/orpc/react";
+import {
+  useSimpleEditor,
+  SimpleEditorToolbar,
+  SimpleEditorContent,
+} from "~/components/tiptap-templates/simple/simple-editor";
+import { EditorContext } from "@tiptap/react";
+import { GlassCard } from "~/components/ui/glass-card";
+import { Save, ArrowLeft, Loader2, Wand2, MoreVertical } from "lucide-react";
+import Link from "next/link";
+import { useUIPreferences } from "~/stores/ui-preferences";
+import { useNoteEditorStore } from "~/stores/note-editor";
+import { FolderPicker } from "~/components/folder-picker";
+
+export default function AudioNotePage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
+  const noteId = params.id;
+  const [showOverwriteMenu, setShowOverwriteMenu] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const queryClient = useQueryClient();
+  const { data: note, isLoading } = useQuery(orpc.notes.get.queryOptions({ input: { id: noteId } }));
+  const { mutateAsync: updateNote } = useMutation(orpc.notes.update.mutationOptions());
+  const updateNoteRef = useRef(updateNote);
+  useEffect(() => { updateNoteRef.current = updateNote; }, [updateNote]);
+
+  // Fetch recording details for the audio player
+  const { data: recording } = useQuery({
+    ...orpc.recordings.get.queryOptions({ input: { sessionId: note?.recordingSessionId ?? "" } }),
+    enabled: !!note?.recordingSessionId,
+  });
+
+  const { title, content, initialized } = useNoteEditorStore();
+  const initialize = useNoteEditorStore((s) => s.initialize);
+  const setTitle = useNoteEditorStore((s) => s.setTitle);
+  const setContent = useNoteEditorStore((s) => s.setContent);
+  const reset = useNoteEditorStore((s) => s.reset);
+
+  // Sync initial data from server, stripping any audio nodes from content
+  useEffect(() => {
+    if (note) {
+      let cleanContent = note.content ?? "";
+      if (cleanContent) {
+        try {
+          const parsed = JSON.parse(cleanContent) as { content?: Array<{ type?: string }> };
+          if (parsed.content) {
+            parsed.content = parsed.content.filter((n) => n.type !== "audio");
+            cleanContent = JSON.stringify(parsed);
+          }
+        } catch { /* keep as-is */ }
+      }
+      initialize({ id: noteId, title: note.title, content: cleanContent });
+    }
+  }, [note, noteId, initialize]);
+
+  // Reset store on unmount so next note starts fresh
+  useEffect(() => () => reset(), [reset]);
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!showOverwriteMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowOverwriteMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showOverwriteMenu]);
+
+  // Stable save function
+  const saveFn = useCallback(
+    async (newTitle: string, newContent: string) => {
+      await updateNoteRef.current({ id: noteId, title: newTitle, content: newContent });
+      void queryClient.invalidateQueries({ queryKey: orpc.notes.get.queryOptions({ input: { id: noteId } }).queryKey });
+      void queryClient.invalidateQueries({ queryKey: orpc.notes.list.queryKey() });
+    },
+    [noteId, queryClient]
+  );
+
+  const saveDebouncer = useAsyncDebouncer(
+    saveFn,
+    {
+      wait: 1500,
+      onUnmount: (d) => d.flush(),
+      asyncRetryerOptions: {
+        maxAttempts: 3,
+        backoff: 'exponential',
+        baseWait: 1000,
+        maxWait: 10000,
+        jitter: 0.3,
+      },
+    },
+  );
+
+  const latestContentRef = useRef<string>("");
+  useEffect(() => {
+    if (content !== null) latestContentRef.current = content;
+  }, [content]);
+
+  // Flush pending saves when the page becomes hidden
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        saveDebouncer.flush();
+      }
+    };
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (saveDebouncer.store.state.isPending) {
+        e.preventDefault();
+        saveDebouncer.flush();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [saveDebouncer]);
+
+  const handleUpdateTitle = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newTitle = e.target.value;
+      setTitle(newTitle);
+      saveDebouncer.maybeExecute(newTitle, latestContentRef.current);
+    },
+    [setTitle, saveDebouncer]
+  );
+
+  const handleUpdateContent = useCallback(
+    (newContent: string) => {
+      setContent(newContent);
+      latestContentRef.current = newContent;
+      const currentTitle = useNoteEditorStore.getState().title;
+      saveDebouncer.maybeExecute(currentTitle, newContent);
+    },
+    [setContent, saveDebouncer]
+  );
+
+  const editorState = useSimpleEditor({
+    initialContent: content ?? undefined,
+    onUpdate: handleUpdateContent,
+  });
+
+  const editorTheme = useUIPreferences((s) => s.editorTheme);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!note) {
+    return <div className="text-center text-muted-foreground mt-20">Note not found.</div>;
+  }
+
+  return (
+    <EditorContext.Provider value={{ editor: editorState.editor }}>
+      <div className="flex flex-col max-w-5xl mx-auto min-h-screen pb-20">
+
+        {/* Sticky header */}
+        <div className="flex items-center justify-between sticky top-0 z-20 py-3 px-1 sm:px-0">
+          <Link
+            href="/audio"
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors p-2 -ml-2 rounded-full hover:bg-glass-border"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="hidden sm:inline font-medium text-sm">Audio</span>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <FolderPicker
+              value={note.folderId}
+              onChange={(folderId) => {
+                void updateNote({ id: noteId, folderId }).then(() => {
+                  void queryClient.invalidateQueries({ queryKey: orpc.notes.get.queryOptions({ input: { id: noteId } }).queryKey });
+                  void queryClient.invalidateQueries({ queryKey: orpc.folders.list.queryKey() });
+                });
+              }}
+            />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-glass-bg border border-glass-border backdrop-blur-md text-xs font-medium text-muted-foreground">
+              <saveDebouncer.Subscribe selector={(state) => ({ isSaving: state.isPending || state.isExecuting })}>
+                {({ isSaving }) => isSaving ? (
+                  <><Loader2 className="w-3 h-3 animate-spin" /> Saving...</>
+                ) : (
+                  <><Save className="w-3 h-3" /> Saved</>
+                )}
+              </saveDebouncer.Subscribe>
+            </div>
+          </div>
+        </div>
+
+        {/* Toolbar */}
+        <div className="sticky top-[3.5rem] sm:top-[3.75rem] z-[45] py-2">
+          <SimpleEditorToolbar {...editorState} />
+        </div>
+
+        {/* Editor card */}
+        <GlassCard
+          className={`transition-all duration-500 ease-out hover:shadow-glass-lg overflow-hidden editor-theme-${editorTheme}`}
+        >
+          <div className="simple-editor-wrapper flex flex-col p-6 sm:p-10 min-h-[70vh]">
+            {/* Title */}
+            <input
+              type="text"
+              value={title}
+              onChange={handleUpdateTitle}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  editorState.editor?.commands.focus("start");
+                }
+              }}
+              placeholder="Note Title"
+              className="text-4xl sm:text-5xl font-manrope font-extrabold bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/30 px-0 focus:ring-0 w-full pt-8 pb-4"
+            />
+
+            {/* Audio player + action */}
+            {recording?.streamUrl && (
+              <div className="flex flex-col items-center gap-3 py-4">
+                <audio
+                  controls
+                  preload="metadata"
+                  src={recording.streamUrl}
+                  className="w-full max-w-md"
+                />
+
+                {note.alunoteGenerated ? (
+                  /* Three-dot menu */
+                  <div className="relative" ref={menuRef}>
+                    <button
+                      onClick={() => setShowOverwriteMenu(!showOverwriteMenu)}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-glass-border/50 transition-colors"
+                    >
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+
+                    {showOverwriteMenu && (
+                      <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 z-50 min-w-[280px] rounded-xl bg-glass-bg border border-glass-border backdrop-blur-xl shadow-glass-lg p-1">
+                        <button
+                          onClick={() => {
+                            setShowOverwriteMenu(false);
+                            setShowConfirmDialog(true);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-foreground hover:bg-glass-border/50 transition-colors"
+                        >
+                          <Wand2 className="w-4 h-4 text-primary" />
+                          Generate new note and overwrite content
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Create Alunote button */
+                  <button className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-sm shadow-glass hover:shadow-[0_0_24px_rgba(var(--primary-rgb),0.3)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden">
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <div className="sparkle sparkle-1" />
+                      <div className="sparkle sparkle-2" />
+                      <div className="sparkle sparkle-3" />
+                      <div className="sparkle sparkle-4" />
+                      <div className="sparkle sparkle-5" />
+                      <div className="sparkle sparkle-6" />
+                    </div>
+
+                    <Wand2 className="w-4 h-4 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                    <span className="relative z-10">Create Alunote for Recording</span>
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Editor body */}
+            {content !== null && (
+              <div className="simple-editor-content-area flex-1">
+                <SimpleEditorContent editor={editorState.editor} />
+              </div>
+            )}
+          </div>
+        </GlassCard>
+      </div>
+
+      {/* Confirm overwrite dialog */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowConfirmDialog(false)} />
+          <div className="relative bg-glass-bg border border-glass-border backdrop-blur-xl rounded-2xl shadow-glass-lg p-6 max-w-sm w-full mx-4">
+            <h3 className="text-lg font-semibold text-foreground mb-2">Overwrite note content?</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              This will regenerate the note from the recording and replace all existing content. This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirmDialog(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-glass-border/50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowConfirmDialog(false);
+                  // TODO: trigger regeneration
+                }}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+              >
+                Overwrite
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </EditorContext.Provider>
+  );
+}

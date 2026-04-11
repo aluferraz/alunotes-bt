@@ -197,6 +197,7 @@ export const recordingsRouter = {
         sampleRate: meta?.sampleRate ?? 44100,
         channels: meta?.channels ?? 2,
         bitDepth: meta?.bitDepth ?? 16,
+        streamUrl: `/api/recordings/${date}/${time}/${wavFile}`,
       };
     }),
 

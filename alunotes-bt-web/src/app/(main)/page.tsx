@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
 import Link from "next/link";
-import { CheckSquare, Edit3, PenTool, Mic, LayoutDashboard, Calendar, Search, ArrowRight } from "lucide-react";
+import { CheckSquare, Edit3, PenTool, Mic, LayoutDashboard, Calendar, Search, ArrowRight, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 export default function TimelinePage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [navigatingRecording, setNavigatingRecording] = useState<string | null>(null);
+  const { mutateAsync: getOrCreateForRecording } = useMutation(orpc.notes.getOrCreateForRecording.mutationOptions());
   const { data: notes } = useQuery(orpc.notes.list.queryOptions());
   const { data: tasks } = useQuery(orpc.tasks.list.queryOptions());
   const { data: boards } = useQuery(orpc.whiteboard.list.queryOptions());
@@ -42,11 +46,12 @@ export default function TimelinePage() {
     })),
     ...(recordings?.items || []).map((r) => ({
       id: r.sessionId,
-      type: "recording",
+      type: "recording" as const,
       title: r.label || `Recording ${r.date} ${r.time.replace(/-/g, ":")}`,
       date: new Date(`${r.date}T${r.time.replace(/-/g, ":")}`),
-      url: `/audio`,
+      url: null as string | null,
       icon: Mic,
+      sessionId: r.sessionId,
     })),
   ].sort((a, b) => b.date.getTime() - a.date.getTime());
 
@@ -88,11 +93,14 @@ export default function TimelinePage() {
             </GlassCard>
           ) : (
             <div className="flex flex-col gap-3">
-              {filteredFeed.slice(0, 10).map((item) => (
-                <Link key={`${item.type}-${item.id}`} href={item.url}>
-                  <GlassCard className="p-4 sm:p-5 flex items-center gap-4 hover:shadow-glass hover:bg-glass-border/50 transition-all group">
+              {filteredFeed.slice(0, 10).map((item) => {
+                const isRecording = item.type === "recording";
+                const isNavigating = isRecording && navigatingRecording === item.id;
+
+                const card = (
+                  <GlassCard className="p-4 sm:p-5 flex items-center gap-4 hover:shadow-glass hover:bg-glass-border/50 transition-all group cursor-pointer">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <item.icon className="w-5 h-5" />
+                      {isNavigating ? <Loader2 className="w-5 h-5 animate-spin" /> : <item.icon className="w-5 h-5" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground truncate">{item.title}</h3>
@@ -102,8 +110,34 @@ export default function TimelinePage() {
                       {formatDistanceToNow(item.date, { addSuffix: true })}
                     </div>
                   </GlassCard>
-                </Link>
-              ))}
+                );
+
+                if (isRecording) {
+                  return (
+                    <div
+                      key={`${item.type}-${item.id}`}
+                      onClick={async () => {
+                        if (navigatingRecording) return;
+                        setNavigatingRecording(item.id);
+                        try {
+                          const note = await getOrCreateForRecording({ sessionId: ("sessionId" in item ? item.sessionId : item.id) as string });
+                          router.push(`/notes/audio/${note.id}`);
+                        } finally {
+                          setNavigatingRecording(null);
+                        }
+                      }}
+                    >
+                      {card}
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link key={`${item.type}-${item.id}`} href={item.url!}>
+                    {card}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>

@@ -11054,6 +11054,8 @@ export namespace Prisma {
     title: string | null
     content: string | null
     isPublic: boolean | null
+    recordingSessionId: string | null
+    alunoteGenerated: boolean | null
     folderId: string | null
     userId: string | null
     createdAt: Date | null
@@ -11065,6 +11067,8 @@ export namespace Prisma {
     title: string | null
     content: string | null
     isPublic: boolean | null
+    recordingSessionId: string | null
+    alunoteGenerated: boolean | null
     folderId: string | null
     userId: string | null
     createdAt: Date | null
@@ -11076,6 +11080,8 @@ export namespace Prisma {
     title: number
     content: number
     isPublic: number
+    recordingSessionId: number
+    alunoteGenerated: number
     folderId: number
     userId: number
     createdAt: number
@@ -11089,6 +11095,8 @@ export namespace Prisma {
     title?: true
     content?: true
     isPublic?: true
+    recordingSessionId?: true
+    alunoteGenerated?: true
     folderId?: true
     userId?: true
     createdAt?: true
@@ -11100,6 +11108,8 @@ export namespace Prisma {
     title?: true
     content?: true
     isPublic?: true
+    recordingSessionId?: true
+    alunoteGenerated?: true
     folderId?: true
     userId?: true
     createdAt?: true
@@ -11111,6 +11121,8 @@ export namespace Prisma {
     title?: true
     content?: true
     isPublic?: true
+    recordingSessionId?: true
+    alunoteGenerated?: true
     folderId?: true
     userId?: true
     createdAt?: true
@@ -11195,6 +11207,8 @@ export namespace Prisma {
     title: string
     content: string | null
     isPublic: boolean
+    recordingSessionId: string | null
+    alunoteGenerated: boolean
     folderId: string | null
     userId: string
     createdAt: Date
@@ -11223,6 +11237,8 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     isPublic?: boolean
+    recordingSessionId?: boolean
+    alunoteGenerated?: boolean
     folderId?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -11238,6 +11254,8 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     isPublic?: boolean
+    recordingSessionId?: boolean
+    alunoteGenerated?: boolean
     folderId?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -11251,6 +11269,8 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     isPublic?: boolean
+    recordingSessionId?: boolean
+    alunoteGenerated?: boolean
     folderId?: boolean
     userId?: boolean
     createdAt?: boolean
@@ -11264,13 +11284,15 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     isPublic?: boolean
+    recordingSessionId?: boolean
+    alunoteGenerated?: boolean
     folderId?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type NoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "isPublic" | "folderId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["note"]>
+  export type NoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "isPublic" | "recordingSessionId" | "alunoteGenerated" | "folderId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["note"]>
   export type NoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     folder?: boolean | Note$folderArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11298,6 +11320,8 @@ export namespace Prisma {
       title: string
       content: string | null
       isPublic: boolean
+      recordingSessionId: string | null
+      alunoteGenerated: boolean
       folderId: string | null
       userId: string
       createdAt: Date
@@ -11732,6 +11756,8 @@ export namespace Prisma {
     readonly title: FieldRef<"Note", 'String'>
     readonly content: FieldRef<"Note", 'String'>
     readonly isPublic: FieldRef<"Note", 'Boolean'>
+    readonly recordingSessionId: FieldRef<"Note", 'String'>
+    readonly alunoteGenerated: FieldRef<"Note", 'Boolean'>
     readonly folderId: FieldRef<"Note", 'String'>
     readonly userId: FieldRef<"Note", 'String'>
     readonly createdAt: FieldRef<"Note", 'DateTime'>
@@ -15666,6 +15692,8 @@ export namespace Prisma {
     title: 'title',
     content: 'content',
     isPublic: 'isPublic',
+    recordingSessionId: 'recordingSessionId',
+    alunoteGenerated: 'alunoteGenerated',
     folderId: 'folderId',
     userId: 'userId',
     createdAt: 'createdAt',
@@ -16390,6 +16418,8 @@ export namespace Prisma {
     title?: StringFilter<"Note"> | string
     content?: StringNullableFilter<"Note"> | string | null
     isPublic?: BoolFilter<"Note"> | boolean
+    recordingSessionId?: StringNullableFilter<"Note"> | string | null
+    alunoteGenerated?: BoolFilter<"Note"> | boolean
     folderId?: StringNullableFilter<"Note"> | string | null
     userId?: StringFilter<"Note"> | string
     createdAt?: DateTimeFilter<"Note"> | Date | string
@@ -16404,6 +16434,8 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrderInput | SortOrder
     isPublic?: SortOrder
+    recordingSessionId?: SortOrderInput | SortOrder
+    alunoteGenerated?: SortOrder
     folderId?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -16415,12 +16447,14 @@ export namespace Prisma {
 
   export type NoteWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    recordingSessionId?: string
     AND?: NoteWhereInput | NoteWhereInput[]
     OR?: NoteWhereInput[]
     NOT?: NoteWhereInput | NoteWhereInput[]
     title?: StringFilter<"Note"> | string
     content?: StringNullableFilter<"Note"> | string | null
     isPublic?: BoolFilter<"Note"> | boolean
+    alunoteGenerated?: BoolFilter<"Note"> | boolean
     folderId?: StringNullableFilter<"Note"> | string | null
     userId?: StringFilter<"Note"> | string
     createdAt?: DateTimeFilter<"Note"> | Date | string
@@ -16428,13 +16462,15 @@ export namespace Prisma {
     folder?: XOR<FolderNullableScalarRelationFilter, FolderWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tags?: NoteTagListRelationFilter
-  }, "id">
+  }, "id" | "recordingSessionId">
 
   export type NoteOrderByWithAggregationInput = {
     id?: SortOrder
     title?: SortOrder
     content?: SortOrderInput | SortOrder
     isPublic?: SortOrder
+    recordingSessionId?: SortOrderInput | SortOrder
+    alunoteGenerated?: SortOrder
     folderId?: SortOrderInput | SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -16452,6 +16488,8 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Note"> | string
     content?: StringNullableWithAggregatesFilter<"Note"> | string | null
     isPublic?: BoolWithAggregatesFilter<"Note"> | boolean
+    recordingSessionId?: StringNullableWithAggregatesFilter<"Note"> | string | null
+    alunoteGenerated?: BoolWithAggregatesFilter<"Note"> | boolean
     folderId?: StringNullableWithAggregatesFilter<"Note"> | string | null
     userId?: StringWithAggregatesFilter<"Note"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Note"> | Date | string
@@ -17361,6 +17399,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     folder?: FolderCreateNestedOneWithoutNotesInput
@@ -17373,6 +17413,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     folderId?: string | null
     userId: string
     createdAt?: Date | string
@@ -17385,6 +17427,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     folder?: FolderUpdateOneWithoutNotesNestedInput
@@ -17397,6 +17441,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     folderId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17409,6 +17455,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     folderId?: string | null
     userId: string
     createdAt?: Date | string
@@ -17420,6 +17468,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17429,6 +17479,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     folderId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18246,6 +18298,8 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     isPublic?: SortOrder
+    recordingSessionId?: SortOrder
+    alunoteGenerated?: SortOrder
     folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -18257,6 +18311,8 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     isPublic?: SortOrder
+    recordingSessionId?: SortOrder
+    alunoteGenerated?: SortOrder
     folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -18268,6 +18324,8 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     isPublic?: SortOrder
+    recordingSessionId?: SortOrder
+    alunoteGenerated?: SortOrder
     folderId?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
@@ -19459,6 +19517,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     folder?: FolderCreateNestedOneWithoutNotesInput
@@ -19470,6 +19530,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     folderId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19695,6 +19757,8 @@ export namespace Prisma {
     title?: StringFilter<"Note"> | string
     content?: StringNullableFilter<"Note"> | string | null
     isPublic?: BoolFilter<"Note"> | boolean
+    recordingSessionId?: StringNullableFilter<"Note"> | string | null
+    alunoteGenerated?: BoolFilter<"Note"> | boolean
     folderId?: StringNullableFilter<"Note"> | string | null
     userId?: StringFilter<"Note"> | string
     createdAt?: DateTimeFilter<"Note"> | Date | string
@@ -19966,6 +20030,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutNotesInput
@@ -19977,6 +20043,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -20450,6 +20518,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     folder?: FolderCreateNestedOneWithoutNotesInput
@@ -20461,6 +20531,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     folderId?: string | null
     userId: string
     createdAt?: Date | string
@@ -20511,6 +20583,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     folder?: FolderUpdateOneWithoutNotesNestedInput
@@ -20522,6 +20596,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     folderId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20892,6 +20968,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     folderId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21059,6 +21137,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     folder?: FolderUpdateOneWithoutNotesNestedInput
@@ -21070,6 +21150,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     folderId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21081,6 +21163,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     folderId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21160,6 +21244,8 @@ export namespace Prisma {
     title?: string
     content?: string | null
     isPublic?: boolean
+    recordingSessionId?: string | null
+    alunoteGenerated?: boolean
     userId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -21193,6 +21279,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutNotesNestedInput
@@ -21204,6 +21292,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21215,6 +21305,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     isPublic?: BoolFieldUpdateOperationsInput | boolean
+    recordingSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    alunoteGenerated?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
