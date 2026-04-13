@@ -21,6 +21,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.52",
+    "@ai-sdk/react": "^3.0.160",
     "@auth/prisma-adapter": "^2.7.2",
     "@excalidraw/excalidraw": "^0.18.0",
     "@floating-ui/react": "^0.27.19",
@@ -43,6 +45,9 @@
     "@tanstack/react-query": "^5.69.0",
     "@tiptap/core": "^3.22.2",
     "@tiptap/extension-audio": "^3.22.3",
+    "@tiptap/extension-details": "^3.22.3",
+    "@tiptap/extension-details-content": "^2.26.2",
+    "@tiptap/extension-details-summary": "^2.26.2",
     "@tiptap/extension-highlight": "^3.22.2",
     "@tiptap/extension-horizontal-rule": "^3.22.2",
     "@tiptap/extension-image": "^3.22.2",
@@ -61,6 +66,7 @@
     "@tiptap/suggestion": "^3.22.3",
     "@types/lodash": "^4.17.24",
     "add": "^2.0.6",
+    "ai": "^6.0.158",
     "animejs": "3.2.1",
     "better-auth": "^1.3",
     "clsx": "^2.1.1",

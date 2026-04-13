@@ -1,5 +1,8 @@
 import { z } from "zod";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { protectedProcedure } from "~/server/api/orpc";
+import { env } from "~/env";
 
 export const notesRouter = {
   list: protectedProcedure.handler(async ({ context }) => {
@@ -61,12 +64,10 @@ export const notesRouter = {
     .handler(async ({ input, context }) => {
       const userId = context.session.user.id;
 
-      // Check if a note already exists for this recording
       const existing = await context.db.note.findUnique({
         where: { recordingSessionId: input.sessionId },
       });
       if (existing) {
-        // Sync title with recording label
         const meta = await context.db.recordingMeta.findUnique({
           where: { sessionId: input.sessionId },
         });
@@ -80,7 +81,6 @@ export const notesRouter = {
         return existing;
       }
 
-      // Derive title from recording label or sessionId
       const meta = await context.db.recordingMeta.findUnique({
         where: { sessionId: input.sessionId },
       });
@@ -94,4 +94,28 @@ export const notesRouter = {
         },
       });
     }),
+
+  /** Mark a note as having had its alunote generated. */
+  setAlunoteGenerated: protectedProcedure
+    .input(z.object({ id: z.string(), generated: z.boolean() }))
+    .handler(async ({ input, context }) => {
+      return context.db.note.update({
+        where: { id: input.id, userId: context.session.user.id },
+        data: { alunoteGenerated: input.generated },
+      });
+    }),
 };
+
+/** Resolve the WAV file path for a recording session. Used by the diarize API route. */
+export function resolveWavPath(sessionId: string): string | null {
+  const [date, time] = sessionId.split("/");
+  if (!date || !time) return null;
+  const baseDir = path.resolve(env.RECORDINGS_DIR);
+  const sessionDir = path.join(baseDir, date, time);
+  if (!fs.existsSync(sessionDir)) return null;
+  const files = fs.readdirSync(sessionDir);
+  const wav = files.find((f) => f.startsWith("recording-") && f.endsWith(".wav"));
+  if (wav) return path.join(sessionDir, wav);
+  if (files.includes("recording.wav")) return path.join(sessionDir, "recording.wav");
+  return null;
+}

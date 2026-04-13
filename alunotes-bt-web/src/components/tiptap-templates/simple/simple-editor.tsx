@@ -13,6 +13,9 @@ import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
 import { Selection } from "@tiptap/extensions"
+import { Details } from "@tiptap/extension-details"
+import { DetailsSummary } from "@tiptap/extension-details-summary"
+import { DetailsContent } from "@tiptap/extension-details-content"
 
 // --- UI Primitives ---
 import { Button } from "~/components/tiptap-ui-primitive/button"
@@ -37,6 +40,7 @@ import "~/components/tiptap-node/image-node/image-node.scss"
 import "~/components/tiptap-node/heading-node/heading-node.scss"
 import "~/components/tiptap-node/paragraph-node/paragraph-node.scss"
 import "~/components/tiptap-node/iframe-node/iframe-node.scss"
+import "~/components/tiptap-node/details-node/details-node.scss"
 
 // --- Tiptap UI ---
 import { HeadingDropdownMenu } from "~/components/tiptap-ui/heading-dropdown-menu"
@@ -238,6 +242,9 @@ export function useSimpleEditor({ initialContent, onUpdate, extraExtensions }: S
         onError: (error) => console.error("Upload failed:", error),
       }),
       IframeNode,
+      Details.configure({ persist: true, HTMLAttributes: { class: "details-node" } }),
+      DetailsSummary,
+      DetailsContent,
       SlashCommand.configure({
         suggestion: createSlashCommandSuggestion(),
       }),

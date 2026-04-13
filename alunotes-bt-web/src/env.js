@@ -17,6 +17,7 @@ export const env = createEnv({
     RECORDINGS_DIR: z.string().default("./public/recordings"),
     BRIDGE_CONFIG_PATH: z.string().default("../config.yaml"),
     BRIDGE_API_URL: z.string().url().default("http://localhost:8090"),
+    AI_API_URL: z.string().url().default("http://localhost:8100"),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -43,6 +44,7 @@ export const env = createEnv({
     RECORDINGS_DIR: process.env.RECORDINGS_DIR,
     BRIDGE_CONFIG_PATH: process.env.BRIDGE_CONFIG_PATH,
     BRIDGE_API_URL: process.env.BRIDGE_API_URL,
+    AI_API_URL: process.env.AI_API_URL,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**

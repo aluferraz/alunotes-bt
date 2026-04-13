@@ -9,19 +9,37 @@ AluNotes Bridge — a transparent Bluetooth audio proxy for Raspberry Pi 5. Brid
 ## Build & Dev Commands
 
 ```bash
+# Bridge
 make setup-permissions  # One-time: install D-Bus policy for non-root BlueZ access
 make build              # Build for host platform (sets BT capabilities via setcap)
 make build-pi           # Cross-compile for RPi 5 (GOOS=linux GOARCH=arm64)
 make run                # Build and run
-make run-all            # Build and run bridge (watch mode) + web app together
+make run-all            # Build and run bridge + web app + AI server (all with color prefixes)
 make test               # go test ./...
 make lint               # golangci-lint run ./...
 make clean              # Remove bin/
+
+# AI (alunotes-ai)
+make ai-install         # Install Python deps, system packages, ollama
+make ai-configure       # Auto-detect hardware, write optimal ollama config
+make ai-start           # Start ollama serve (systemd or foreground)
+make ai-pull            # Pull required ollama models
+make ai-test            # Run AI test suite (inference, ASR, diarization)
+make ai-lint            # ruff + mypy
+make ai-serve           # Start FastAPI dev server on :8100
+make ai-dev             # Install dev deps
 ```
 
 Binary: `bin/alunotes-bridge -config config.yaml`
 
 ### First-time setup
+
+```bash
+make deps               # Install ALL system deps (bridge + AI + ollama)
+make setup-permissions   # D-Bus policy for non-root BlueZ access
+make ai-configure        # Auto-tune ollama for this hardware
+make ai-pull             # Download LLM models
+```
 
 Run `make setup-permissions` once to install the D-Bus policy (`deploy/dbus-alunotes.conf`) that allows non-root access to BlueZ. The build step uses `sudo setcap` to grant `cap_net_raw,cap_net_admin` to the binary — `sudo` is only needed for that, the bridge itself runs unprivileged.
 
@@ -30,6 +48,7 @@ Run `make setup-permissions` once to install the D-Bus policy (`deploy/dbus-alun
 - Go 1.24+, BlueZ 5.x, libdbus-1-dev, pulseaudio-utils (pactl), PipeWire with Bluetooth (pipewire-pulse, libspa-0.2-bluetooth)
 - Go modules: `github.com/godbus/dbus/v5` (D-Bus IPC), `gopkg.in/yaml.v3` (config)
 - PipeWire CLI tools: `pw-link`, `pw-cat`, `pw-cli`, `pactl` (all used by the Go daemon for audio routing and recording)
+- Python 3.11+, ollama, ffmpeg, libsndfile1, sox (for AI subpackage)
 - No test framework beyond stdlib; `scripts/test-hfp.sh` validates the HFP pipeline using PipeWire null-sinks
 
 ## Architecture
@@ -75,6 +94,47 @@ The original pipeline (`capture.go`, `route.go`, `forward.go`, `writer.go`) read
 - Config uses `EffectiveSourceAdapter()` to resolve single vs dual adapter mode
 - Runs unprivileged with Linux capabilities (`cap_net_raw,cap_net_admin`) + D-Bus policy — no root required
 - HTTP API server on `:8090` (configurable via `-api-addr` flag) serves bridge status, device connect/disconnect, and config endpoints for the web control plane
+
+## AI Subpackage (`alunotes-ai/`)
+
+Local LLM inference and media-processing APIs. All processing runs offline — zero telemetry, no third-party data egress. Served as a FastAPI app on `:8100`.
+
+### Stack
+
+- **Framework**: FastAPI + uvicorn
+- **LLM inference**: Ollama (OpenAI-compatible proxy at `/v1/chat/completions`, `/v1/models`)
+- **ASR**: Qwen3-ASR-1.7B via `qwen_asr` toolkit (transformers backend)
+- **Diarization**: pyannote.audio 3.x + Qwen3-ASR two-step pipeline
+- **Config**: pydantic-settings, env prefix `ALUNOTES_AI_`
+- **Model**: `huihui_ai/gemma-4-abliterated:e2b` (ollama), `Qwen/Qwen3-ASR-1.7B` + `Qwen/Qwen3-ForcedAligner-0.6B` (HuggingFace, cached locally)
+
+### Architecture
+
+- `alunotes_ai/inference/router.py` — Ollama ↔ OpenAI API translation layer (proxies to `127.0.0.1:11434`)
+- `alunotes_ai/asr/engine.py` — Wraps `Qwen3ASRModel`. Callers use `transcribe(audio) -> AsyncIterator[str]`, never touch the toolkit. Lazy model loading, forced aligner loaded separately on demand to avoid OOM on 16GB devices.
+- `alunotes_ai/asr/router.py` — `/v1/asr/transcribe` endpoint (multipart audio upload + SSE streaming)
+- `alunotes_ai/diarization/engine.py` — Two-step pipeline: ASR with timestamps → pyannote speaker segments → merge by timestamp overlap
+- `alunotes_ai/diarization/router.py` — `/v1/asr/diarize` endpoint (multipart + NDJSON streaming)
+- `alunotes_ai/config.py` — All settings via env vars (`ALUNOTES_AI_OLLAMA_MODEL`, `ALUNOTES_AI_ASR_DEVICE`, etc.)
+- `scripts/ollama_autoconfig.sh` — Detects RAM/CPU/GPU, writes `~/.ollama/config` + `.env`
+
+### Key Design Decisions
+
+- All HuggingFace telemetry disabled via env vars (`TRANSFORMERS_OFFLINE=1`, `HF_HUB_DISABLE_TELEMETRY=1`, `HF_DATASETS_OFFLINE=1`) set before any transformers import
+- Ollama telemetry disabled (`OLLAMA_NOTELEMETRY=1`) in config, `.env`, and Makefile
+- ASR model and forced aligner are loaded separately (not simultaneously) to stay within 16GB RAM budget
+- Tests run in separate pytest processes per module (inference → ASR → diarization) to free RAM between suites
+- Ollama model name comes from config/env, never hardcoded in inference logic
+- Thinking models handled: router falls back to `thinking` field when `content` is empty
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/v1/chat/completions` | POST | OpenAI-compatible chat (proxied to ollama) |
+| `/v1/models` | GET | List available ollama models |
+| `/v1/asr/transcribe` | POST | Transcribe audio (multipart upload, SSE response) |
+| `/v1/asr/diarize` | POST | Transcribe + speaker diarization (multipart, NDJSON) |
 
 ## Web App (`alunotes-bt-web/`)
 

@@ -2,3 +2,14 @@ bin/
 recordings/
 config.yaml
 *.wav
+context-data
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+dist/
+build/

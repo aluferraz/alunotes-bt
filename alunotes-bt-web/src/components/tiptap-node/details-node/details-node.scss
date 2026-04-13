@@ -1,0 +1,75 @@
+.tiptap.ProseMirror {
+  .details-node {
+    border: 1px solid var(--tt-gray-light-800, rgba(255, 255, 255, 0.1));
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    overflow: hidden;
+
+    .dark & {
+      border-color: var(--tt-gray-dark-800, rgba(255, 255, 255, 0.08));
+    }
+
+    > button[data-toggle] {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: currentColor;
+      opacity: 0.5;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &::before {
+        content: "▶";
+        font-size: 0.65em;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    &.is-open > button[data-toggle]::before {
+      transform: rotate(90deg);
+    }
+
+    [data-details-summary] {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.9em;
+      background: rgba(128, 128, 128, 0.06);
+      cursor: pointer;
+      user-select: none;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    [data-details-content] {
+      padding: 0.75rem 1rem;
+      font-size: 0.85em;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      color: var(--tt-gray-light-400, #888);
+
+      .dark & {
+        color: var(--tt-gray-dark-400, #999);
+      }
+
+      p {
+        margin: 0.25em 0;
+      }
+    }
+
+    &:not(.is-open) [data-details-content] {
+      display: none;
+    }
+  }
+}

@@ -33,11 +33,15 @@ Phone ──A2DP──► Pi (hci0)                Pi (hci1) ──A2DP──►
 | Call control forwarding (answer/hangup via AVRCP) | Best-effort |
 | Auto-pairing (Just Works agent) | Working |
 | Web control plane (Next.js + Go HTTP API) | Working |
+| Local LLM inference (OpenAI-compatible API) | Working |
+| Speech-to-text (Qwen3-ASR) | Working |
+| Speaker diarization (pyannote.audio) | Working |
 
 ## Prerequisites
 
 - Raspberry Pi 5 (or any Linux system with Bluetooth)
 - Go 1.24+
+- Python 3.11+
 - Node.js 20+ and pnpm
 - BlueZ 5.x (Bluetooth stack)
 - PipeWire with Bluetooth support (`pipewire-pulse`, `libspa-0.2-bluetooth`)
@@ -48,7 +52,10 @@ Phone ──A2DP──► Pi (hci0)                Pi (hci1) ──A2DP──►
 ### 1. Install dependencies
 
 ```bash
-make deps
+make deps               # System packages + ollama
+make ai-install          # Python venv + AI deps
+make ai-configure        # Auto-tune ollama for your hardware
+make ai-pull             # Download LLM models (~7GB)
 ```
 
 ### 2. Install D-Bus policy (one-time)
@@ -86,14 +93,17 @@ For details on the PWA control plane, UI stack, and frontend environment setup, 
 ## Run
 
 ```bash
-# Bridge + web app together (with hot-reload)
+# Everything: bridge + web app + AI server (with hot-reload)
 make run-all
 
 # Or just the bridge
 make run
+
+# Or just the AI server
+make ai-serve
 ```
 
-The web control plane is at `http://localhost:3000`. The Go API runs on `http://localhost:8090`.
+The web control plane is at `http://localhost:3000`. The Go API runs on `http://localhost:8090`. The AI API runs on `http://localhost:8100`.
 
 ## Pairing
 
@@ -154,6 +164,18 @@ scripts/
   test-hfp.sh             HFP pipeline test (no real call needed)
 deploy/                    D-Bus policy, systemd service, install script
 alunotes-bt-web/           Next.js web control plane
+alunotes-ai/               Local AI inference + ASR + diarization
+  alunotes_ai/
+    app.py                 FastAPI app factory
+    config.py              pydantic-settings (env-driven)
+    inference/router.py    Ollama → OpenAI API proxy
+    asr/engine.py          Qwen3-ASR wrapper (lazy loading, memory-aware)
+    asr/router.py          /v1/asr/transcribe endpoint
+    diarization/engine.py  pyannote + ASR two-step pipeline
+    diarization/router.py  /v1/asr/diarize endpoint
+  scripts/
+    ollama_autoconfig.sh   Hardware detection + ollama config writer
+  tests/                   pytest + httpx async integration tests
 ```
 
 ## Testing HFP
@@ -170,6 +192,8 @@ Validate the call pipeline without making real phone calls:
 
 ## API
 
+### Bridge (`:8090`)
+
 | Endpoint | Description |
 |----------|-------------|
 | `GET /api/v1/status` | Bridge status, connected devices, active session |
@@ -180,19 +204,37 @@ Validate the call pipeline without making real phone calls:
 | `GET /api/v1/config` | Current configuration |
 | `GET /health` | Health check |
 
+### AI (`:8100`)
+
+All inference runs locally — no data leaves the device.
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /v1/chat/completions` | OpenAI-compatible chat completions (proxied to ollama) |
+| `GET /v1/models` | List available models |
+| `POST /v1/asr/transcribe` | Speech-to-text (multipart audio upload, SSE streaming) |
+| `POST /v1/asr/diarize` | Transcribe + speaker diarization (multipart, NDJSON) |
+
 ## Makefile targets
 
 | Target | Description |
 |---|---|
-| `make deps` | Install system dependencies (BlueZ, libdbus, libsbc, pactl) |
+| `make deps` | Install all system dependencies (bridge + AI + ollama) |
 | `make setup-permissions` | Install D-Bus policy for non-root BlueZ access |
 | `make build` | Build for host platform and set BT capabilities |
 | `make build-pi` | Cross-compile for RPi 5 (ARM64) |
 | `make run` | Build and run the bridge |
-| `make run-all` | Build and run bridge (watch mode) + web app |
+| `make run-all` | Build and run bridge + web app + AI server |
 | `make lint` | Run golangci-lint |
-| `make test` | Run tests |
+| `make test` | Run Go tests |
 | `make clean` | Remove build artifacts |
+| `make ai-install` | Install AI Python deps + system packages + ollama |
+| `make ai-configure` | Auto-detect hardware, write optimal ollama config |
+| `make ai-start` | Start ollama serve |
+| `make ai-pull` | Pull required LLM models |
+| `make ai-test` | Run AI test suite (inference, ASR, diarization) |
+| `make ai-lint` | ruff + mypy on AI code |
+| `make ai-serve` | Start AI FastAPI dev server on :8100 |
 
 ## License
 

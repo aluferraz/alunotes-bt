@@ -3,6 +3,7 @@
 import { use, useEffect, useCallback, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAsyncDebouncer } from "@tanstack/react-pacer";
+import { useCompletion } from "@ai-sdk/react";
 import { orpc } from "~/orpc/react";
 import {
   useSimpleEditor,
@@ -17,11 +18,17 @@ import { useUIPreferences } from "~/stores/ui-preferences";
 import { useNoteEditorStore } from "~/stores/note-editor";
 import { FolderPicker } from "~/components/folder-picker";
 
+type GenerationPhase = "idle" | "transcribing" | "generating" | "done" | "error";
+type ProgressStage = string | null;
+
 export default function AudioNotePage(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params);
   const noteId = params.id;
   const [showOverwriteMenu, setShowOverwriteMenu] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [generationPhase, setGenerationPhase] = useState<GenerationPhase>("idle");
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [progressMessage, setProgressMessage] = useState<ProgressStage>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const queryClient = useQueryClient();
@@ -29,6 +36,8 @@ export default function AudioNotePage(props: { params: Promise<{ id: string }> }
   const { mutateAsync: updateNote } = useMutation(orpc.notes.update.mutationOptions());
   const updateNoteRef = useRef(updateNote);
   useEffect(() => { updateNoteRef.current = updateNote; }, [updateNote]);
+
+  const { mutateAsync: setAlunoteGenerated } = useMutation(orpc.notes.setAlunoteGenerated.mutationOptions());
 
   // Fetch recording details for the audio player
   const { data: recording } = useQuery({
@@ -151,6 +160,168 @@ export default function AudioNotePage(props: { params: Promise<{ id: string }> }
 
   const editorTheme = useUIPreferences((s) => s.editorTheme);
 
+  // LLM streaming via Vercel AI SDK
+  const { complete, isLoading: isGenerating } = useCompletion({
+    api: "/api/ai/generate-note",
+    onFinish: async (_prompt: string, completion: string) => {
+      // Insert the generated markdown as paragraphs into the editor
+      if (editorState.editor && completion) {
+        // Set content as markdown-like plain text (the editor will parse it)
+        editorState.editor
+          .chain()
+          .focus("end")
+          .insertContent(
+            completion.split("\n").map((line) => {
+              if (!line.trim()) return { type: "paragraph" };
+              return { type: "paragraph", content: [{ type: "text", text: line }] };
+            })
+          )
+          .run();
+
+        // Save and mark as generated
+        const newContent = JSON.stringify(editorState.editor.getJSON());
+        handleUpdateContent(newContent);
+        await setAlunoteGenerated({ id: noteId, generated: true });
+        void queryClient.invalidateQueries({ queryKey: orpc.notes.get.queryOptions({ input: { id: noteId } }).queryKey });
+        setGenerationPhase("done");
+        setProgressMessage(null);
+      }
+    },
+    onError: (err: Error) => {
+      setGenerationError(err.message);
+      setGenerationPhase("error");
+      setProgressMessage(null);
+    },
+  });
+
+  /** Run the full AI pipeline: diarize (SSE) → insert transcript → generate notes */
+  const handleGenerateAlunote = useCallback(async () => {
+    if (generationPhase !== "idle" && generationPhase !== "done" && generationPhase !== "error") return;
+
+    setGenerationPhase("transcribing");
+    setGenerationError(null);
+    setProgressMessage("Starting...");
+
+    try {
+      // Step 1: Diarize via SSE stream
+      const res = await fetch("/api/ai/diarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ noteId }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText })) as { error?: string };
+        throw new Error(err.error ?? `Diarization failed (${res.status})`);
+      }
+
+      // Parse SSE events
+      const segments: Array<{ speaker: string; start: number; end: number; text: string }> = [];
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error("No response body");
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let sseError: string | null = null;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.startsWith("data:")) continue;
+          const raw = line.slice(5).trim();
+          if (!raw) continue;
+
+          try {
+            const event = JSON.parse(raw) as {
+              type: string;
+              stage?: string;
+              message?: string;
+              speaker?: string;
+              start?: number;
+              end?: number;
+              text?: string;
+              total_segments?: number;
+            };
+
+            if (event.type === "progress") {
+              setProgressMessage(event.message ?? event.stage ?? "Processing...");
+            } else if (event.type === "segment") {
+              segments.push({
+                speaker: event.speaker ?? "UNKNOWN",
+                start: event.start ?? 0,
+                end: event.end ?? 0,
+                text: event.text ?? "",
+              });
+              setProgressMessage(`${segments.length} segment(s) found...`);
+            } else if (event.type === "error") {
+              sseError = event.message ?? "Unknown error";
+            }
+          } catch { /* skip malformed */ }
+        }
+      }
+
+      if (sseError) throw new Error(sseError);
+
+      // Build transcript text
+      const transcript = segments.length === 0
+        ? "(No speech detected)"
+        : segments
+            .map((s) => {
+              const start = `${Math.floor(s.start / 60).toString().padStart(2, "0")}:${Math.floor(s.start % 60).toString().padStart(2, "0")}`;
+              const end = `${Math.floor(s.end / 60).toString().padStart(2, "0")}:${Math.floor(s.end % 60).toString().padStart(2, "0")}`;
+              return `[${start} - ${end}] ${s.speaker}: ${s.text}`;
+            })
+            .join("\n");
+
+      setProgressMessage("Inserting transcript...");
+
+      // Step 2: Insert transcript into a Details (collapsible) block in the editor
+      if (editorState.editor) {
+        const transcriptLines = transcript.split("\n").map((line) => {
+          if (!line.trim()) return { type: "paragraph" };
+          return { type: "paragraph", content: [{ type: "text", text: line }] };
+        });
+
+        editorState.editor.commands.setContent({
+          type: "doc",
+          content: [
+            {
+              type: "details",
+              attrs: { class: "details-node" },
+              content: [
+                {
+                  type: "detailsSummary",
+                  content: [{ type: "text", text: "Transcript" }],
+                },
+                {
+                  type: "detailsContent",
+                  content: transcriptLines,
+                },
+              ],
+            },
+            { type: "horizontalRule" },
+            { type: "paragraph" },
+          ],
+        });
+      }
+
+      // Step 3: Stream LLM note generation
+      setGenerationPhase("generating");
+      setProgressMessage("Generating notes...");
+      await complete(transcript);
+    } catch (err) {
+      setGenerationError(err instanceof Error ? err.message : "Generation failed");
+      setGenerationPhase("error");
+      setProgressMessage(null);
+    }
+  }, [generationPhase, noteId, editorState.editor, complete]);
+
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -162,6 +333,8 @@ export default function AudioNotePage(props: { params: Promise<{ id: string }> }
   if (!note) {
     return <div className="text-center text-muted-foreground mt-20">Note not found.</div>;
   }
+
+  const isProcessing = generationPhase === "transcribing" || generationPhase === "generating";
 
   return (
     <EditorContext.Provider value={{ editor: editorState.editor }}>
@@ -259,21 +432,39 @@ export default function AudioNotePage(props: { params: Promise<{ id: string }> }
                       </div>
                     )}
                   </div>
+                ) : isProcessing ? (
+                  /* Processing indicator with live status */
+                  <div className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-glass-bg border border-glass-border text-sm font-medium text-muted-foreground">
+                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                    <span>
+                      {progressMessage ?? (generationPhase === "transcribing"
+                        ? "Transcribing audio..."
+                        : "Generating notes...")}
+                    </span>
+                  </div>
                 ) : (
                   /* Create Alunote button */
-                  <button className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-sm shadow-glass hover:shadow-[0_0_24px_rgba(var(--primary-rgb),0.3)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden">
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                      <div className="sparkle sparkle-1" />
-                      <div className="sparkle sparkle-2" />
-                      <div className="sparkle sparkle-3" />
-                      <div className="sparkle sparkle-4" />
-                      <div className="sparkle sparkle-5" />
-                      <div className="sparkle sparkle-6" />
-                    </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <button
+                      onClick={handleGenerateAlunote}
+                      className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-sm shadow-glass hover:shadow-[0_0_24px_rgba(var(--primary-rgb),0.3)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
+                    >
+                      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <div className="sparkle sparkle-1" />
+                        <div className="sparkle sparkle-2" />
+                        <div className="sparkle sparkle-3" />
+                        <div className="sparkle sparkle-4" />
+                        <div className="sparkle sparkle-5" />
+                        <div className="sparkle sparkle-6" />
+                      </div>
 
-                    <Wand2 className="w-4 h-4 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-                    <span className="relative z-10">Create Alunote for Recording</span>
-                  </button>
+                      <Wand2 className="w-4 h-4 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                      <span className="relative z-10">Create Alunote for Recording</span>
+                    </button>
+                    {generationPhase === "error" && generationError && (
+                      <p className="text-xs text-destructive">{generationError}</p>
+                    )}
+                  </div>
                 )}
               </div>
             )}
@@ -307,7 +498,7 @@ export default function AudioNotePage(props: { params: Promise<{ id: string }> }
               <button
                 onClick={() => {
                   setShowConfirmDialog(false);
-                  // TODO: trigger regeneration
+                  void handleGenerateAlunote();
                 }}
                 className="px-4 py-2 rounded-lg text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
               >

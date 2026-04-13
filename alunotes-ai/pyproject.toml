@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alunotes-ai"
+version = "0.1.0"
+description = "Local LLM inference and media-processing APIs for alunotes"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.34",
+  "httpx>=0.28",
+  "pydantic>=2.10",
+  "pydantic-settings>=2.7",
+  "python-multipart>=0.0.18",
+  "sse-starlette>=2.2",
+  "qwen-asr>=0.0.6",
+  "pyannote.audio>=3.3",
+  "soundfile>=0.13",
+  "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "pytest-asyncio>=0.25",
+  "httpx>=0.28",
+  "ruff>=0.9",
+  "mypy>=1.14",
+]
+
+[tool.setuptools]
+packages = { find = { where = ["."], include = ["alunotes_ai*"] } }
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
