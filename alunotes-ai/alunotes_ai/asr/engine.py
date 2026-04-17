@@ -85,6 +85,10 @@ def transcribe_sync(
     return_time_stamps: bool = False,
 ) -> list[dict]:
     """Transcribe audio synchronously. Returns list of {language, text, time_stamps}."""
+    # Skip forced aligner if disabled in settings
+    if return_time_stamps and not settings.use_forced_aligner:
+        return_time_stamps = False
+
     model = _get_model(need_aligner=return_time_stamps)
 
     if isinstance(audio, Path):
@@ -92,11 +96,23 @@ def transcribe_sync(
 
     wav, sr = _load_audio_bytes(audio)
 
-    results = model.transcribe(
-        audio=(wav, sr),
-        language=language,
-        return_time_stamps=return_time_stamps,
-    )
+    # Resample to 16kHz mono if enabled
+    if settings.use_resampling:
+        from .resample import ensure_16k_mono
+        wav, sr = ensure_16k_mono(wav, sr)
+
+    # VAD-based chunking for long audio
+    from .vad import vad_split
+    chunks = vad_split(wav, sr)
+
+    all_results = []
+    for chunk in chunks:
+        results = model.transcribe(
+            audio=(chunk, sr),
+            language=language,
+            return_time_stamps=return_time_stamps,
+        )
+        all_results.extend(results)
 
     return [
         {
@@ -108,7 +124,7 @@ def transcribe_sync(
                 else None
             ),
         }
-        for r in results
+        for r in all_results
     ]
 
 

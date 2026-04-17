@@ -36,6 +36,11 @@ Phone ──A2DP──► Pi (hci0)                Pi (hci1) ──A2DP──►
 | Local LLM inference (OpenAI-compatible API) | Working |
 | Speech-to-text (Qwen3-ASR) | Working |
 | Speaker diarization (pyannote.audio) | Working |
+| SRT subtitle output (forced aligner timestamps) | Working |
+| Audio auto-resampling (16kHz mono) | Working |
+| Hallucination filter (repeated n-gram collapse) | Working |
+| VAD chunking for long audio (>3min) | Working |
+| SQLite job queue (FIFO, same-type batching) | Working |
 
 ## Prerequisites
 
@@ -166,13 +171,19 @@ deploy/                    D-Bus policy, systemd service, install script
 alunotes-bt-web/           Next.js web control plane
 alunotes-ai/               Local AI inference + ASR + diarization
   alunotes_ai/
-    app.py                 FastAPI app factory
-    config.py              pydantic-settings (env-driven)
+    app.py                 FastAPI app factory (lifespan starts/stops job queue)
+    config.py              pydantic-settings (env-driven, feature flags)
+    memory.py              Slot-based model memory manager (one model at a time)
+    queue.py               SQLite job queue (FIFO, same-type batching, heartbeat/reaper)
     inference/router.py    Ollama → OpenAI API proxy
-    asr/engine.py          Qwen3-ASR wrapper (lazy loading, memory-aware)
-    asr/router.py          /v1/asr/transcribe endpoint
+    asr/engine.py          Qwen3-ASR wrapper (lazy loading, resampling, VAD chunking)
+    asr/router.py          /v1/asr/transcribe endpoint (SSE, SRT output support)
+    asr/resample.py        Auto-resample to 16kHz mono (torchaudio / ffmpeg)
+    asr/filters.py         Hallucination filter (repeated n-gram collapse)
+    asr/vad.py             Silero VAD chunking for long audio (>3min)
+    asr/srt.py             SRT subtitle format generator
     diarization/engine.py  pyannote + ASR two-step pipeline
-    diarization/router.py  /v1/asr/diarize endpoint
+    diarization/router.py  /v1/asr/diarize endpoint (501 when disabled)
   scripts/
     ollama_autoconfig.sh   Hardware detection + ollama config writer
   tests/                   pytest + httpx async integration tests
@@ -206,14 +217,18 @@ Validate the call pipeline without making real phone calls:
 
 ### AI (`:8100`)
 
-All inference runs locally — no data leaves the device.
+All inference runs locally — no data leaves the device. Features are individually toggleable via `ALUNOTES_AI_*` env vars.
 
 | Endpoint | Description |
 |----------|-------------|
 | `POST /v1/chat/completions` | OpenAI-compatible chat completions (proxied to ollama) |
 | `GET /v1/models` | List available models |
-| `POST /v1/asr/transcribe` | Speech-to-text (multipart audio upload, SSE streaming) |
-| `POST /v1/asr/diarize` | Transcribe + speaker diarization (multipart, NDJSON) |
+| `POST /v1/asr/transcribe` | Speech-to-text (multipart audio upload, SSE streaming). `?format=srt` for SRT subtitles. |
+| `POST /v1/asr/diarize` | Transcribe + speaker diarization (multipart, SSE). Returns 501 if disabled. |
+
+**Audio pipeline:** Input audio is auto-resampled to 16kHz mono. Files > 3 minutes are split on silence boundaries via Silero VAD. Transcripts are post-filtered for hallucination artifacts (repeated n-grams). All pipeline stages are feature-flagged.
+
+**Job queue:** An in-memory SQLite job queue (enabled by default) processes inference jobs FIFO, batching same-type jobs to minimize model swaps. Includes heartbeat monitoring and automatic expiry of stale jobs.
 
 ## Makefile targets
 

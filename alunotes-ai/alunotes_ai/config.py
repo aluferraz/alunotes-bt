@@ -26,6 +26,21 @@ class Settings(BaseSettings):
     asr_max_new_tokens: int | None = None
     asr_max_batch_size: int = 4
 
+    # Feature flags
+    use_queue: bool = True
+    use_forced_aligner: bool = True
+    use_diarization: bool = True
+    use_hallucination_filter: bool = True
+    use_resampling: bool = True
+
+    # Job TTL (seconds)
+    asr_job_ttl: int = 300
+    diarize_job_ttl: int = 600
+    llm_job_ttl: int = 300
+
+    # Queue monitor
+    queue_monitor_interval: int = 30
+
     # Server
     host: str = "0.0.0.0"
     port: int = 8100

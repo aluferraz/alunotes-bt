@@ -1,3 +1,7 @@
+# Load .env if present (plain KEY=VALUE format)
+-include .env
+export
+
 .PHONY: install _install-system-deps _install-python-deps _install-ollama \
        ollama-configure ollama-start ollama-stop ollama-pull \
        dev test lint serve clean
@@ -73,14 +77,12 @@ dev: _install-python-deps
 	@echo "==> Dev environment ready"
 
 serve: $(VENV)/bin/activate
-	@if [ -f .env ]; then set -a && source .env && set +a; fi; \
 	$(PYTHON) -m uvicorn alunotes_ai.app:app --host 0.0.0.0 --port 8100 --reload
 
 # ---------- Quality ----------
 
 test: $(VENV)/bin/activate
-	@if [ -f .env ]; then set -a && source .env && set +a; fi; \
-	echo "==> Running inference tests..." && \
+	@echo "==> Running inference tests..." && \
 	$(PYTHON) -m pytest tests/test_inference.py -v && \
 	echo "==> Running ASR tests..." && \
 	$(PYTHON) -m pytest tests/test_asr.py -v && \

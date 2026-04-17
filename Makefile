@@ -1,4 +1,4 @@
-.PHONY: build build-web run run-all kill lint clean tidy setup-permissions deps \
+.PHONY: build build-web build-all run run-all kill lint clean tidy setup-permissions deps \
        ai-install ai-configure ai-start ai-pull ai-dev ai-test ai-lint ai-serve
 
 BINARY := alunotes-bridge
@@ -13,6 +13,12 @@ build: tidy
 # Build for Raspberry Pi 5 (ARM64).
 build-pi: tidy
 	GOOS=linux GOARCH=arm64 go build -o $(BUILD_DIR)/$(BINARY)-arm64 $(CMD)
+
+# Build all Docker images.
+build-all:
+	docker build -f Dockerfile.bridge -t alunotes/bridge .
+	docker build -f alunotes-ai/Dockerfile -t alunotes/ai ./alunotes-ai
+	docker build -f alunotes-bt-web/Dockerfile -t alunotes/web ./alunotes-bt-web
 
 # Build the Next.js web app.
 build-web:

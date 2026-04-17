@@ -1,0 +1,23 @@
+bin/
+logs/
+recordings/
+context-data/
+*.wav
+.env
+.git
+.gitignore
+
+# Python
+alunotes-ai/.venv/
+alunotes-ai/__pycache__/
+alunotes-ai/.pytest_cache/
+alunotes-ai/.ruff_cache/
+alunotes-ai/.mypy_cache/
+alunotes-ai/dist/
+alunotes-ai/build/
+
+# Web
+alunotes-bt-web/node_modules/
+alunotes-bt-web/.next/
+alunotes-bt-web/.env
+alunotes-bt-web/db.sqlite*

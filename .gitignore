@@ -1,4 +1,5 @@
 bin/
+data/
 recordings/
 config.yaml
 *.wav

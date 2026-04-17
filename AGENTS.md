@@ -110,13 +110,36 @@ Local LLM inference and media-processing APIs. All processing runs offline — z
 
 ### Architecture
 
+- `alunotes_ai/app.py` — FastAPI app factory with lifespan management (starts/stops job queue when enabled)
+- `alunotes_ai/config.py` — All settings via env vars (`ALUNOTES_AI_` prefix). Includes feature flags and job TTL configuration.
+- `alunotes_ai/memory.py` — Slot-based model memory manager. Only one of {ollama, asr, diarization} occupies RAM at a time. Used internally by the job queue worker.
+- `alunotes_ai/queue.py` — SQLite-backed in-memory job queue. Processes jobs FIFO, batches same-type jobs to minimize model swaps. Heartbeat + reaper for stale jobs. Background monitor logs queue depth, RSS, CPU %.
 - `alunotes_ai/inference/router.py` — Ollama ↔ OpenAI API translation layer (proxies to `127.0.0.1:11434`)
-- `alunotes_ai/asr/engine.py` — Wraps `Qwen3ASRModel`. Callers use `transcribe(audio) -> AsyncIterator[str]`, never touch the toolkit. Lazy model loading, forced aligner loaded separately on demand to avoid OOM on 16GB devices.
-- `alunotes_ai/asr/router.py` — `/v1/asr/transcribe` endpoint (multipart audio upload + SSE streaming)
-- `alunotes_ai/diarization/engine.py` — Two-step pipeline: ASR with timestamps → pyannote speaker segments → merge by timestamp overlap
-- `alunotes_ai/diarization/router.py` — `/v1/asr/diarize` endpoint (multipart + NDJSON streaming)
-- `alunotes_ai/config.py` — All settings via env vars (`ALUNOTES_AI_OLLAMA_MODEL`, `ALUNOTES_AI_ASR_DEVICE`, etc.)
-- `scripts/ollama_autoconfig.sh` — Detects RAM/CPU/GPU, writes `~/.ollama/config` + `.env`
+- `alunotes_ai/asr/engine.py` — Wraps `Qwen3ASRModel`. Callers use `transcribe(audio) -> AsyncIterator[str]`, never touch the toolkit. Lazy model loading, forced aligner loaded separately on demand. Integrates resampling and VAD chunking.
+- `alunotes_ai/asr/router.py` — `/v1/asr/transcribe` endpoint (multipart audio upload + SSE streaming). Supports `format=srt` query param for SRT subtitle output. Applies hallucination filter when enabled.
+- `alunotes_ai/asr/resample.py` — Auto-resamples audio to 16kHz mono float32 (torchaudio with ffmpeg fallback). Gated by `use_resampling`.
+- `alunotes_ai/asr/filters.py` — Post-transcription hallucination filter. Detects and collapses repeated n-grams (5/4/3-word). Gated by `use_hallucination_filter`.
+- `alunotes_ai/asr/vad.py` — Silero VAD chunking for audio > 3 minutes. Splits on silence boundaries to prevent OOM on Pi.
+- `alunotes_ai/asr/srt.py` — SRT subtitle format generator from timestamped ASR segments.
+- `alunotes_ai/diarization/engine.py` — Two-step pipeline: pyannote speaker diarization → per-segment ASR transcription
+- `alunotes_ai/diarization/router.py` — `/v1/asr/diarize` endpoint (multipart + SSE streaming). Returns 501 when `use_diarization` is disabled.
+- `scripts/ollama_autoconfig.sh` — Detects RAM/CPU/GPU, writes `~/.ollama/config` + `.env` (plain `KEY=VALUE` format)
+
+### Feature Flags
+
+All configurable via env vars with `ALUNOTES_AI_` prefix:
+
+| Variable | Type | Default | Purpose |
+|---|---|---|---|
+| `USE_QUEUE` | bool | true | Enable SQLite job queue (false = legacy direct MemoryManager) |
+| `USE_FORCED_ALIGNER` | bool | true | Load Qwen3-ForcedAligner for timestamps/SRT |
+| `USE_DIARIZATION` | bool | true | Enable `/v1/asr/diarize` endpoint |
+| `USE_HALLUCINATION_FILTER` | bool | true | Post-process ASR to remove repeated n-grams |
+| `USE_RESAMPLING` | bool | true | Auto-resample audio to 16kHz mono |
+| `ASR_JOB_TTL` | int | 300 | TTL for ASR queue jobs (seconds) |
+| `DIARIZE_JOB_TTL` | int | 600 | TTL for diarization jobs |
+| `LLM_JOB_TTL` | int | 300 | TTL for LLM jobs |
+| `QUEUE_MONITOR_INTERVAL` | int | 30 | Seconds between queue status log lines |
 
 ### Key Design Decisions
 
@@ -126,6 +149,12 @@ Local LLM inference and media-processing APIs. All processing runs offline — z
 - Tests run in separate pytest processes per module (inference → ASR → diarization) to free RAM between suites
 - Ollama model name comes from config/env, never hardcoded in inference logic
 - Thinking models handled: router falls back to `thinking` field when `content` is empty
+- Job queue uses in-memory SQLite with thread-safe locking — no external dependencies (Redis, etc.)
+- Same-type job batching minimizes model swap overhead (e.g. run all pending ASR jobs before switching to ollama)
+- Heartbeat + reaper prevents stuck jobs from blocking the queue
+- `.env` uses plain `KEY=VALUE` format (no `export` prefix); Makefile loads via `-include .env` + `export`
+- Audio resampling uses torchaudio with ffmpeg subprocess fallback for environments without torchaudio
+- VAD chunking only activates for audio > 3 minutes to avoid unnecessary overhead on short clips
 
 ### API Endpoints
 
@@ -133,8 +162,8 @@ Local LLM inference and media-processing APIs. All processing runs offline — z
 |---|---|---|
 | `/v1/chat/completions` | POST | OpenAI-compatible chat (proxied to ollama) |
 | `/v1/models` | GET | List available ollama models |
-| `/v1/asr/transcribe` | POST | Transcribe audio (multipart upload, SSE response) |
-| `/v1/asr/diarize` | POST | Transcribe + speaker diarization (multipart, NDJSON) |
+| `/v1/asr/transcribe` | POST | Transcribe audio (multipart upload, SSE response). Optional `format=srt` for SRT subtitles. |
+| `/v1/asr/diarize` | POST | Transcribe + speaker diarization (multipart, SSE). Returns 501 if disabled. |
 
 ## Web App (`alunotes-bt-web/`)
 

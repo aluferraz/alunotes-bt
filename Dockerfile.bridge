@@ -1,0 +1,25 @@
+# ── Stage 1: Build ──────────────────────────────────────────────
+FROM golang:1.24-bookworm AS builder
+
+WORKDIR /src
+
+# Cache module downloads.
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source and build a fully-static binary (pure-Go D-Bus client, no cgo).
+COPY cmd/ cmd/
+COPY internal/ internal/
+
+RUN CGO_ENABLED=0 GOOS=linux \
+    go build -trimpath -ldflags="-s -w" -o /bridge ./cmd/bridge
+
+# ── Stage 2: Runtime ───────────────────────────────────────────
+FROM gcr.io/distroless/static-debian12:nonroot
+
+COPY --from=builder /bridge /bridge
+
+EXPOSE 8090
+
+ENTRYPOINT ["/bridge"]
+CMD ["-config", "/etc/alunotes/config.yaml", "-api-addr", ":8090"]

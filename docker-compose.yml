@@ -1,0 +1,71 @@
+services:
+  # ── Go Bluetooth bridge ──────────────────────────────────────
+  # Runs on host network stack — D-Bus, PipeWire, Bluetooth all need host access.
+  # Not reachable by name from Docker networks; use host.docker.internal instead.
+  bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.bridge
+    image: alunotes/bridge
+    restart: unless-stopped
+    network_mode: host
+    user: "${PUID}:${PGID}"
+    volumes:
+      - ./config.yaml:/etc/alunotes/config.yaml:ro
+      - /var/run/dbus:/var/run/dbus
+      - /run/user/1000/pipewire-0:/run/user/1000/pipewire-0
+      - ./data/bridge:/var/lib/alunotes-bridge
+      - recordings:/data/recordings
+    environment:
+      - XDG_RUNTIME_DIR=/run/user/1000
+
+  # ── Python AI / ASR / diarization ────────────────────────────
+  # Internal only — web container reaches it via http://ai:8100 on the internal net.
+  ai:
+    build:
+      context: ./alunotes-ai
+    image: alunotes/ai
+    restart: unless-stopped
+    networks:
+      - internal
+    volumes:
+      - ai-models:/app/models
+      - recordings:/data/recordings:ro
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ── Next.js web control plane ────────────────────────────────
+  # Only service exposed to the host.
+  web:
+    build:
+      context: ./alunotes-bt-web
+    image: alunotes/web
+    restart: unless-stopped
+    networks:
+      - internal
+    ports:
+      - "3000:3000"
+    volumes:
+      - web-db:/app/prisma
+      - recordings:/app/public/recordings:ro
+    env_file:
+      - ./.env
+      - ./alunotes-bt-web/.env
+    environment:
+      - NODE_ENV=production
+      - BRIDGE_API_URL=http://host.docker.internal:8090
+      - AI_API_URL=http://ai:8100
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - ai
+
+networks:
+  internal:
+
+volumes:
+  recordings:
+  ai-models:
+  web-db:
