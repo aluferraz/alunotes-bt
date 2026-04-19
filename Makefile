@@ -1,5 +1,5 @@
 .PHONY: build build-pi build-web build-box build-all run run-all kill lint clean tidy \
-       setup-permissions deps-box install uninstall \
+       setup-permissions deps-box host-install-docker install-systemd uninstall \
        up down restart status logs enable disable \
        ai-install ai-dev ai-test ai-lint ai-serve
 
@@ -10,10 +10,32 @@ BUILD_DIR := ./bin
 CMD := ./cmd/bridge
 DISTROBOX_NAME ?= ubuntu24
 
+# Container runtime used by build-all / host-install-docker. We default to
+# docker because the bridge needs tight BT/D-Bus integration and we run the
+# daemon directly on the host. Override with CONTAINER=podman if you prefer.
+CONTAINER ?= docker
+
+# Detect running inside a distrobox/toolbox container. When invoked from
+# inside the box, host-only commands (docker, sudo systemctl, setcap, the
+# native bridge binary that needs BT/D-Bus/PipeWire) hop to the host via
+# distrobox-host-exec, and "distrobox enter" wrappers are no-ops. On the host
+# the vars are empty / expand to the usual "distrobox enter" prefix.
+IN_DISTROBOX := $(shell [ -f /run/.containerenv ] && echo 1)
+
+ifeq ($(IN_DISTROBOX),1)
+HOST      := distrobox-host-exec
+DBOX      :=
+DBOX_BASH := bash -lc
+else
+HOST      :=
+DBOX      := distrobox enter $(DISTROBOX_NAME) --
+DBOX_BASH := distrobox enter $(DISTROBOX_NAME) -- bash -lc
+endif
+
 # Fully static pure-Go build (no cgo). Matches Dockerfile.bridge.
 build: tidy
 	CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o $(BUILD_DIR)/$(BINARY) $(CMD)
-	sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
+	$(HOST) sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
 
 # Build for Raspberry Pi 5 (ARM64).
 build-pi: tidy
@@ -21,23 +43,24 @@ build-pi: tidy
 
 # Build bridge inside the distrobox (toolchain not required on host).
 build-box:
-	distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+	$(DBOX_BASH) \
 		'export PATH=/usr/local/go/bin:$$PATH && cd $(CURDIR) && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o $(BUILD_DIR)/$(BINARY) $(CMD)'
-	sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
+	$(HOST) sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
 
-# Build all Docker images.
+# Build all container images. The runtime ($(CONTAINER)) runs on the host,
+# so from inside the distrobox these hop to the host via distrobox-host-exec.
 build-all:
-	docker build -f Dockerfile.bridge -t alunotes/bridge .
-	docker build -f alunotes-ai/Dockerfile -t alunotes/ai ./alunotes-ai
-	docker build -f alunotes-bt-web/Dockerfile -t alunotes/web ./alunotes-bt-web
+	$(HOST) $(CONTAINER) build -f Dockerfile.bridge -t alunotes/bridge .
+	$(HOST) $(CONTAINER) build -f alunotes-ai/Dockerfile -t alunotes/ai ./alunotes-ai
+	$(HOST) $(CONTAINER) build -f alunotes-bt-web/Dockerfile -t alunotes/web ./alunotes-bt-web
 
-# Build the Next.js web app.
+# Build the Next.js web app (pnpm lives inside the distrobox).
 build-web:
-	cd alunotes-bt-web && pnpm build
+	$(DBOX_BASH) 'cd $(CURDIR)/alunotes-bt-web && pnpm build'
 
 # Run the bridge locally.
 run: build
-	$(BUILD_DIR)/$(BINARY) -config config.yaml
+	$(HOST) $(BUILD_DIR)/$(BINARY) -config config.yaml
 
 # Kill any leftover dev-mode processes (belt-and-suspenders for the trap in run-all).
 kill:
@@ -52,12 +75,12 @@ kill:
 # host stays free of Go/Node/Python toolchains.
 # Output is color-prefixed: [bridge]=cyan, [watch]=gray, [web]=magenta, [ai]=yellow.
 run-all: kill
-	@echo "==> Initial bridge build (in $(DISTROBOX_NAME))"
-	@distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+	@echo "==> Initial bridge build"
+	@$(DBOX_BASH) \
 		'export PATH=/usr/local/go/bin:$$PATH && cd $(CURDIR) && CGO_ENABLED=0 go build -o $(BUILD_DIR)/$(BINARY) $(CMD)'
-	@sudo -v
-	@sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
-	@echo "==> Starting bridge (native) + web/ai (distrobox)"
+	@$(HOST) sudo -v
+	@$(HOST) sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
+	@echo "==> Starting bridge (host) + web/ai (distrobox)"
 	@PIDFILE=$$(mktemp); \
 	CYAN='\x1b[36m'; GRAY='\x1b[90m'; MAGENTA='\x1b[35m'; YELLOW='\x1b[33m'; RESET='\x1b[0m'; \
 	cleanup() { \
@@ -67,26 +90,26 @@ run-all: kill
 		wait 2>/dev/null; \
 	}; \
 	trap cleanup EXIT INT TERM; \
-	stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
+	$(HOST) stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
 	echo $$! > $$PIDFILE; \
-	( while distrobox enter $(DISTROBOX_NAME) -- inotifywait -qq -r -e modify,create,delete --include '\.go$$' $(CURDIR)/cmd/ $(CURDIR)/internal/; do \
-		echo "Go files changed, rebuilding in $(DISTROBOX_NAME)..."; \
-		distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+	( while $(DBOX) inotifywait -qq -r -e modify,create,delete --include '\.go$$' $(CURDIR)/cmd/ $(CURDIR)/internal/; do \
+		echo "Go files changed, rebuilding..."; \
+		$(DBOX_BASH) \
 			'export PATH=/usr/local/go/bin:$$PATH && cd $(CURDIR) && CGO_ENABLED=0 go build -o $(BUILD_DIR)/$(BINARY) $(CMD)' \
-		&& sudo -n setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY) && { \
+		&& $(HOST) sudo -n setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY) && { \
 			echo "Restarting bridge..."; \
 			kill $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
 			wait $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
-			stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
+			$(HOST) stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
 			echo $$! > $$PIDFILE; \
 		} || echo "Build failed, keeping old binary"; \
 	done ) 2>&1 | sed -u "s/^/$$GRAY[watch]$$RESET /" & \
 	WATCH_PID=$$!; \
-	distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+	$(DBOX_BASH) \
 		'cd $(CURDIR)/alunotes-bt-web && exec pnpm dev' \
 		2>&1 | sed -u "s/^/$$MAGENTA[web]$$RESET /" & \
 	WEB_PID=$$!; \
-	distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+	$(DBOX_BASH) \
 		'cd $(CURDIR)/alunotes-ai && \
 		 if [ -f .env ]; then set -a; . ./.env; set +a; fi; \
 		 exec .venv/bin/python -m uvicorn alunotes_ai.app:app \
@@ -97,48 +120,57 @@ run-all: kill
 	wait
 
 # Install the full stack via systemd on the host. Builds inside distrobox.
-install:
-	./deploy/install.sh
+install-systemd:
+	$(HOST) ./deploy/install.sh
 
-# ---------- service control ----------
+# ---------- stack control ----------
+# up/down drive the docker-compose stack on the host. Other targets below
+# (restart/status/logs/enable/disable) still operate on the systemd units
+# installed by `install-systemd`.
 
 up:
-	sudo systemctl start $(SYSTEM_SVCS)
+	@# Pre-create host-mounted data dir with current uid so the bridge (running
+	@# as ${PUID:-1000}) can write device_id / logs. Otherwise docker creates
+	@# the missing source path as root and the non-root container fails.
+	mkdir -p data/bridge
+	$(HOST) $(CONTAINER) compose up -d
 
 down:
-	sudo systemctl stop $(SYSTEM_SVCS)
+	$(HOST) $(CONTAINER) compose down
 
 restart:
-	sudo systemctl restart $(SYSTEM_SVCS)
+	$(HOST) sudo systemctl restart $(SYSTEM_SVCS)
 
 status:
-	@sudo systemctl --no-pager status $(SYSTEM_SVCS) || true
+	@$(HOST) sudo systemctl --no-pager status $(SYSTEM_SVCS) || true
 
 # Follow logs from all app services (Ctrl+C to exit).
 logs:
-	sudo journalctl -f $(foreach s,$(SYSTEM_SVCS),-u $(s))
+	$(HOST) sudo journalctl -f $(foreach s,$(SYSTEM_SVCS),-u $(s))
 
 enable:
-	sudo systemctl enable $(SYSTEM_SVCS)
+	$(HOST) sudo systemctl enable $(SYSTEM_SVCS)
 
 disable:
-	sudo systemctl disable $(SYSTEM_SVCS)
+	$(HOST) sudo systemctl disable $(SYSTEM_SVCS)
 
 # Remove installed unit files + D-Bus policy. Leaves Ollama and build artifacts.
-uninstall: down disable
-	sudo rm -f /etc/systemd/system/alunotes-bt-rfkill.service \
-	           /etc/systemd/system/alunotes-bridge.service \
-	           /etc/systemd/system/alunotes-ai.service \
-	           /etc/systemd/system/alunotes-web.service \
-	           /etc/dbus-1/system.d/alunotes-bridge.conf
-	sudo systemctl daemon-reload
+uninstall:
+	$(HOST) sudo systemctl stop $(SYSTEM_SVCS) 2>/dev/null || true
+	$(HOST) sudo systemctl disable $(SYSTEM_SVCS) 2>/dev/null || true
+	$(HOST) sudo rm -f /etc/systemd/system/alunotes-bt-rfkill.service \
+	                   /etc/systemd/system/alunotes-bridge.service \
+	                   /etc/systemd/system/alunotes-ai.service \
+	                   /etc/systemd/system/alunotes-web.service \
+	                   /etc/dbus-1/system.d/alunotes-bridge.conf
+	$(HOST) sudo systemctl daemon-reload
 
 # Install build toolchains (go/node/pnpm/python venv + AI apt libs) inside the
 # distrobox. The bridge is pure Go (CGO disabled), so the host needs zero
 # build-time apt packages — only runtime deps already shipped by SteamOS
 # (bluez, dbus, pipewire, rfkill, btmgmt, bluetoothctl).
 deps-box:
-	distrobox enter $(DISTROBOX_NAME) -- bash -lc '\
+	$(DBOX_BASH) '\
 		sudo apt-get update -qq && \
 		sudo apt-get install -y --no-install-recommends \
 			build-essential curl ca-certificates git \
@@ -146,15 +178,22 @@ deps-box:
 			python3 python3-venv python3-pip \
 			inotify-tools'
 
+# Install docker on the host (SteamOS). Required so build-all and container
+# runtime can talk to real BT/D-Bus devices. Safe to re-run. Runs on the host
+# even when invoked from inside the distrobox.
+host-install-docker:
+	$(HOST) ./deploy/install-docker.sh
+
 # Install D-Bus policy and set up permissions for running without root.
-# Run this once after cloning the repo.
+# Run this once after cloning the repo. D-Bus and wireplumber live on the
+# host, so those bits hop via distrobox-host-exec when invoked from the box.
 setup-permissions:
-	sudo mkdir -p /etc/dbus-1/system.d
-	sudo install -m 0644 deploy/dbus-alunotes.conf /etc/dbus-1/system.d/alunotes-bridge.conf
-	sudo systemctl reload dbus
+	$(HOST) sudo mkdir -p /etc/dbus-1/system.d
+	$(HOST) sudo install -m 0644 deploy/dbus-alunotes.conf /etc/dbus-1/system.d/alunotes-bridge.conf
+	$(HOST) sudo systemctl reload dbus
 	@# Ensure PipeWire Bluetooth is enabled (remove any override that disables it).
 	rm -f ~/.config/wireplumber/wireplumber.conf.d/90-disable-bluetooth.conf
-	systemctl --user restart wireplumber 2>/dev/null || true
+	$(HOST) systemctl --user restart wireplumber 2>/dev/null || true
 	@echo "D-Bus policy installed. You can now run the bridge without root."
 
 # Run go mod tidy.

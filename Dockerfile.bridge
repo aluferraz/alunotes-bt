@@ -19,6 +19,11 @@ FROM gcr.io/distroless/static-debian12:nonroot
 
 COPY --from=builder /bridge /bridge
 
+# Bridge writes device_id + logs/ here. Compose mounts this path so the writable
+# state lives on the host (or a named volume); we set WORKDIR to the same path
+# so main.go's relative `logs/` lands inside that writable mount rather than /.
+WORKDIR /var/lib/alunotes-bridge
+
 EXPOSE 8090
 
 ENTRYPOINT ["/bridge"]

@@ -23,6 +23,7 @@ dependencies = [
   "soundfile>=0.13",
   "numpy>=1.26",
   "psutil>=5.9",
+  "lmstudio>=1.5",
 ]
 
 [project.optional-dependencies]
