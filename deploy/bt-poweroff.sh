@@ -1,6 +1,12 @@
 #!/bin/bash
 # Safety net: power off all Bluetooth adapters when the bridge stops.
-# Called by systemd ExecStopPost to handle crashes/SIGKILL.
-for hci in $(hciconfig -a 2>/dev/null | grep -oP '^hci\d+'); do
-    hciconfig "$hci" down 2>/dev/null && echo "Powered off $hci" || true
+# Called by systemd ExecStopPost to cover crashes / SIGKILL.
+# The Go binary handles graceful shutdown itself.
+set +e
+
+for idx in $(btmgmt info 2>/dev/null | grep -oP '^hci\K\d+' | sort -u); do
+    if btmgmt --index "$idx" power off >/dev/null 2>&1; then
+        echo "Powered off hci$idx"
+    fi
 done
+exit 0

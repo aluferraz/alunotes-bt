@@ -1,33 +1,42 @@
 """Integration tests for the OpenAI-compatible inference endpoint."""
 
 import json
+import os
 
 import httpx
 import pytest
 from httpx import AsyncClient
 
+from alunotes_ai.config import settings
 
-def _ollama_available() -> bool:
-    """Check if Ollama is running locally."""
+
+def _upstream_available() -> bool:
+    """Check if the configured OpenAI-compatible endpoint is reachable."""
     try:
-        resp = httpx.get("http://127.0.0.1:11434/api/tags", timeout=2)
-        return resp.status_code == 200
+        resp = httpx.get(
+            f"{settings.openai_base_url.rstrip('/')}/models",
+            headers={"Authorization": f"Bearer {settings.openai_api_key}"},
+            timeout=2,
+        )
+        return resp.status_code < 500
     except Exception:
         return False
 
 
-requires_ollama = pytest.mark.skipif(
-    not _ollama_available(),
-    reason="Ollama not running at 127.0.0.1:11434"
+requires_upstream = pytest.mark.skipif(
+    not _upstream_available(),
+    reason=f"OpenAI-compatible upstream not reachable at {settings.openai_base_url}",
 )
 
+TEST_MODEL = os.environ.get("ALUNOTES_AI_OPENAI_MODEL", settings.openai_model)
 
-@requires_ollama
+
+@requires_upstream
 @pytest.mark.asyncio
 async def test_chat_completions_non_streaming(client: AsyncClient):
-    """Call /v1/chat/completions with gemma-4-abliterated, assert OpenAI-schema response."""
+    """Call /v1/chat/completions, assert OpenAI-schema response."""
     payload = {
-        "model": "huihui_ai/gemma-4-abliterated:e2b",
+        "model": TEST_MODEL,
         "messages": [{"role": "user", "content": "Say hello in one word."}],
         "stream": False,
         "temperature": 0.0,
@@ -37,7 +46,6 @@ async def test_chat_completions_non_streaming(client: AsyncClient):
     assert resp.status_code == 200
 
     data = resp.json()
-    # Validate OpenAI response schema
     assert "id" in data
     assert data["object"] == "chat.completion"
     assert "created" in data
@@ -51,20 +59,16 @@ async def test_chat_completions_non_streaming(client: AsyncClient):
     assert "content" in choice["message"]
     assert choice["message"]["role"] == "assistant"
     assert len(choice["message"]["content"]) > 0
-    assert choice["finish_reason"] == "stop"
 
     assert "usage" in data
-    assert "prompt_tokens" in data["usage"]
-    assert "completion_tokens" in data["usage"]
-    assert "total_tokens" in data["usage"]
 
 
-@requires_ollama
+@requires_upstream
 @pytest.mark.asyncio
 async def test_chat_completions_streaming(client: AsyncClient):
     """Call /v1/chat/completions with stream=True, assert SSE chunks."""
     payload = {
-        "model": "huihui_ai/gemma-4-abliterated:e2b",
+        "model": TEST_MODEL,
         "messages": [{"role": "user", "content": "Say hi."}],
         "stream": True,
         "max_tokens": 16,
@@ -75,7 +79,6 @@ async def test_chat_completions_streaming(client: AsyncClient):
     body = resp.text
     assert len(body) > 0
 
-    # Parse SSE events
     chunks = []
     for line in body.splitlines():
         if line.startswith("data:"):
@@ -92,7 +95,7 @@ async def test_chat_completions_streaming(client: AsyncClient):
         assert "delta" in chunk["choices"][0]
 
 
-@requires_ollama
+@requires_upstream
 @pytest.mark.asyncio
 async def test_list_models(client: AsyncClient):
     """GET /v1/models should return OpenAI-schema model list."""

@@ -1,17 +1,21 @@
 """Single-model memory manager for resource-constrained devices.
 
 On a 16GB Pi, only one large model can be in RAM at a time. This module
-coordinates loading/unloading across ollama (LLM), ASR (Qwen3), and
+coordinates loading/unloading across the LLM slot, ASR (Qwen3), and
 diarization (pyannote) so they never compete for memory.
+
+The LLM itself runs at a remote (or separately-managed) OpenAI-compatible
+endpoint — we can't unload it from here, but we still free ASR/diarization
+before LLM requests so a co-located server has room.
 
 Usage:
     from alunotes_ai.memory import mem
 
-    mem.acquire("asr")        # unloads whatever else is loaded, marks ASR as active
+    mem.acquire("asr")   # unloads whatever else is loaded, marks ASR active
     # ... use the ASR model ...
 
-    mem.acquire("ollama")     # unloads ASR, tells ollama it's safe to load
-    # ... use ollama ...
+    mem.acquire("llm")   # unloads ASR, signals the LLM slot is in use
+    # ... forward request to OpenAI-compatible endpoint ...
 """
 
 import gc
@@ -19,13 +23,9 @@ import logging
 import threading
 from typing import Literal
 
-import httpx
-
-from .config import settings
-
 logger = logging.getLogger(__name__)
 
-Slot = Literal["ollama", "asr", "diarization", "idle"]
+Slot = Literal["llm", "asr", "diarization", "idle"]
 
 
 class MemoryManager:
@@ -58,25 +58,11 @@ class MemoryManager:
                 self._active = "idle"
 
     def _unload(self, slot: Slot) -> None:
-        if slot == "ollama":
-            self._unload_ollama()
-        elif slot == "asr":
+        if slot == "asr":
             self._unload_asr()
         elif slot == "diarization":
             self._unload_diarization()
-
-    def _unload_ollama(self) -> None:
-        """Tell ollama to unload the model from GPU/RAM."""
-        try:
-            # Ollama unloads a model when you send keep_alive=0
-            httpx.post(
-                f"{settings.ollama_base_url}/api/generate",
-                json={"model": settings.ollama_model, "keep_alive": 0},
-                timeout=10,
-            )
-            logger.info("memory: ollama model unloaded")
-        except Exception as e:
-            logger.warning("memory: failed to unload ollama model: %s", e)
+        # "llm" is externally managed — nothing to unload locally.
 
     def _unload_asr(self) -> None:
         """Delete the ASR model singleton and free memory."""
@@ -117,7 +103,7 @@ class MemoryManager:
 
         CPython's pymalloc + glibc keep freed pages mapped. After unloading
         multi-GiB models, RSS stays high even though Python objects are gone.
-        malloc_trim gives the pages back so Ollama can use the RAM.
+        malloc_trim gives the pages back so other processes can use the RAM.
         """
         try:
             import ctypes

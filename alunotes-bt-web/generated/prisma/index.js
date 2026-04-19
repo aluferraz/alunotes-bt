@@ -263,7 +263,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/alu/Documents/dev/alunotes-bt/alunotes-bt-web/generated/prisma",
+      "value": "/home/deck/Documents/alunotes-bt/alunotes-bt-web/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -272,12 +272,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "linux-arm64-openssl-3.0.x",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/alu/Documents/dev/alunotes-bt/alunotes-bt-web/prisma/schema.prisma",
+    "sourceFilePath": "/home/deck/Documents/alunotes-bt/alunotes-bt-web/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -291,6 +291,7 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -339,8 +340,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-linux-arm64-openssl-3.0.x.so.node");
-path.join(process.cwd(), "generated/prisma/libquery_engine-linux-arm64-openssl-3.0.x.so.node")
+path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
+path.join(process.cwd(), "generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/prisma/schema.prisma")

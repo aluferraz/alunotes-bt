@@ -1,18 +1,29 @@
-.PHONY: build build-web build-all run run-all kill lint clean tidy setup-permissions deps \
-       ai-install ai-configure ai-start ai-pull ai-dev ai-test ai-lint ai-serve
+.PHONY: build build-pi build-web build-box build-all run run-all kill lint clean tidy \
+       setup-permissions deps-box install uninstall \
+       up down restart status logs enable disable \
+       ai-install ai-dev ai-test ai-lint ai-serve
+
+SYSTEM_SVCS := alunotes-bt-rfkill alunotes-bridge alunotes-ai alunotes-web
 
 BINARY := alunotes-bridge
 BUILD_DIR := ./bin
 CMD := ./cmd/bridge
+DISTROBOX_NAME ?= ubuntu24
 
-# Build for the host platform and set Bluetooth capabilities.
+# Fully static pure-Go build (no cgo). Matches Dockerfile.bridge.
 build: tidy
-	go build -o $(BUILD_DIR)/$(BINARY) $(CMD)
+	CGO_ENABLED=0 go build -trimpath -ldflags='-s -w' -o $(BUILD_DIR)/$(BINARY) $(CMD)
 	sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
 
 # Build for Raspberry Pi 5 (ARM64).
 build-pi: tidy
-	GOOS=linux GOARCH=arm64 go build -o $(BUILD_DIR)/$(BINARY)-arm64 $(CMD)
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -trimpath -ldflags='-s -w' -o $(BUILD_DIR)/$(BINARY)-arm64 $(CMD)
+
+# Build bridge inside the distrobox (toolchain not required on host).
+build-box:
+	distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+		'export PATH=/usr/local/go/bin:$$PATH && cd $(CURDIR) && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o $(BUILD_DIR)/$(BINARY) $(CMD)'
+	sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
 
 # Build all Docker images.
 build-all:
@@ -28,35 +39,41 @@ build-web:
 run: build
 	$(BUILD_DIR)/$(BINARY) -config config.yaml
 
-# Kill any running bridge, web dev server, or AI server instances.
+# Kill any leftover dev-mode processes (belt-and-suspenders for the trap in run-all).
 kill:
 	@-pkill -f '$(BUILD_DIR)/$(BINARY)' 2>/dev/null || true
+	@-pkill -f 'pnpm dev' 2>/dev/null || true
 	@-pkill -f 'next dev' 2>/dev/null || true
 	@-pkill -f 'uvicorn alunotes_ai' 2>/dev/null || true
 	@sleep 0.5
 
-# Run bridge (watch mode) + web app + ollama + AI server.
+# Dev mode: bridge runs native on host (needs BT/D-Bus/PipeWire hardware);
+# go rebuild, pnpm dev, and uvicorn all execute inside the distrobox so the
+# host stays free of Go/Node/Python toolchains.
 # Output is color-prefixed: [bridge]=cyan, [watch]=gray, [web]=magenta, [ai]=yellow.
-run-all: kill build
-	@echo "Starting bridge (watch mode) + web app + AI server..."
-	@$(MAKE) -C alunotes-ai ollama-start
+run-all: kill
+	@echo "==> Initial bridge build (in $(DISTROBOX_NAME))"
+	@distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+		'export PATH=/usr/local/go/bin:$$PATH && cd $(CURDIR) && CGO_ENABLED=0 go build -o $(BUILD_DIR)/$(BINARY) $(CMD)'
+	@sudo -v
+	@sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
+	@echo "==> Starting bridge (native) + web/ai (distrobox)"
 	@PIDFILE=$$(mktemp); \
 	CYAN='\x1b[36m'; GRAY='\x1b[90m'; MAGENTA='\x1b[35m'; YELLOW='\x1b[33m'; RESET='\x1b[0m'; \
 	cleanup() { \
 		kill $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
-		kill $$WATCH_PID 2>/dev/null; \
-		kill $$WEB_PID 2>/dev/null; \
-		kill $$AI_PID 2>/dev/null; \
+		kill $$WATCH_PID $$WEB_PID $$AI_PID 2>/dev/null; \
 		rm -f $$PIDFILE; \
 		wait 2>/dev/null; \
 	}; \
-	trap cleanup EXIT; \
+	trap cleanup EXIT INT TERM; \
 	stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
 	echo $$! > $$PIDFILE; \
-	( while inotifywait -r -e modify,create,delete --include '\.go$$' cmd/ internal/; do \
-		echo "Go files changed, rebuilding..."; \
-		go mod tidy && go build -o $(BUILD_DIR)/$(BINARY) $(CMD) \
-			&& sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY) && { \
+	( while distrobox enter $(DISTROBOX_NAME) -- inotifywait -qq -r -e modify,create,delete --include '\.go$$' $(CURDIR)/cmd/ $(CURDIR)/internal/; do \
+		echo "Go files changed, rebuilding in $(DISTROBOX_NAME)..."; \
+		distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+			'export PATH=/usr/local/go/bin:$$PATH && cd $(CURDIR) && CGO_ENABLED=0 go build -o $(BUILD_DIR)/$(BINARY) $(CMD)' \
+		&& sudo -n setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY) && { \
 			echo "Restarting bridge..."; \
 			kill $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
 			wait $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
@@ -65,27 +82,75 @@ run-all: kill build
 		} || echo "Build failed, keeping old binary"; \
 	done ) 2>&1 | sed -u "s/^/$$GRAY[watch]$$RESET /" & \
 	WATCH_PID=$$!; \
-	( cd alunotes-bt-web && pnpm dev ) 2>&1 | sed -u "s/^/$$MAGENTA[web]$$RESET /" & \
+	distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+		'cd $(CURDIR)/alunotes-bt-web && exec pnpm dev' \
+		2>&1 | sed -u "s/^/$$MAGENTA[web]$$RESET /" & \
 	WEB_PID=$$!; \
-	( cd alunotes-ai && \
-		if [ -f .env ]; then export $$(grep -v '^\s*#' .env | grep '=' | sed 's/^export //' | xargs); fi; \
-		.venv/bin/python -m uvicorn alunotes_ai.app:app --host 0.0.0.0 --port 8100 \
-	) 2>&1 | sed -u "s/^/$$YELLOW[ai]$$RESET /" & \
+	distrobox enter $(DISTROBOX_NAME) -- bash -lc \
+		'cd $(CURDIR)/alunotes-ai && \
+		 if [ -f .env ]; then set -a; . ./.env; set +a; fi; \
+		 exec .venv/bin/python -m uvicorn alunotes_ai.app:app \
+		      --host 0.0.0.0 --port 8100 \
+		      --reload --reload-dir alunotes_ai' \
+		2>&1 | sed -u "s/^/$$YELLOW[ai]$$RESET /" & \
 	AI_PID=$$!; \
 	wait
 
-# Install all system dependencies (bridge + AI).
-# Run this once after cloning the repo.
-deps:
-	sudo apt-get update
-	sudo apt-get install -y bluez libdbus-1-dev libsbc-dev pkg-config pulseaudio-utils \
-		ffmpeg libsndfile1 libsox-dev sox curl
-	$(MAKE) -C alunotes-ai _install-ollama
+# Install the full stack via systemd on the host. Builds inside distrobox.
+install:
+	./deploy/install.sh
+
+# ---------- service control ----------
+
+up:
+	sudo systemctl start $(SYSTEM_SVCS)
+
+down:
+	sudo systemctl stop $(SYSTEM_SVCS)
+
+restart:
+	sudo systemctl restart $(SYSTEM_SVCS)
+
+status:
+	@sudo systemctl --no-pager status $(SYSTEM_SVCS) || true
+
+# Follow logs from all app services (Ctrl+C to exit).
+logs:
+	sudo journalctl -f $(foreach s,$(SYSTEM_SVCS),-u $(s))
+
+enable:
+	sudo systemctl enable $(SYSTEM_SVCS)
+
+disable:
+	sudo systemctl disable $(SYSTEM_SVCS)
+
+# Remove installed unit files + D-Bus policy. Leaves Ollama and build artifacts.
+uninstall: down disable
+	sudo rm -f /etc/systemd/system/alunotes-bt-rfkill.service \
+	           /etc/systemd/system/alunotes-bridge.service \
+	           /etc/systemd/system/alunotes-ai.service \
+	           /etc/systemd/system/alunotes-web.service \
+	           /etc/dbus-1/system.d/alunotes-bridge.conf
+	sudo systemctl daemon-reload
+
+# Install build toolchains (go/node/pnpm/python venv + AI apt libs) inside the
+# distrobox. The bridge is pure Go (CGO disabled), so the host needs zero
+# build-time apt packages — only runtime deps already shipped by SteamOS
+# (bluez, dbus, pipewire, rfkill, btmgmt, bluetoothctl).
+deps-box:
+	distrobox enter $(DISTROBOX_NAME) -- bash -lc '\
+		sudo apt-get update -qq && \
+		sudo apt-get install -y --no-install-recommends \
+			build-essential curl ca-certificates git \
+			ffmpeg libsndfile1 libsox-dev sox \
+			python3 python3-venv python3-pip \
+			inotify-tools'
 
 # Install D-Bus policy and set up permissions for running without root.
 # Run this once after cloning the repo.
 setup-permissions:
-	sudo cp deploy/dbus-alunotes.conf /etc/dbus-1/system.d/alunotes-bridge.conf
+	sudo mkdir -p /etc/dbus-1/system.d
+	sudo install -m 0644 deploy/dbus-alunotes.conf /etc/dbus-1/system.d/alunotes-bridge.conf
 	sudo systemctl reload dbus
 	@# Ensure PipeWire Bluetooth is enabled (remove any override that disables it).
 	rm -f ~/.config/wireplumber/wireplumber.conf.d/90-disable-bluetooth.conf
@@ -112,15 +177,6 @@ clean:
 
 ai-install:
 	$(MAKE) -C alunotes-ai install
-
-ai-configure:
-	$(MAKE) -C alunotes-ai ollama-configure
-
-ai-start:
-	$(MAKE) -C alunotes-ai ollama-start
-
-ai-pull:
-	$(MAKE) -C alunotes-ai ollama-pull
 
 ai-dev:
 	$(MAKE) -C alunotes-ai dev

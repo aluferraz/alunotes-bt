@@ -15,9 +15,11 @@ def _detect_device() -> str:
 class Settings(BaseSettings):
     model_config = {"env_prefix": "ALUNOTES_AI_"}
 
-    # Ollama
-    ollama_base_url: str = "http://127.0.0.1:11434"
-    ollama_model: str = "huihui_ai/gemma-4-abliterated:e2b"
+    # LLM — any OpenAI-compatible endpoint (openai, groq, vllm, llama-cpp-server,
+    # LM Studio, ...). All three read from the .env (ALUNOTES_AI_OPENAI_*).
+    openai_base_url: str = "http://127.0.0.1:1234/v1"
+    openai_api_key: str = "dummy"
+    openai_model: str = ""
 
     # ASR
     asr_model_path: str = "Qwen/Qwen3-ASR-0.6B"

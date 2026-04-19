@@ -262,7 +262,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/alu/Documents/dev/alunotes-bt/alunotes-bt-web/generated/prisma",
+      "value": "/home/deck/Documents/alunotes-bt/alunotes-bt-web/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -271,12 +271,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "linux-arm64-openssl-3.0.x",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/alu/Documents/dev/alunotes-bt/alunotes-bt-web/prisma/schema.prisma",
+    "sourceFilePath": "/home/deck/Documents/alunotes-bt/alunotes-bt-web/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -290,6 +290,7 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

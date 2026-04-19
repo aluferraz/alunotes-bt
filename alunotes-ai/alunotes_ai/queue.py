@@ -57,7 +57,7 @@ class Job:
 _TYPE_TO_SLOT = {
     JobType.ASR: "asr",
     JobType.DIARIZATION: "diarization",
-    JobType.LLM: "ollama",
+    JobType.LLM: "llm",
 }
 
 

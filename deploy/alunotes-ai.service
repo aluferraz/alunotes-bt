@@ -1,0 +1,20 @@
+[Unit]
+Description=AluNotes AI (ASR + LLM inference API)
+After=network.target
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+Environment=XDG_RUNTIME_DIR=/run/user/@SERVICE_UID@
+Environment=HOME=/home/@SERVICE_USER@
+EnvironmentFile=-@PROJECT_DIR@/alunotes-ai/.env
+WorkingDirectory=@PROJECT_DIR@/alunotes-ai
+# Runtime lives in the distrobox (Python venv + pyannote/qwen-asr + ffmpeg/sox libs).
+ExecStart=/usr/bin/distrobox enter @DISTROBOX_NAME@ -- sh -lc 'cd @PROJECT_DIR@/alunotes-ai && exec .venv/bin/python -m uvicorn alunotes_ai.app:app --host 0.0.0.0 --port 8100'
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

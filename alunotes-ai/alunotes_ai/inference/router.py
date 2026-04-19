@@ -1,11 +1,14 @@
-"""OpenAI-compatible inference router backed by Ollama."""
+"""OpenAI-compatible inference router that proxies to a configurable upstream.
 
-import time
-import uuid
+The upstream can be any OpenAI-compatible `/v1` endpoint: openai.com, groq,
+vllm, llama-cpp-server, LiteLLM, a local ollama instance with its `/v1` shim,
+etc. Configured via `ALUNOTES_AI_OPENAI_BASE_URL` / `_API_KEY` / `_MODEL`.
+"""
+
 from typing import Any, AsyncIterator
 
-import httpx
 from fastapi import APIRouter, HTTPException
+from openai import APIError, AsyncOpenAI
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
@@ -28,157 +31,55 @@ class ChatCompletionRequest(BaseModel):
     max_tokens: int | None = None
 
 
-class ChatCompletionChoice(BaseModel):
-    index: int
-    message: ChatMessage
-    finish_reason: str | None
+_client = AsyncOpenAI(
+    base_url=settings.openai_base_url,
+    api_key=settings.openai_api_key,
+)
 
 
-class Usage(BaseModel):
-    prompt_tokens: int
-    completion_tokens: int
-    total_tokens: int
-
-
-class ChatCompletionResponse(BaseModel):
-    id: str
-    object: str = "chat.completion"
-    created: int
-    model: str
-    choices: list[ChatCompletionChoice]
-    usage: Usage
-
-
-class ModelInfo(BaseModel):
-    id: str
-    object: str = "model"
-    created: int = 0
-    owned_by: str = "local"
-
-
-class ModelsResponse(BaseModel):
-    object: str = "list"
-    data: list[ModelInfo]
-
-
-def _ollama_api_url(path: str) -> str:
-    return f"{settings.ollama_base_url}{path}"
-
-
-def _build_ollama_payload(req: ChatCompletionRequest) -> dict[str, Any]:
-    model = req.model or settings.ollama_model
-    messages = [{"role": m.role, "content": m.content} for m in req.messages]
-    payload: dict[str, Any] = {
-        "model": model,
-        "messages": messages,
-        "stream": req.stream,
-        "options": {"temperature": req.temperature},
+def _request_kwargs(req: ChatCompletionRequest) -> dict[str, Any]:
+    kwargs: dict[str, Any] = {
+        "model": req.model or settings.openai_model,
+        "messages": [{"role": m.role, "content": m.content} for m in req.messages],
+        "temperature": req.temperature,
     }
     if req.max_tokens is not None:
-        payload["options"]["num_predict"] = req.max_tokens
-    return payload
+        kwargs["max_tokens"] = req.max_tokens
+    return kwargs
 
 
 @router.get("/v1/models")
-async def list_models() -> ModelsResponse:
+async def list_models() -> dict[str, Any]:
     try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(_ollama_api_url("/api/tags"))
-            resp.raise_for_status()
-    except httpx.HTTPError as e:
-        raise HTTPException(status_code=502, detail=f"Ollama unavailable: {e}")
-
-    data = resp.json()
-    models = [
-        ModelInfo(id=m["name"], created=0, owned_by="local")
-        for m in data.get("models", [])
-    ]
-    return ModelsResponse(data=models)
+        resp = await _client.models.list()
+    except APIError as e:
+        raise HTTPException(status_code=502, detail=f"upstream error: {e}")
+    return {"object": "list", "data": [m.model_dump() for m in resp.data]}
 
 
 @router.post("/v1/chat/completions", response_model=None)
-async def chat_completions(req: ChatCompletionRequest) -> ChatCompletionResponse | EventSourceResponse:
-    # Free ASR/diarization models before ollama loads its model into RAM
-    mem.acquire("ollama")
-
-    payload = _build_ollama_payload(req)
+async def chat_completions(req: ChatCompletionRequest) -> dict[str, Any] | EventSourceResponse:
+    # Free ASR/diarization models before the LLM runs (if local)
+    mem.acquire("llm")
 
     if req.stream:
-        return EventSourceResponse(_stream_response(payload, req.model or settings.ollama_model))
+        return EventSourceResponse(_stream(req))
 
     try:
-        async with httpx.AsyncClient(timeout=600) as client:
-            resp = await client.post(_ollama_api_url("/api/chat"), json=payload)
-    except httpx.HTTPError as e:
-        raise HTTPException(status_code=502, detail=f"Ollama unavailable: {e}")
+        completion = await _client.chat.completions.create(**_request_kwargs(req))
+    except APIError as e:
+        raise HTTPException(status_code=502, detail=f"upstream error: {e}")
 
-    if resp.status_code != 200:
-        detail = resp.text or f"Ollama returned {resp.status_code}"
-        raise HTTPException(status_code=502, detail=detail)
-
-    data = resp.json()
-    msg = data.get("message", {})
-    completion_id = f"chatcmpl-{uuid.uuid4().hex[:12]}"
-
-    # Ollama thinking models may return content in "thinking" with empty "content"
-    content = msg.get("content", "")
-    if not content and msg.get("thinking"):
-        content = msg["thinking"]
-
-    return ChatCompletionResponse(
-        id=completion_id,
-        created=int(time.time()),
-        model=req.model or settings.ollama_model,
-        choices=[
-            ChatCompletionChoice(
-                index=0,
-                message=ChatMessage(role=msg.get("role", "assistant"), content=content),
-                finish_reason="stop",
-            )
-        ],
-        usage=Usage(
-            prompt_tokens=data.get("prompt_eval_count", 0),
-            completion_tokens=data.get("eval_count", 0),
-            total_tokens=data.get("prompt_eval_count", 0) + data.get("eval_count", 0),
-        ),
-    )
+    return completion.model_dump()
 
 
-async def _stream_response(payload: dict[str, Any], model: str) -> AsyncIterator[str]:
+async def _stream(req: ChatCompletionRequest) -> AsyncIterator[str]:
     import json
 
-    completion_id = f"chatcmpl-{uuid.uuid4().hex[:12]}"
-    created = int(time.time())
-
     try:
-        async with httpx.AsyncClient(timeout=300) as client:
-            async with client.stream("POST", _ollama_api_url("/api/chat"), json=payload) as resp:
-                resp.raise_for_status()
-                async for line in resp.aiter_lines():
-                    if not line.strip():
-                        continue
-                    chunk_data = json.loads(line)
-                    msg = chunk_data.get("message", {})
-                    content = msg.get("content", "")
-                    done = chunk_data.get("done", False)
-
-                    sse_chunk = {
-                        "id": completion_id,
-                        "object": "chat.completion.chunk",
-                        "created": created,
-                        "model": model,
-                        "choices": [
-                            {
-                                "index": 0,
-                                "delta": {"content": content} if content else {},
-                                "finish_reason": "stop" if done else None,
-                            }
-                        ],
-                    }
-                    yield json.dumps(sse_chunk)
-
-                    if done:
-                        yield "[DONE]"
-    except httpx.HTTPError as e:
-        error = {"error": {"message": f"Ollama stream error: {e}", "type": "server_error"}}
-        yield json.dumps(error)
+        stream = await _client.chat.completions.create(**_request_kwargs(req), stream=True)
+        async for chunk in stream:
+            yield json.dumps(chunk.model_dump())
+        yield "[DONE]"
+    except APIError as e:
+        yield json.dumps({"error": {"message": f"upstream stream error: {e}", "type": "server_error"}})

@@ -1,15 +1,17 @@
 [Unit]
 Description=AluNotes Bridge Web Control Plane
-After=network.target alunotes-bridge.service
-Wants=alunotes-bridge.service
+After=network.target alunotes-bridge.service alunotes-ai.service
+Wants=alunotes-bridge.service alunotes-ai.service
 
 [Service]
 Type=simple
-User=alu
-WorkingDirectory=/home/alu/Documents/dev/alunotes-bt/alunotes-bt-web
+User=@SERVICE_USER@
 Environment=NODE_ENV=production
-Environment=PATH=/home/alu/.nvm/versions/node/v24.13.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ExecStart=/home/alu/.nvm/versions/node/v24.13.0/bin/pnpm start
+Environment=XDG_RUNTIME_DIR=/run/user/@SERVICE_UID@
+Environment=HOME=/home/@SERVICE_USER@
+WorkingDirectory=@PROJECT_DIR@/alunotes-bt-web
+# Runtime lives in the distrobox because Node/pnpm are not installed on the host.
+ExecStart=/usr/bin/distrobox enter @DISTROBOX_NAME@ -- sh -lc 'cd @PROJECT_DIR@/alunotes-bt-web && exec pnpm start'
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal

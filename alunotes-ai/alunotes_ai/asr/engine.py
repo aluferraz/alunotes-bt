@@ -4,7 +4,7 @@ Callers interact only with transcribe() — the toolkit is an internal detail.
 
 On memory-constrained devices (e.g. 16GB Pi), the memory manager ensures
 only one model is loaded at a time. ASR acquires the "asr" slot, which
-first unloads ollama or diarization if either is active.
+first unloads diarization if active.
 """
 
 import gc
