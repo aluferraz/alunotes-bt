@@ -82,8 +82,11 @@ func NewAdapter(cfg config.BluetoothConfig, logger *slog.Logger) (*Adapter, erro
 }
 
 // Setup configures the adapter(s) for A2DP operation.
-// The sink adapter is made discoverable; the source adapter is powered on
-// but kept non-discoverable (it only initiates outbound connections).
+// The sink adapter is powered on but kept non-discoverable at boot — the
+// web UI calls SetSinkDiscoverable(true) once the user has paired a
+// headphone and reached the "Waiting for Source" step. The source adapter
+// is powered on and kept non-discoverable (it only initiates outbound
+// connections).
 func (a *Adapter) Setup(ctx context.Context) error {
 	// Configure sink adapter (receives audio from phones).
 	a.log.Info("configuring sink adapter", "adapter", a.cfg.SinkAdapter)
@@ -93,14 +96,19 @@ func (a *Adapter) Setup(ctx context.Context) error {
 	if err := a.setProperty(sinkObj, bluezAdapter, "Powered", true); err != nil {
 		return fmt.Errorf("powering on sink adapter: %w", err)
 	}
-	if err := a.setProperty(sinkObj, bluezAdapter, "Discoverable", true); err != nil {
-		return fmt.Errorf("setting sink discoverable: %w", err)
+	// Disable BlueZ's default 180s discoverability timeout so that when the UI
+	// turns discovery on, it stays on until the UI explicitly turns it off.
+	if err := a.setProperty(sinkObj, bluezAdapter, "DiscoverableTimeout", uint32(0)); err != nil {
+		return fmt.Errorf("setting sink discoverable timeout: %w", err)
+	}
+	if err := a.setProperty(sinkObj, bluezAdapter, "Discoverable", false); err != nil {
+		return fmt.Errorf("setting sink non-discoverable: %w", err)
 	}
 	if err := a.setProperty(sinkObj, bluezAdapter, "Alias", a.cfg.SinkName); err != nil {
 		return fmt.Errorf("setting sink alias: %w", err)
 	}
 
-	a.log.Info("sink adapter configured", "name", a.cfg.SinkName, "discoverable", true)
+	a.log.Info("sink adapter configured", "name", a.cfg.SinkName, "discoverable", false)
 
 	// Configure source adapter if using dual-adapter mode.
 	if a.dualMode {
@@ -319,6 +327,23 @@ func (a *Adapter) Discoverable() bool {
 	}
 	d, _ := v.Value().(bool)
 	return d
+}
+
+// SetSinkDiscoverable toggles the sink adapter's discoverability. When
+// enabling, it also forces DiscoverableTimeout=0 so BlueZ's default 180s
+// auto-off doesn't kick in mid-pairing.
+func (a *Adapter) SetSinkDiscoverable(enabled bool) error {
+	sinkObj := a.conn.Object(bluezBus, a.sinkPath)
+	if enabled {
+		if err := a.setProperty(sinkObj, bluezAdapter, "DiscoverableTimeout", uint32(0)); err != nil {
+			return fmt.Errorf("setting sink discoverable timeout: %w", err)
+		}
+	}
+	if err := a.setProperty(sinkObj, bluezAdapter, "Discoverable", enabled); err != nil {
+		return fmt.Errorf("setting sink discoverable=%v: %w", enabled, err)
+	}
+	a.log.Info("sink discoverability changed", "discoverable", enabled)
+	return nil
 }
 
 // Teardown powers off Bluetooth adapters on shutdown so they don't remain

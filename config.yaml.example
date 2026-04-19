@@ -34,9 +34,16 @@ session:
 
 storage:
   # Root directory for recordings.
-  # Structure: base_dir/YYYY-MM-DD/HH-MM-SS/recording.wav
-  # Default stores inside the web app's public dir so Next.js can serve them.
-  base_dir: ./alunotes-bt-web/public/recordings
+  # Structure: base_dir/YYYY-MM-DD/HH-MM-SS/recording-*.wav
+  #
+  # In Docker, leave this as /data/recordings — docker-compose bind-mounts
+  # ./data/recordings on the host to this path in the bridge container and
+  # to /app/public/recordings (read-only) in the web container so Next.js
+  # can serve the files.
+  #
+  # For local (non-docker) dev, point this at a path your bridge process
+  # can write to, e.g. ./alunotes-bt-web/public/recordings.
+  base_dir: /data/recordings
   format: wav
 
 # HTTP API server address for the web control plane.

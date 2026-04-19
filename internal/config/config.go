@@ -123,6 +123,13 @@ func Load(path string) (Config, error) {
 		return cfg, fmt.Errorf("parsing config file: %w", err)
 	}
 
+	// Env var override for the recordings dir so `make run-all` (dev) and the
+	// docker-compose bridge can share the same config.yaml without clashing
+	// on paths.
+	if v := os.Getenv("ALUNOTES_STORAGE_BASE_DIR"); v != "" {
+		cfg.Storage.BaseDir = v
+	}
+
 	if err := cfg.resolveSinkName(); err != nil {
 		return cfg, err
 	}

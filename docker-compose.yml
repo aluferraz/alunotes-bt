@@ -13,26 +13,36 @@ services:
     volumes:
       - ./config.yaml:/etc/alunotes/config.yaml:ro
       - /var/run/dbus:/var/run/dbus
+      # Session bus — the bridge exports MPRIS players for HFP call control
+      # and AVRCP. Mounting the host socket avoids needing dbus-launch.
+      - /run/user/1000/bus:/run/user/1000/bus
+      # PipeWire sockets — pactl needs the pulse compatibility socket, the
+      # audio pipeline needs the native pipewire one.
       - /run/user/1000/pipewire-0:/run/user/1000/pipewire-0
+      - /run/user/1000/pulse:/run/user/1000/pulse
       - ./data/bridge:/var/lib/alunotes-bridge
-      - recordings:/data/recordings
+      # Host-visible recordings dir — bridge writes here, web serves from it.
+      - ./data/recordings:/data/recordings
     environment:
       - XDG_RUNTIME_DIR=/run/user/1000
+      - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
 
   # ── Python AI / ASR / diarization ────────────────────────────
   # Internal only — web container reaches it via http://ai:8100 on the internal net.
   ai:
     build:
       context: ./alunotes-ai
+      # HF_TOKEN is only consumed by the discarded model-downloader stage
+      # (see alunotes-ai/Dockerfile) and never lands in the runtime image.
+      # Put HF_TOKEN=hf_... in the root .env alongside PUID/PGID.
+      secrets:
+        - hf_token
     image: alunotes/ai
     restart: unless-stopped
     networks:
       - internal
     volumes:
-      - ai-models:/app/models
-      - recordings:/data/recordings:ro
-    environment:
-      - OLLAMA_HOST=http://host.docker.internal:11434
+      - ./data/recordings:/data/recordings:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -49,7 +59,8 @@ services:
       - "3000:3000"
     volumes:
       - web-db:/app/data
-      - recordings:/app/public/recordings:ro
+      # Read-only view of the host recordings dir so Next.js can serve WAVs.
+      - ./data/recordings:/app/public/recordings:ro
     env_file:
       - ./.env
       - ./alunotes-bt-web/.env
@@ -69,6 +80,8 @@ networks:
   internal:
 
 volumes:
-  recordings:
-  ai-models:
   web-db:
+
+secrets:
+  hf_token:
+    environment: HF_TOKEN

@@ -1,0 +1,18 @@
+[Unit]
+Description=AluNotes Supervisor (health-gated BT bridge control)
+After=network.target alunotes-bridge.service alunotes-web.service
+Wants=alunotes-web.service
+
+[Service]
+Type=simple
+# Needs root to systemctl stop/start alunotes-bridge and to drive btmgmt.
+User=root
+WorkingDirectory=@PROJECT_DIR@
+ExecStart=@PROJECT_DIR@/deploy/alunotes-supervisor.sh
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

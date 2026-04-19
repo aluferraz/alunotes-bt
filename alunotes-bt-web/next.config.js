@@ -7,8 +7,14 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
   output: "standalone",
-  eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
+  logging: {
+    browserToTerminal: true,
+    // 'error' — errors only (default)
+    // 'warn'  — warnings and errors
+    // true    — all console output
+    // false   — disabled
+  },
   async headers() {
     return [
       {

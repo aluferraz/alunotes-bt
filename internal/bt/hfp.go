@@ -164,8 +164,10 @@ func (c *HFPCallControl) registerMPRIS() error {
 	if err != nil {
 		return err
 	}
-	if reply != dbus.RequestNameReplyPrimaryOwner {
-		return fmt.Errorf("could not claim %s", hfpMPRISBusName)
+	// HFPCallControl.Run re-enters on phone reconnects and shares the cached
+	// session bus, so AlreadyOwner is a legitimate success too.
+	if reply != dbus.RequestNameReplyPrimaryOwner && reply != dbus.RequestNameReplyAlreadyOwner {
+		return fmt.Errorf("could not claim %s (reply=%d)", hfpMPRISBusName, reply)
 	}
 
 	return nil

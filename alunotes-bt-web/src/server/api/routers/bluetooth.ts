@@ -149,6 +149,25 @@ export const bluetoothRouter = {
       return result;
     }),
 
+  // Toggle the sink adapter's Bluetooth discoverability. Used by the /audio
+  // route to open the sink for phone pairing only once a headphone is ready.
+  setDiscoverable: publicProcedure
+    .input(z.object({ enabled: z.boolean() }))
+    .handler(async ({ input }) => {
+      const result = await bridgeApiCallSafe<{
+        success: boolean;
+        discoverable?: boolean;
+        message?: string;
+      }>("/api/v1/bluetooth/discoverable", {
+        method: "POST",
+        body: JSON.stringify({ enabled: input.enabled }),
+      });
+      return {
+        success: result.reachable && (result.data?.success ?? false),
+        discoverable: result.data?.discoverable ?? input.enabled,
+      };
+    }),
+
   // Trigger headphone disconnection via Go daemon
   disconnect: publicProcedure
     .input(z.object({ macAddress: z.string() }))

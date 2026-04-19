@@ -26,9 +26,10 @@ fi
 
 # Already good?
 if command -v docker >/dev/null 2>&1 \
+   && docker buildx version >/dev/null 2>&1 \
    && systemctl is-enabled docker.service >/dev/null 2>&1 \
    && id -nG "$SERVICE_USER" | tr ' ' '\n' | grep -qx docker; then
-  cyan "docker already installed, enabled, and $SERVICE_USER is in the docker group — nothing to do"
+  cyan "docker already installed (with buildx), enabled, and $SERVICE_USER is in the docker group — nothing to do"
   systemctl is-active docker.service >/dev/null 2>&1 || sudo systemctl start docker.service
   exit 0
 fi
@@ -45,8 +46,8 @@ if [ ! -s /etc/pacman.d/gnupg/pubring.gpg ]; then
   sudo pacman-key --populate archlinux holo || sudo pacman-key --populate archlinux
 fi
 
-cyan "Installing docker + docker-compose"
-sudo pacman -Sy --needed --noconfirm docker docker-compose
+cyan "Installing docker + docker-compose + docker-buildx"
+sudo pacman -Sy --needed --noconfirm docker docker-compose docker-buildx
 
 cyan "Relocking /usr (steamos-readonly enable)"
 sudo steamos-readonly enable

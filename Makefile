@@ -1,5 +1,6 @@
 .PHONY: build build-pi build-web build-box build-all run run-all kill lint clean tidy \
-       setup-permissions deps-box host-install-docker install-systemd uninstall \
+       setup-permissions deps-box host-install-docker install-systemd install-supervisor \
+       uninstall uninstall-supervisor \
        up down restart status logs enable disable \
        ai-install ai-dev ai-test ai-lint ai-serve
 
@@ -50,17 +51,23 @@ build-box:
 # Build all container images. The runtime ($(CONTAINER)) runs on the host,
 # so from inside the distrobox these hop to the host via distrobox-host-exec.
 build-all:
-	$(HOST) $(CONTAINER) build -f Dockerfile.bridge -t alunotes/bridge .
-	$(HOST) $(CONTAINER) build -f alunotes-ai/Dockerfile -t alunotes/ai ./alunotes-ai
-	$(HOST) $(CONTAINER) build -f alunotes-bt-web/Dockerfile -t alunotes/web ./alunotes-bt-web
+	$(HOST) $(CONTAINER) buildx build --load -f Dockerfile.bridge -t alunotes/bridge .
+	$(HOST) $(CONTAINER) buildx build --load -f alunotes-ai/Dockerfile -t alunotes/ai ./alunotes-ai
+	$(HOST) $(CONTAINER) buildx build --load -f alunotes-bt-web/Dockerfile -t alunotes/web ./alunotes-bt-web
 
 # Build the Next.js web app (pnpm lives inside the distrobox).
 build-web:
 	$(DBOX_BASH) 'cd $(CURDIR)/alunotes-bt-web && pnpm build'
 
-# Run the bridge locally.
+# Run the bridge locally. In dev we point the recordings dir at
+# $(CURDIR)/data/recordings so the native bridge and the Next.js dev server
+# agree on one on-disk location without touching the docker-mode config.yaml
+# path (/data/recordings, an absolute path that only exists inside the
+# bridge container).
 run: build
-	$(HOST) $(BUILD_DIR)/$(BINARY) -config config.yaml
+	mkdir -p data/recordings
+	$(HOST) env ALUNOTES_STORAGE_BASE_DIR=$(CURDIR)/data/recordings \
+		$(BUILD_DIR)/$(BINARY) -config config.yaml
 
 # Kill any leftover dev-mode processes (belt-and-suspenders for the trap in run-all).
 kill:
@@ -80,8 +87,13 @@ run-all: kill
 		'export PATH=/usr/local/go/bin:$$PATH && cd $(CURDIR) && CGO_ENABLED=0 go build -o $(BUILD_DIR)/$(BINARY) $(CMD)'
 	@$(HOST) sudo -v
 	@$(HOST) sudo setcap 'cap_net_raw,cap_net_admin+eip' $(BUILD_DIR)/$(BINARY)
+	@# Shared recordings dir for dev — the native bridge writes here (via
+	@# ALUNOTES_STORAGE_BASE_DIR) and the Next.js dev server reads from here
+	@# (via RECORDINGS_DIR), matching the docker bind-mount layout.
+	@mkdir -p $(CURDIR)/data/recordings
 	@echo "==> Starting bridge (host) + web/ai (distrobox)"
 	@PIDFILE=$$(mktemp); \
+	REC_DIR=$(CURDIR)/data/recordings; \
 	CYAN='\x1b[36m'; GRAY='\x1b[90m'; MAGENTA='\x1b[35m'; YELLOW='\x1b[33m'; RESET='\x1b[0m'; \
 	cleanup() { \
 		kill $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
@@ -90,7 +102,7 @@ run-all: kill
 		wait 2>/dev/null; \
 	}; \
 	trap cleanup EXIT INT TERM; \
-	$(HOST) stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
+	$(HOST) env ALUNOTES_STORAGE_BASE_DIR=$$REC_DIR stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
 	echo $$! > $$PIDFILE; \
 	( while $(DBOX) inotifywait -qq -r -e modify,create,delete --include '\.go$$' $(CURDIR)/cmd/ $(CURDIR)/internal/; do \
 		echo "Go files changed, rebuilding..."; \
@@ -100,13 +112,13 @@ run-all: kill
 			echo "Restarting bridge..."; \
 			kill $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
 			wait $$(cat $$PIDFILE 2>/dev/null) 2>/dev/null; \
-			$(HOST) stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
+			$(HOST) env ALUNOTES_STORAGE_BASE_DIR=$$REC_DIR stdbuf -oL $(BUILD_DIR)/$(BINARY) -config config.yaml 2>&1 | sed -u "s/^/$$CYAN[bridge]$$RESET /" & \
 			echo $$! > $$PIDFILE; \
 		} || echo "Build failed, keeping old binary"; \
 	done ) 2>&1 | sed -u "s/^/$$GRAY[watch]$$RESET /" & \
 	WATCH_PID=$$!; \
 	$(DBOX_BASH) \
-		'cd $(CURDIR)/alunotes-bt-web && exec pnpm dev' \
+		'cd $(CURDIR)/alunotes-bt-web && export RECORDINGS_DIR='"$$REC_DIR"' && exec pnpm dev' \
 		2>&1 | sed -u "s/^/$$MAGENTA[web]$$RESET /" & \
 	WEB_PID=$$!; \
 	$(DBOX_BASH) \
@@ -122,6 +134,25 @@ run-all: kill
 # Install the full stack via systemd on the host. Builds inside distrobox.
 install-systemd:
 	$(HOST) ./deploy/install.sh
+
+# Install the supervisor unit. Watches the web app's /api/health and tears
+# down the bridge (+ powers off BT adapters) whenever it's unreachable, so
+# paired devices don't stream audio into a dead pipeline. Idempotent.
+install-supervisor:
+	@TMPF=$$(mktemp); \
+	sed 's|@PROJECT_DIR@|$(CURDIR)|g' deploy/alunotes-supervisor.service > $$TMPF; \
+	$(HOST) sudo install -m 0644 $$TMPF /etc/systemd/system/alunotes-supervisor.service; \
+	rm -f $$TMPF
+	$(HOST) sudo systemctl daemon-reload
+	$(HOST) sudo systemctl enable --now alunotes-supervisor.service
+	@echo "Supervisor installed. Follow logs: sudo journalctl -u alunotes-supervisor -f"
+
+# Remove just the supervisor unit (leaves the rest of the stack alone).
+uninstall-supervisor:
+	$(HOST) sudo systemctl disable --now alunotes-supervisor.service 2>/dev/null || true
+	$(HOST) sudo rm -f /etc/systemd/system/alunotes-supervisor.service
+	$(HOST) sudo systemctl daemon-reload
+	@echo "Supervisor removed."
 
 # ---------- stack control ----------
 # up/down drive the docker-compose stack on the host. Other targets below
@@ -156,12 +187,13 @@ disable:
 
 # Remove installed unit files + D-Bus policy. Leaves Ollama and build artifacts.
 uninstall:
-	$(HOST) sudo systemctl stop $(SYSTEM_SVCS) 2>/dev/null || true
-	$(HOST) sudo systemctl disable $(SYSTEM_SVCS) 2>/dev/null || true
+	$(HOST) sudo systemctl stop $(SYSTEM_SVCS) alunotes-supervisor 2>/dev/null || true
+	$(HOST) sudo systemctl disable $(SYSTEM_SVCS) alunotes-supervisor 2>/dev/null || true
 	$(HOST) sudo rm -f /etc/systemd/system/alunotes-bt-rfkill.service \
 	                   /etc/systemd/system/alunotes-bridge.service \
 	                   /etc/systemd/system/alunotes-ai.service \
 	                   /etc/systemd/system/alunotes-web.service \
+	                   /etc/systemd/system/alunotes-supervisor.service \
 	                   /etc/dbus-1/system.d/alunotes-bridge.conf
 	$(HOST) sudo systemctl daemon-reload
 

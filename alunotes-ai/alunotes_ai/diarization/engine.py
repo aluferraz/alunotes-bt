@@ -19,6 +19,7 @@ import numpy as np
 import soundfile as sf
 
 os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 os.environ.setdefault("HF_DATASETS_OFFLINE", "1")
 os.environ.setdefault("DO_NOT_TRACK", "1")
@@ -47,9 +48,10 @@ def _get_diarization_pipeline() -> PyannotePipeline:
     if _diarization_pipeline is not None:
         return _diarization_pipeline
 
+    # Weights are pre-baked into the image's HF cache at build time (see
+    # alunotes-ai/Dockerfile), so no token or network is needed at runtime.
     _diarization_pipeline = PyannotePipeline.from_pretrained(
         "pyannote/speaker-diarization-3.1",
-        token=os.environ.get("HF_TOKEN"),
     )
 
     device = settings.asr_device

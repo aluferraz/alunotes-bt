@@ -4,16 +4,38 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "~/orpc/react";
 import { GlassCard } from "~/components/ui/glass-card";
 import { Headphones, Smartphone, Loader2, Bluetooth, Plus, Check, Zap } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function OnboardingFlow() {
   const queryClient = useQueryClient();
   const [isScanning, setIsScanning] = useState(false);
   const [connectingMac, setConnectingMac] = useState<string | null>(null);
-  
+
   const { data: status } = useQuery(orpc.bluetooth.status.queryOptions({
     refetchInterval: 3000,
   }));
+
+  const { mutate: setDiscoverable } = useMutation(
+    orpc.bluetooth.setDiscoverable.mutationOptions(),
+  );
+
+  // Once the headphone is paired and we're waiting on a phone/PC to connect
+  // as the source, open the sink adapter for pairing. BlueZ's default 180s
+  // DiscoverableTimeout is cleared server-side so this stays on until we
+  // turn it off (or the bridge tears down).
+  const shouldBeDiscoverable = Boolean(
+    status?.connectedHeadphone?.connected &&
+      !status?.connectedSource?.connected,
+  );
+  const isDiscoverable = status?.discoverable ?? false;
+  useEffect(() => {
+    if (!status) return;
+    if (shouldBeDiscoverable && !isDiscoverable) {
+      setDiscoverable({ enabled: true });
+    } else if (!shouldBeDiscoverable && isDiscoverable) {
+      setDiscoverable({ enabled: false });
+    }
+  }, [status, shouldBeDiscoverable, isDiscoverable, setDiscoverable]);
   
   const { data: scanResults, refetch: scan } = useQuery(orpc.bluetooth.scan.queryOptions({
     enabled: isScanning,

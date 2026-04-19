@@ -41,6 +41,7 @@ func NewServer(cfg config.Config, adapter *bt.Adapter, sessMgr *session.Manager,
 	mux.HandleFunc("POST /api/v1/bluetooth/disconnect", s.handleDisconnect)
 	mux.HandleFunc("POST /api/v1/bluetooth/remove", s.handleRemoveDevice)
 	mux.HandleFunc("GET /api/v1/bluetooth/scan", s.handleScan)
+	mux.HandleFunc("POST /api/v1/bluetooth/discoverable", s.handleSetDiscoverable)
 	mux.HandleFunc("GET /api/v1/config", s.handleGetConfig)
 	mux.HandleFunc("POST /api/v1/recording/stop", s.handleStopRecording)
 	mux.HandleFunc("GET /api/v1/recording/auto-record", s.handleGetAutoRecord)
@@ -223,6 +224,28 @@ func (s *Server) handleScan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, devices)
+}
+
+// POST /api/v1/bluetooth/discoverable
+func (s *Server) handleSetDiscoverable(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Enabled bool `json:"enabled"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	if err := s.adapter.SetSinkDiscoverable(req.Enabled); err != nil {
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"success": false,
+			"message": fmt.Sprintf("failed to set discoverable: %v", err),
+		})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"success":      true,
+		"discoverable": req.Enabled,
+	})
 }
 
 // GET /api/v1/config

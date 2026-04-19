@@ -2,6 +2,7 @@ package bt
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"strings"
 	"time"
@@ -121,7 +122,12 @@ func (s *AVRCPSync) registerMPRIS() error {
 			"SupportedMimeTypes":  dbus.MakeVariant([]string{}),
 		},
 		playerProps: map[string]dbus.Variant{
-			"PlaybackStatus": dbus.MakeVariant("Paused"),
+			// Report Playing so mpris-proxy treats us as the active player
+			// and routes AVRCP PAUSE/PLAY_PAUSE passthrough events here
+			// instead of letting them fall through to the system-level
+			// media-key handler (which was waking the host's monitor when
+			// the user pressed pause on the headphones).
+			"PlaybackStatus": dbus.MakeVariant("Playing"),
 			"LoopStatus":     dbus.MakeVariant("None"),
 			"Rate":           dbus.MakeVariant(1.0),
 			"Shuffle":        dbus.MakeVariant(false),
@@ -179,19 +185,23 @@ func (s *AVRCPSync) registerMPRIS() error {
 		return err
 	}
 
-	// Claim the MPRIS bus name.
+	// Claim the MPRIS bus name. AVRCPSync.Run gets re-invoked each time a
+	// phone re-connects and reuses the cached session bus, so RequestName
+	// can return AlreadyOwner — that is not a failure.
 	reply, err := sessionConn.RequestName(mprisBusName, dbus.NameFlagDoNotQueue)
 	if err != nil {
 		return err
 	}
-	if reply != dbus.RequestNameReplyPrimaryOwner {
-		return dbus.ErrMsgNoObject
+	if reply != dbus.RequestNameReplyPrimaryOwner && reply != dbus.RequestNameReplyAlreadyOwner {
+		return fmt.Errorf("could not claim %s (reply=%d)", mprisBusName, reply)
 	}
 
 	return nil
 }
 
-// forwardToPhone calls a method on the phone's BlueZ MediaPlayer1.
+// forwardToPhone calls a method on the phone's BlueZ MediaPlayer1 and logs
+// the phone Status before/after so we can verify the AVRCP passthrough
+// actually reached the phone.
 func (s *AVRCPSync) forwardToPhone(method string) {
 	playerPath := s.findPhonePlayer()
 	if playerPath == "" {
@@ -200,12 +210,47 @@ func (s *AVRCPSync) forwardToPhone(method string) {
 	}
 
 	player := s.sysConn.Object(bluezBus, dbus.ObjectPath(playerPath))
+
+	statusBefore := ""
+	if sv, err := player.GetProperty(bluezMediaPlayer + ".Status"); err == nil {
+		if v, ok := sv.Value().(string); ok {
+			statusBefore = v
+		}
+	}
+
 	call := player.Call(bluezMediaPlayer+"."+method, 0)
 	if call.Err != nil {
-		s.log.Error("failed to forward to phone", "method", method, "error", call.Err)
-	} else {
-		s.log.Info("forwarded to phone", "method", method)
+		s.log.Error("failed to forward to phone",
+			"method", method,
+			"player", playerPath,
+			"statusBefore", statusBefore,
+			"error", call.Err,
+		)
+		return
 	}
+
+	s.log.Info("forwarded to phone",
+		"method", method,
+		"player", playerPath,
+		"statusBefore", statusBefore,
+	)
+
+	// Verify: re-read Status after a short settle window. If it didn't move,
+	// the phone didn't act on our command (AVRCP may have been dropped).
+	go func(want string) {
+		time.Sleep(500 * time.Millisecond)
+		sv, err := player.GetProperty(bluezMediaPlayer + ".Status")
+		if err != nil {
+			s.log.Warn("status re-read failed", "method", method, "error", err)
+			return
+		}
+		statusAfter, _ := sv.Value().(string)
+		s.log.Info("phone status after forward",
+			"method", method,
+			"statusBefore", statusBefore,
+			"statusAfter", statusAfter,
+		)
+	}(method)
 }
 
 func (s *AVRCPSync) findPhonePlayer() string {
@@ -316,6 +361,10 @@ func (s *AVRCPSync) handleVolumeSignal(sig *dbus.Signal) {
 	changed, _ := sig.Body[1].(map[string]dbus.Variant)
 	if volVar, ok := changed["Volume"]; ok {
 		if vol, ok := volVar.Value().(uint16); ok {
+			s.log.Info("incoming volume signal",
+				"path", sig.Path,
+				"volume", vol,
+			)
 			s.handleVolumeChange(string(sig.Path), vol)
 		}
 	}
@@ -340,8 +389,10 @@ func (s *AVRCPSync) setTransportVolumes(adapterPrefix string, volume uint16) {
 	objManager := s.sysConn.Object(bluezBus, "/")
 	var managed map[dbus.ObjectPath]map[string]map[string]dbus.Variant
 	if err := objManager.Call(dbusObjectManager+".GetManagedObjects", 0).Store(&managed); err != nil {
+		s.log.Warn("volume sync: GetManagedObjects failed", "error", err)
 		return
 	}
+	matched := 0
 	for path, ifaces := range managed {
 		if !strings.HasPrefix(string(path), adapterPrefix) {
 			continue
@@ -349,9 +400,28 @@ func (s *AVRCPSync) setTransportVolumes(adapterPrefix string, volume uint16) {
 		if _, ok := ifaces[bluezMediaTrans]; !ok {
 			continue
 		}
+		matched++
 		transport := s.sysConn.Object(bluezBus, path)
-		transport.Call(dbusProperties+".Set", 0,
+		call := transport.Call(dbusProperties+".Set", 0,
 			bluezMediaTrans, "Volume", dbus.MakeVariant(volume))
+		if call.Err != nil {
+			s.log.Warn("volume Set rejected by BlueZ",
+				"path", path,
+				"volume", volume,
+				"error", call.Err,
+			)
+		} else {
+			s.log.Info("volume propagated",
+				"path", path,
+				"volume", volume,
+			)
+		}
+	}
+	if matched == 0 {
+		s.log.Warn("volume sync: no transport matched prefix",
+			"prefix", adapterPrefix,
+			"volume", volume,
+		)
 	}
 }
 
