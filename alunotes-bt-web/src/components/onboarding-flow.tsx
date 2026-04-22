@@ -37,8 +37,12 @@ export function OnboardingFlow() {
     }
   }, [status, shouldBeDiscoverable, isDiscoverable, setDiscoverable]);
   
+  const isHeadphoneConnected = status?.connectedHeadphone?.connected;
+  const scanActive = isScanning && !isHeadphoneConnected;
   const { data: scanResults, refetch: scan } = useQuery(orpc.bluetooth.scan.queryOptions({
-    enabled: isScanning,
+    enabled: scanActive,
+    refetchInterval: scanActive ? 1000 : false,
+    staleTime: 0,
   }));
   
   const { data: savedDevices } = useQuery(orpc.bluetooth.devices.queryOptions());
@@ -65,7 +69,6 @@ export function OnboardingFlow() {
     connectDevice({ macAddress: mac });
   };
 
-  const isHeadphoneConnected = status?.connectedHeadphone?.connected;
   const isSourceConnected = status?.connectedSource?.connected;
 
   const scanArray = scanResults || [];

@@ -47,6 +47,12 @@ class Settings(BaseSettings):
     use_diarization: bool = True
     use_hallucination_filter: bool = True
     use_resampling: bool = True
+    # Run a 1 s silent diarization at startup when on GPU so MIOpen's first-
+    # forward-pass JIT compile (~150 s on RDNA2 APUs) lands during server
+    # boot instead of during a user-facing request. The compiled kernels are
+    # cached under ~/.cache/miopen so this cost is only paid on the very
+    # first boot — subsequent boots are near-instant.
+    warmup_diarization_on_start: bool = True
 
     # Job TTL (seconds)
     asr_job_ttl: int = 300

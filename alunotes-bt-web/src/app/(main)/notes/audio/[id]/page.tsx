@@ -160,9 +160,12 @@ export default function AudioNotePage(props: { params: Promise<{ id: string }> }
 
   const editorTheme = useUIPreferences((s) => s.editorTheme);
 
-  // LLM streaming via Vercel AI SDK
+  // LLM streaming via Vercel AI SDK.
+  // streamProtocol must be "text" to match the server's toTextStreamResponse() —
+  // otherwise the default "data" parser silently drops chunks and onError never fires on failure.
   const { complete, isLoading: isGenerating } = useCompletion({
     api: "/api/ai/generate-note",
+    streamProtocol: "text",
     onFinish: async (_prompt: string, completion: string) => {
       // Insert the generated markdown as paragraphs into the editor
       if (editorState.editor && completion) {

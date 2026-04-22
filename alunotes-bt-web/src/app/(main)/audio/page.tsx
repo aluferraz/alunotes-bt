@@ -168,19 +168,19 @@ export default function AudioBridgePage() {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2">
-                     <div className="flex items-center gap-3">
-                       <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]" />
-                       <span className="text-muted-foreground">Disconnected</span>
-                     </div>
-                     {error && <span className="text-xs text-red-400">Unable to reach bridge daemon.</span>}
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.6)]" />
+                      <span className="text-muted-foreground">Disconnected</span>
+                    </div>
+                    {error && <span className="text-xs text-red-400">Unable to reach bridge daemon.</span>}
                   </div>
                 )}
-                <p className="text-sm text-muted-foreground">Bridges audio via BlueZ to your connected headphones.</p>
+                <p className="text-sm text-muted-foreground">Bridges audio to your connected headphones.</p>
               </div>
             </GlassCard>
 
             <GlassCard className="p-8 flex flex-col gap-6 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/20 blur-3xl group-hover:bg-secondary/40 transition-colors" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/20 blur-3xl group-hover:bg-secondary/40 transition-colors" />
               <h2 className="text-2xl font-bold flex items-center gap-3">
                 <Headphones className="w-6 h-6 text-secondary" />
                 Output Device
@@ -198,7 +198,7 @@ export default function AudioBridgePage() {
                     <span className="text-muted-foreground">Disconnected</span>
                   </div>
                 )}
-                <p className="text-sm text-muted-foreground">Receives A2DP and HFP audio from the source.</p>
+                <p className="text-sm text-muted-foreground">Receives audio from the source.</p>
               </div>
             </GlassCard>
           </div>
@@ -206,36 +206,36 @@ export default function AudioBridgePage() {
       )}
 
       <div className="flex flex-col gap-6 mt-8">
-         <h2 className="text-2xl font-bold font-manrope">Recent Sessions & Highlights</h2>
-         {loadingRecordings ? (
-           <div className="h-32 bg-glass-border/50 animate-pulse rounded-3xl" />
-         ) : recordings?.items?.length === 0 ? (
-            <GlassCard className="p-12 text-center text-muted-foreground">
-               No audio sessions recorded yet. Start streaming from your phone.
-            </GlassCard>
-         ) : (
-            <div className="flex flex-col gap-4">
-              {recordings?.items?.map((rec) => (
-                <RecordingCard
-                  key={rec.sessionId}
-                  rec={rec}
-                  onLabel={(label) => labelMut.mutate({ sessionId: rec.sessionId, label })}
-                  onTrash={() => trashMut.mutate({ sessionId: rec.sessionId })}
-                  isNavigating={navigatingRecording === rec.sessionId}
-                  onNavigate={async () => {
-                    if (navigatingRecording) return;
-                    setNavigatingRecording(rec.sessionId);
-                    try {
-                      const note = await getOrCreateForRecording({ sessionId: rec.sessionId });
-                      router.push(`/notes/audio/${note.id}`);
-                    } finally {
-                      setNavigatingRecording(null);
-                    }
-                  }}
-                />
-              ))}
-            </div>
-         )}
+        <h2 className="text-2xl font-bold font-manrope">Recent Sessions & Highlights</h2>
+        {loadingRecordings ? (
+          <div className="h-32 bg-glass-border/50 animate-pulse rounded-3xl" />
+        ) : recordings?.items?.length === 0 ? (
+          <GlassCard className="p-12 text-center text-muted-foreground">
+            No audio sessions recorded yet. Start streaming from your phone.
+          </GlassCard>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {recordings?.items?.map((rec) => (
+              <RecordingCard
+                key={rec.sessionId}
+                rec={rec}
+                onLabel={(label) => labelMut.mutate({ sessionId: rec.sessionId, label })}
+                onTrash={() => trashMut.mutate({ sessionId: rec.sessionId })}
+                isNavigating={navigatingRecording === rec.sessionId}
+                onNavigate={async () => {
+                  if (navigatingRecording) return;
+                  setNavigatingRecording(rec.sessionId);
+                  try {
+                    const note = await getOrCreateForRecording({ sessionId: rec.sessionId });
+                    router.push(`/notes/audio/${note.id}`);
+                  } finally {
+                    setNavigatingRecording(null);
+                  }
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

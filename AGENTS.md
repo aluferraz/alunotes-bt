@@ -95,6 +95,44 @@ The original pipeline (`capture.go`, `route.go`, `forward.go`, `writer.go`) read
 - Runs unprivileged with Linux capabilities (`cap_net_raw,cap_net_admin`) + D-Bus policy — no root required
 - HTTP API server on `:8090` (configurable via `-api-addr` flag) serves bridge status, device connect/disconnect, and config endpoints for the web control plane
 
+## Debugging hard problems — don't quit on round one
+
+Real example: GPU diarization on the RDNA2 APU appeared broken ("hangs for
+20+ minutes"). The first instinct was to drop back to CPU and move on. That
+would have been wrong. The actual fix was three separate discoveries stacked:
+
+1. `HSA_ENABLE_SDMA=0` — the SDMA engine mis-handles host↔device copies on
+   spoofed integrated GPUs (every first-time tensor shape stalls in
+   `libhsa-runtime64.so`). Fixed `pipeline.to(cuda)` from 20 min → 0.99 s.
+2. `GPU_MAX_HW_QUEUES=1` + `AMD_SERIALIZE_KERNEL=3` — serialize launches to
+   avoid allocator races in the SDMA=0 path.
+3. `apt install librocrand-dev rocm-device-libs-17` — the torch-rocm pip
+   wheel ships `libMIOpen.so` + `librocrand.so` but not their headers, so
+   MIOpen's first-forward-pass JIT fails with `rocrand_xorwow.h file not
+   found`. A runtime apt install provides the headers.
+
+End result: GPU diarization warm path is **6× faster than CPU** with
+identical output — after the bug looked terminal on the surface.
+
+Rules this drills in:
+
+- When the user says "we are not giving up," respect it. Performance
+  workarounds exist — they're just buried in GitHub issues, community
+  tutorials, and vendor forums. Search them out before proposing a fallback.
+- Instrument before you theorize. Don't guess which stage is slow — write a
+  step-by-step test with per-step timing and a `faulthandler` watchdog
+  (`alunotes-ai/scripts/test_rocm_diarization.py` is the template). A native
+  `py-spy dump --native` often beats five hypotheses.
+- Treat "stuck" as a hypothesis, not a conclusion. 20 min of no output could
+  be a hang — or it could be first-ever MIOpen JIT compiling dozens of
+  kernels. Measure what's actually happening before declaring failure.
+- Fixes compose. A single workaround rarely solves a multi-layer bug; expect
+  to stack 2-4 orthogonal changes (env vars + packages + config).
+- The torch-rocm pip wheel is self-contained for *runtime*, not for *JIT*.
+  When MIOpen JIT-compiles a kernel (first-pass dropout, first-pass RNN,
+  etc.) it needs ROCm dev headers that the wheel doesn't ship — supply them
+  via system apt.
+
 ## AI Subpackage (`alunotes-ai/`)
 
 Local LLM inference and media-processing APIs. All processing runs offline — zero telemetry, no third-party data egress. Served as a FastAPI app on `:8100`.

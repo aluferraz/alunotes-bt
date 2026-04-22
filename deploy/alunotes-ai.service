@@ -11,6 +11,11 @@ EnvironmentFile=-@PROJECT_DIR@/alunotes-ai/.env
 WorkingDirectory=@PROJECT_DIR@/alunotes-ai
 # Runtime lives in the distrobox (Python venv + pyannote/qwen-asr + ffmpeg/sox libs).
 ExecStart=/usr/bin/distrobox enter @DISTROBOX_NAME@ -- sh -lc 'cd @PROJECT_DIR@/alunotes-ai && exec .venv/bin/python -m uvicorn alunotes_ai.app:app --host 0.0.0.0 --port 8100'
+# `distrobox enter` spawns `podman exec`, which reparents uvicorn into the
+# container's cgroup, out of systemd's reach. Reap it explicitly on stop.
+ExecStopPost=-/usr/bin/pkill -f "uvicorn alunotes_ai"
+KillMode=mixed
+TimeoutStopSec=15
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal

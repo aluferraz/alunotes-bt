@@ -8,6 +8,7 @@ import "./src/env.js";
 const config = {
   output: "standalone",
   typescript: { ignoreBuildErrors: true },
+  allowedDevOrigins: ['steamdeck.tailf951f.ts.net'],
   logging: {
     browserToTerminal: true,
     // 'error' — errors only (default)

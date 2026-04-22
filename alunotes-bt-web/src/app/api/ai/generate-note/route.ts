@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = streamText({
-      model: openai("huihui_ai/gemma-4-abliterated:e2b"),
+      model: openai(env.AI_MODEL),
       system: `You are a note-taking assistant. Given a diarized audio transcript, create well-structured notes in markdown format.
 
 Rules:
@@ -31,6 +31,11 @@ Rules:
 - Don't include timestamps in the notes (the transcript has them for reference)
 - Write in the same language as the transcript`,
       prompt: `Create structured notes from this audio transcript:\n\n${transcript}`,
+      // streamText returns a stream before the upstream fetch happens, so the outer try/catch
+      // cannot see mid-stream failures (e.g. upstream 404). onError is the only server-side hook.
+      onError: ({ error }) => {
+        console.error("[generate-note] stream error:", error);
+      },
     });
 
     return result.toTextStreamResponse();

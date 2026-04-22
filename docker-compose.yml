@@ -12,6 +12,7 @@ services:
     user: "${PUID}:${PGID}"
     volumes:
       - ./config.yaml:/etc/alunotes/config.yaml:ro
+      - /etc/localtime:/etc/localtime:ro
       - /var/run/dbus:/var/run/dbus
       # Session bus — the bridge exports MPRIS players for HFP call control
       # and AVRCP. Mounting the host socket avoids needing dbus-launch.
@@ -29,12 +30,21 @@ services:
 
   # ── Python AI / ASR / diarization ────────────────────────────
   # Internal only — web container reaches it via http://ai:8100 on the internal net.
+  #
+  # GPU: CPU-only by default. To build + run with GPU acceleration, set
+  #   AI_GPU_BACKEND=rocm (or cuda) in the shell / root .env and layer in
+  #   docker-compose.gpu.yml — that file adds the /dev/kfd and /dev/dri
+  #   device mounts and the HSA override. Easiest entry point:
+  #     make up                  # auto-detects, picks override as needed
+  #     AI_GPU_BACKEND=cpu make up  # force CPU
   ai:
     build:
       context: ./alunotes-ai
       # HF_TOKEN is only consumed by the discarded model-downloader stage
       # (see alunotes-ai/Dockerfile) and never lands in the runtime image.
       # Put HF_TOKEN=hf_... in the root .env alongside PUID/PGID.
+      args:
+        AI_GPU_BACKEND: ${AI_GPU_BACKEND:-cpu}
       secrets:
         - hf_token
     image: alunotes/ai
@@ -42,6 +52,7 @@ services:
     networks:
       - internal
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./data/recordings:/data/recordings:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -59,6 +70,7 @@ services:
       - "3000:3000"
     volumes:
       - web-db:/app/data
+      - /etc/localtime:/etc/localtime:ro
       # Read-only view of the host recordings dir so Next.js can serve WAVs.
       - ./data/recordings:/app/public/recordings:ro
     env_file:

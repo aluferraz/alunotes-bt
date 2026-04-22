@@ -18,10 +18,9 @@ from typing import AsyncIterator
 import numpy as np
 import soundfile as sf
 
+# Offline mode is enforced by the Dockerfile in prod. Dev-mode `make run-all`
+# relies on the host's HF cache and should be free to fetch if it's cold.
 os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
-os.environ.setdefault("HF_HUB_OFFLINE", "1")
-os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
-os.environ.setdefault("HF_DATASETS_OFFLINE", "1")
 os.environ.setdefault("DO_NOT_TRACK", "1")
 
 import torch
@@ -48,10 +47,13 @@ def _get_diarization_pipeline() -> PyannotePipeline:
     if _diarization_pipeline is not None:
         return _diarization_pipeline
 
-    # Weights are pre-baked into the image's HF cache at build time (see
-    # alunotes-ai/Dockerfile), so no token or network is needed at runtime.
+    # Prod (docker): weights are baked into the image cache, HF_HUB_OFFLINE=1
+    #   is set by the Dockerfile, and HF_TOKEN is absent — token=None is fine.
+    # Dev (run-all): cache may be cold; HF_TOKEN from alunotes-ai/.env lets us
+    #   fetch the gated pyannote repos the first time.
     _diarization_pipeline = PyannotePipeline.from_pretrained(
         "pyannote/speaker-diarization-3.1",
+        token=os.environ.get("HF_TOKEN"),
     )
 
     device = settings.asr_device
@@ -193,6 +195,30 @@ async def diarize_with_progress(
 
     except Exception as e:
         yield {"type": "error", "message": str(e)}
+
+
+def warmup_diarization() -> None:
+    """Pre-compile MIOpen kernels before the first real request.
+
+    On AMD ROCm (esp. RDNA2 APUs with HSA_OVERRIDE) the first diarization
+    forward pass triggers MIOpen to JIT-compile ~dozens of HIP kernels,
+    taking 100-200 s. Results are cached in ~/.cache/miopen, so subsequent
+    runs are fast. Calling this at server startup shifts the cost out of
+    the user's first request and into boot.
+
+    Silently no-ops on CPU (no benefit — nothing to warm) and swallows
+    errors (warmup is best-effort; a failure here shouldn't block serving).
+    """
+    if settings.asr_device == "cpu":
+        return
+    try:
+        pipeline = _get_diarization_pipeline()
+        silence = np.zeros(16000, dtype=np.float32)  # 1 s @ 16 kHz
+        t = torch.from_numpy(silence).unsqueeze(0)
+        pipeline({"waveform": t, "sample_rate": 16000})
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception("diarization warmup failed — continuing anyway")
 
 
 def diarize_sync(audio: bytes | Path, language: str | None = None) -> list[DiarizedSegment]:

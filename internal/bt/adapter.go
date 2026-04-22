@@ -546,6 +546,8 @@ func (a *Adapter) ScanDevices(ctx context.Context) ([]DiscoveredDevice, error) {
 	adapterPath := a.sourcePath
 	adapter := a.conn.Object(bluezBus, adapterPath)
 
+	a.log.Info("scan requested", "adapter", adapterPath, "duration", "12s")
+
 	// Set discovery filter to find both Classic (BR/EDR) and BLE devices.
 	// Without this, some adapters default to BLE-only and miss A2DP devices
 	// like headphones that advertise via Classic Bluetooth.
@@ -565,13 +567,21 @@ func (a *Adapter) ScanDevices(ctx context.Context) ([]DiscoveredDevice, error) {
 		}
 	}
 
-	// Let discovery run for a few seconds
-	scanTimer := time.NewTimer(8 * time.Second)
+	// Let discovery run long enough for a full BR/EDR inquiry cycle (10.24s
+	// hardware-level) plus some LE headroom. With Transport: "auto", BlueZ
+	// interleaves LE and BR/EDR — stopping before ~10s means BR/EDR inquiry
+	// results (like A2DP headphones in pairing mode) never surface.
+	scanTimer := time.NewTimer(12 * time.Second)
 	defer scanTimer.Stop()
 	select {
 	case <-ctx.Done():
 	case <-scanTimer.C:
 	}
+
+	// Snapshot devices BEFORE stopping discovery — BlueZ clears RSSI on
+	// devices once discovery stops, so reading after StopDiscovery gives
+	// RSSI=0 for everything.
+	devices, err := a.listKnownDevices(adapterPath)
 
 	// Stop discovery (best-effort)
 	stopCall := adapter.Call(bluezAdapter+".StopDiscovery", 0)
@@ -579,7 +589,20 @@ func (a *Adapter) ScanDevices(ctx context.Context) ([]DiscoveredDevice, error) {
 		a.log.Debug("stop discovery", "error", stopCall.Err)
 	}
 
-	return a.listKnownDevices(adapterPath)
+	if err != nil {
+		return nil, err
+	}
+	a.log.Info("scan complete", "adapter", adapterPath, "count", len(devices))
+	for _, d := range devices {
+		a.log.Info("scan result",
+			"name", d.Name,
+			"mac", d.MAC,
+			"rssi", d.RSSI,
+			"paired", d.Paired,
+			"connected", d.Connected,
+		)
+	}
+	return devices, nil
 }
 
 // listKnownDevices enumerates all BlueZ device objects under an adapter.

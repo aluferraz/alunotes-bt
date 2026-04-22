@@ -16,13 +16,11 @@ from typing import AsyncIterator
 import numpy as np
 import soundfile as sf
 
-# Disable HuggingFace telemetry/network before any transformers import.
-# Weights are baked into the image cache at build time (Dockerfile's
-# model-downloader stage), so the runtime container needs no outbound HF calls.
+# Disable HuggingFace telemetry before any transformers import. Offline mode
+# (HF_HUB_OFFLINE / TRANSFORMERS_OFFLINE) is set by the Dockerfile for prod
+# runs — we deliberately don't force it here so `make run-all` in dev mode
+# can still fall back to a host HF fetch when the cache is cold.
 os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
-os.environ.setdefault("HF_HUB_OFFLINE", "1")
-os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
-os.environ.setdefault("HF_DATASETS_OFFLINE", "1")
 os.environ.setdefault("DO_NOT_TRACK", "1")
 
 import torch

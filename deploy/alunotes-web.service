@@ -12,6 +12,12 @@ Environment=HOME=/home/@SERVICE_USER@
 WorkingDirectory=@PROJECT_DIR@/alunotes-bt-web
 # Runtime lives in the distrobox because Node/pnpm are not installed on the host.
 ExecStart=/usr/bin/distrobox enter @DISTROBOX_NAME@ -- sh -lc 'cd @PROJECT_DIR@/alunotes-bt-web && exec pnpm start'
+# `distrobox enter` spawns `podman exec`, which reparents the Node server into
+# the container's cgroup. systemd only supervises the outer wrapper, so a plain
+# stop leaves next-server alive and holding port 3000. Reap it explicitly.
+ExecStopPost=-/usr/bin/pkill -f next-server
+KillMode=mixed
+TimeoutStopSec=15
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal

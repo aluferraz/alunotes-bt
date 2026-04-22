@@ -4,8 +4,24 @@
 #   Bridge  — native Go binary (system-scope, runs as root for BT caps).
 #   AI/Web  — run inside the distrobox (system-scope, run as $SERVICE_USER).
 #
-# Usage: ./deploy/install.sh   (will invoke sudo as needed)
+# Usage: ./deploy/install.sh [--no-services]
+#   --no-services   Install unit files but do not enable or start them.
+#                   Use while the stack is still under active development.
+#
+# Will invoke sudo as needed.
 set -euo pipefail
+
+ENABLE_SERVICES=1
+for arg in "$@"; do
+  case "$arg" in
+    --no-services) ENABLE_SERVICES=0 ;;
+    -h|--help)
+      sed -n '2,11p' "$0"
+      exit 0
+      ;;
+    *) echo "unknown flag: $arg" >&2; exit 2 ;;
+  esac
+done
 
 DEPLOY_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$DEPLOY_DIR")"
@@ -31,7 +47,7 @@ if ! command -v distrobox >/dev/null 2>&1; then
   exit 1
 fi
 if ! distrobox list 2>/dev/null | awk -v n="$DISTROBOX_NAME" -F'|' 'NR>1 {gsub(/ /,"",$2); if ($2==n) f=1} END {exit !f}'; then
-  red "distrobox '$DISTROBOX_NAME' not found. Create it with:"
+  red "distrobox '$DISTROBOX_NAME' not found (Tip: run this command without sudo). Create it with:"
   red "  distrobox create --name $DISTROBOX_NAME --image docker.io/library/ubuntu:24.04"
   exit 1
 fi
@@ -40,6 +56,14 @@ fi
 box() { distrobox enter "$DISTROBOX_NAME" -- bash -lc "$*"; }
 
 # ---------- 1. Build toolchain inside distrobox ----------
+#
+# pciutils is required by scripts/detect-gpu.sh; libnuma1 / libdrm2 are runtime
+# deps of the torch-rocm wheel (no-op on non-AMD hosts). librocrand-dev and
+# rocm-device-libs-17 supply headers MIOpen's JIT compiler needs on first
+# forward pass — the torch-rocm wheel ships runtime .so but not headers, so
+# without these the first cuda inference fails with rocrand_xorwow.h not
+# found. Keep this list in sync with the root Makefile's `deps-box` target
+# — both install the same set so dev and prod stay reproducible.
 
 cyan "Installing build toolchain in $DISTROBOX_NAME"
 box '
@@ -49,7 +73,9 @@ sudo apt-get install -y --no-install-recommends \
     build-essential curl ca-certificates git pkg-config \
     ffmpeg libsndfile1 libsox-dev sox \
     python3 python3-venv python3-pip \
-    inotify-tools
+    inotify-tools \
+    pciutils libnuma1 libdrm2 \
+    librocrand-dev rocm-device-libs-17
 
 # Go '"$GO_VERSION"'
 if ! /usr/local/go/bin/go version 2>/dev/null | grep -q "go'"$GO_VERSION"'"; then
@@ -99,14 +125,17 @@ SKIP_ENV_VALIDATION=1 NEXT_TELEMETRY_DISABLED=1 pnpm build
 "
 
 # ---------- 4. Install AI venv ----------
+#
+# Delegate to alunotes-ai/Makefile — it runs scripts/detect-gpu.sh and picks
+# the torch wheel (rocm / cuda / cpu) to match the host. Set AI_GPU_BACKEND on
+# the install.sh invocation to force a specific backend (e.g. AI_GPU_BACKEND=cpu
+# for CI / headless installs where you don't want the 3GB ROCm wheel).
 
-cyan "Installing AI Python venv"
+cyan "Installing AI Python venv (torch backend: ${AI_GPU_BACKEND:-auto-detect})"
 box "
 set -euxo pipefail
 cd '$PROJECT_DIR/alunotes-ai'
-python3 -m venv .venv
-.venv/bin/pip install --upgrade pip
-.venv/bin/pip install -e '.[dev]'
+AI_GPU_BACKEND='${AI_GPU_BACKEND:-}' make _install-python-deps
 "
 
 # ---------- 5. Host-side setup ----------
@@ -142,15 +171,28 @@ for tpl in "${UNITS[@]}"; do
 done
 
 sudo systemctl daemon-reload
-for svc in "${UNITS[@]}"; do
-  sudo systemctl enable "$svc"
-  sudo systemctl restart "$svc"
-done
+
+if [ "$ENABLE_SERVICES" = 1 ]; then
+  for svc in "${UNITS[@]}"; do
+    sudo systemctl enable "$svc"
+    sudo systemctl restart "$svc"
+  done
+else
+  cyan "Skipping enable/start (--no-services). Unit files are installed."
+fi
 
 cyan "Done."
+if [ "$ENABLE_SERVICES" = 1 ]; then
 cat <<EOF
 
   Bridge  → http://localhost:8090   journalctl -u alunotes-bridge -f
   AI      → http://localhost:8100   journalctl -u alunotes-ai     -f
   Web     → http://localhost:3000   journalctl -u alunotes-web    -f
 EOF
+else
+cat <<EOF
+
+  Services installed but not enabled. Start them manually with:
+    sudo systemctl start ${UNITS[*]}
+EOF
+fi

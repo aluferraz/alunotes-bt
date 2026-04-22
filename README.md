@@ -128,6 +128,39 @@ Set the MAC in `config.yaml` under `bluetooth.target_headphone`.
 
 Run the bridge, then connect to "AluNotes-XXXX" from your phone's Bluetooth settings. Pairing is auto-accepted.
 
+## GPU acceleration (AMD ROCm)
+
+Diarization runs ~6× faster on GPU than CPU once MIOpen's kernel cache is warm
+(measured on a Z2 Go Radeon 680M APU: CPU 75s → GPU warm 12s on a 40s clip;
+first-ever run pays a one-time ~160s JIT compile, then cached forever under
+`~/.cache/miopen`).
+
+Supported out of the box on RDNA2 APUs (Rembrandt / gfx1035). The
+`make deps-box` / `deploy/install.sh` path installs everything needed —
+including the rocm headers MIOpen's JIT compiler requires at runtime. The
+`alunotes-ai/.env` ships the env vars below; remove them on non-AMD hosts.
+
+| Variable | Required for | Why |
+|---|---|---|
+| `HSA_OVERRIDE_GFX_VERSION=10.3.0` | Radeon 680M / any gfx1035 | gfx1035 isn't on the official ROCm list — this spoofs the ISA-compatible gfx1030 so HSA accepts the device |
+| `HSA_ENABLE_SDMA=0` | Any RDNA2 APU with HSA_OVERRIDE | SDMA engine is broken on spoofed integrated GPUs: every first-time tensor shape stalls 100s+ in `libhsa-runtime64.so` until disabled |
+| `GPU_MAX_HW_QUEUES=1` | Any RDNA2 APU with HSA_OVERRIDE | Serializes GPU launches to avoid allocator races under the SDMA=0 path |
+| `AMD_SERIALIZE_KERNEL=3` | Any RDNA2 APU with HSA_OVERRIDE | Forces synchronous kernel submits; pairs with `GPU_MAX_HW_QUEUES=1` |
+
+And the apt packages that provide headers the torch-rocm pip wheel omits (so
+MIOpen's first-pass JIT doesn't fail with `rocrand_xorwow.h: file not found`):
+
+```bash
+# Installed unconditionally by make deps-box — harmless on non-AMD hosts.
+librocrand-dev
+rocm-device-libs-17
+```
+
+Production warmup: the service should run one dummy diarization at boot so
+the ~160s cold-JIT lands before the first user request, not during. The JIT
+output is cached in `~/.cache/miopen/`, which must persist across restarts.
+Docker: bind-mount a host path to that location in `docker-compose.gpu.yml`.
+
 ## Recordings
 
 Audio is saved as WAV organized by session:

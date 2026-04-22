@@ -19,9 +19,13 @@ import sys
 from huggingface_hub import snapshot_download
 
 # pyannote/speaker-diarization-3.1 is a pipeline config that references the
-# two submodels below — we need all three cached locally.
+# two submodels below. pyannote.audio ≥4 *also* pulls xvec_transform.npz (and
+# related post-processing weights) from the newer community-1 repo at inference
+# time, even when you request 3.1 — so we cache that one too, otherwise the
+# runtime blows up mid-diarize with "Could not download xvec_transform.npz".
 DIARIZATION_REPOS = [
     "pyannote/speaker-diarization-3.1",
+    "pyannote/speaker-diarization-community-1",
     "pyannote/segmentation-3.0",
     "pyannote/wespeaker-voxceleb-resnet34-LM",
 ]

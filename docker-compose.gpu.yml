@@ -1,0 +1,48 @@
+# GPU runtime overlay — layer on top of docker-compose.yml when the host has
+# a GPU and the `ai` image was built with AI_GPU_BACKEND=rocm (or cuda).
+#
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+#
+# The Makefile `up` / `build-all` targets auto-include this file when the
+# detected backend is rocm or cuda; the file is only relevant for GPU runs.
+#
+# Covered here:
+#   - /dev/kfd + /dev/dri passthrough (AMD kernel compute + DRI render nodes;
+#     NVIDIA uses /dev/nvidia* which is picked up via the nvidia runtime).
+#   - render/video group membership for the unprivileged `alunotes` user so it
+#     can open the device nodes.
+#   - env vars sourced from alunotes-ai/.env: HSA_OVERRIDE_GFX_VERSION (spoof
+#     gfx1035 → gfx1030), HSA_ENABLE_SDMA=0 (disable broken SDMA engine on
+#     RDNA2 APUs — required for diarization to complete), GPU_MAX_HW_QUEUES +
+#     AMD_SERIALIZE_KERNEL (serialize GPU launches under SDMA=0).
+#   - MIOpen kernel-cache persistence across container restarts. The first
+#     diarization forward pass JIT-compiles ~150 s of HIP kernels; we bind-
+#     mount a host directory so the cache survives `docker compose down` /
+#     image rebuilds. Without this, every fresh container pays the cold cost.
+services:
+  ai:
+    env_file:
+      # Pulls HSA_OVERRIDE_GFX_VERSION + HSA_ENABLE_SDMA + GPU_MAX_HW_QUEUES +
+      # AMD_SERIALIZE_KERNEL (and any other runtime env the ai service
+      # expects) from the same .env the non-docker deploy uses.
+      - ./alunotes-ai/.env
+    # AMD compute + DRI render nodes. NVIDIA hosts don't need these — use the
+    # nvidia container toolkit (`deploy.resources.reservations.devices`) with
+    # `driver: nvidia` if targeting CUDA, and remove the AMD entries below.
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    # The `alunotes` user inside the image is in video/render by name
+    # (Dockerfile creates both groups). If the host uses different GIDs for
+    # render (SteamOS / Arch sometimes ship 993), add that numeric GID here:
+    #   group_add: ["video", "render", "993"]
+    group_add:
+      - video
+      - render
+    volumes:
+      # MIOpen JIT kernel cache. Home inside the image is /app (see the
+      # `useradd -d /app alunotes` line in alunotes-ai/Dockerfile), so the
+      # default MIOpen cache dir resolves to /app/.cache/miopen. Mapping it
+      # to ./data/miopen-cache keeps the ~GBs of compiled kernels on the
+      # host and skips the 2-3 min cold-JIT on every container (re)create.
+      - ./data/miopen-cache:/app/.cache/miopen

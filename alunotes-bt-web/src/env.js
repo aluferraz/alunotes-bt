@@ -21,6 +21,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    AI_MODEL: z.string().default("google/gemma-4-e4b"),
   },
 
   /**
@@ -46,6 +47,7 @@ export const env = createEnv({
     BRIDGE_API_URL: process.env.BRIDGE_API_URL,
     AI_API_URL: process.env.AI_API_URL,
     NODE_ENV: process.env.NODE_ENV,
+    AI_MODEL: process.env.AI_MODEL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -1,0 +1,3 @@
+*.log
+.pip-cache
+.ruff_cache
